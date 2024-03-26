@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:lode_runner/levels/level.dart';
 
 class LodeRunner extends FlameGame {
-  late final CameraComponent cam;
-  @override
-  final world = Level();
   @override
   Color backgroundColor() => const Color(0xFF211F30);
+  late final CameraComponent cam;
+  final world = Level();
+
   @override
   Future<void> onLoad() async {
     // Подгружаем все анимации в кэш

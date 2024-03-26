@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flame/components.dart';
 import 'package:lode_runner/helpers/animations.dart';
 import 'package:lode_runner/lode_runner.dart';
@@ -15,6 +13,8 @@ enum PlayerState {
 }
 
 class Player extends SpriteAnimationGroupComponent with HasGameRef<LodeRunner> {
+  Player({super.position});
+
   late final SpriteAnimation idle;
   late final SpriteAnimation run;
   late final SpriteAnimation jump;
@@ -28,83 +28,37 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<LodeRunner> {
   @override
   Future<void> onLoad() async {
     _loadAllAnimations();
-    log(position.toString());
     return super.onLoad();
   }
 
   void _loadAllAnimations() {
-    // Позиция игрока
-    idle = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.idle,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 11,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    run = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.run,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 12,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    jump = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.jump,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 1,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    fall = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.fall,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 1,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    hit = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.hit,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 7,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    doubleJump = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.doubleJump,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 6,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
-    wallJump = SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        PlayerAnimations.wallJump,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: 5,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
-    );
+    // Базовый метод
+    SpriteAnimation spriteAnimation(String animationSrc, int frameAmount) {
+      return SpriteAnimation.fromFrameData(
+        gameRef.images.fromCache(
+          animationSrc,
+        ),
+        SpriteAnimationData.sequenced(
+          amount: frameAmount,
+          stepTime: stepTime,
+          textureSize: Vector2.all(32),
+        ),
+      );
+    }
 
+    // Значения анимаций
+    idle = spriteAnimation(PlayerAnimations.idle, 11);
+    run = spriteAnimation(PlayerAnimations.run, 12);
+    jump = spriteAnimation(PlayerAnimations.jump, 1);
+    fall = spriteAnimation(PlayerAnimations.fall, 1);
+    hit = spriteAnimation(PlayerAnimations.hit, 7);
+    doubleJump = spriteAnimation(PlayerAnimations.doubleJump, 6);
+    wallJump = spriteAnimation(PlayerAnimations.wallJump, 5);
+
+    // Текущее значение анимации
+    current = PlayerState.run;
+
+    // Список анимаций
     animations = <PlayerState, SpriteAnimation>{
       PlayerState.idle: idle,
       PlayerState.run: run,
@@ -114,8 +68,5 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<LodeRunner> {
       PlayerState.doubleJump: doubleJump,
       PlayerState.wallJump: wallJump,
     };
-
-    // Текущее значение анимации
-    current = idle;
   }
 }

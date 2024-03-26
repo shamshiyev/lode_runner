@@ -17,15 +17,15 @@ class Level extends World {
     add(level);
     final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('spawnpoints');
     for (final spawnPoint in spawnPointsLayer!.objects) {
-      // switch (spawnPoint.type) {
-      //   case 'Player':
-      //     final player = Player(position: Vector2(spawnPoint.x, spawnPoint.y));
-      //     // log('Player spawned at $player');
-      //     add(player);
-      //     break;
-      //   default:
-      //     log('Unknown spawn point type: ${spawnPoint.type}');
-      // }
+      switch (spawnPoint.type) {
+        case 'player':
+          final player = Player(position: Vector2(spawnPoint.x, spawnPoint.y));
+          // log('Player spawned at $player');
+          add(player);
+          break;
+        default:
+          log('Unknown spawn point type: ${spawnPoint.type}');
+      }
     }
     return super.onLoad();
   }
