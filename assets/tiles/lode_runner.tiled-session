@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_01.tmx",
+    "activeFile": "level_02.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -20,11 +20,25 @@
             "scaleInDock": 1
         },
         "level_01.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 300,
-                "y": 163.66666666666663
+                "x": 306.6666666666667,
+                "y": 239.66666666666663
+            }
+        },
+        "level_02.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 1.571953125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 323.16485264151885,
+                "y": 184.16579692858207
             }
         },
         "lode_runner.tsx": {
@@ -39,13 +53,15 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
-        "level_01.tmx"
+        "level_01.tmx",
+        "level_02.tmx"
     ],
     "project": "lode_runner.tiled-project",
     "recentFiles": [
+        "level_01.tmx",
+        "level_02.tmx",
         "lode_runner.tsx",
-        "/Users/saruar/.Trash/tiles/level_01.tmx",
-        "level_01.tmx"
+        "/Users/saruar/.Trash/tiles/level_01.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
