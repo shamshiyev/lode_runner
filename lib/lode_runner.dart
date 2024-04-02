@@ -1,15 +1,19 @@
+import 'dart:io';
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:lode_runner/actors/player.dart';
-import 'package:lode_runner/levels/level.dart';
+import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/levels/level.dart';
 
-class LodeRunner extends FlameGame with HasKeyboardHandlerComponents {
+class LodeRunner extends FlameGame
+    with HasKeyboardHandlerComponents, DragCallbacks {
   @override
   Color backgroundColor() => const Color(0xFF211F30);
   late final CameraComponent cam;
   late JoystickComponent joystick;
+  Player player = Player();
 
   @override
   Future<void> onLoad() async {
@@ -18,7 +22,7 @@ class LodeRunner extends FlameGame with HasKeyboardHandlerComponents {
     // Создание игрового мира
     final world = Level(
       levelName: 'level_02',
-      player: Player(),
+      player: player,
     );
     // Создание камеры
     cam = CameraComponent.withFixedResolution(
@@ -27,13 +31,64 @@ class LodeRunner extends FlameGame with HasKeyboardHandlerComponents {
       height: 360,
     );
     cam.viewfinder.anchor = Anchor.topLeft;
+    // Создание джойстика
+    if (Platform.isAndroid || Platform.isIOS) {
+      joystick = addjoystick();
+    }
     // Добавление камеры и мира в игру
     addAll(
-      [cam, world],
+      [
+        cam,
+        world,
+        // joystick,
+      ],
     );
-
-    void addjoystick() {}
-    joystick = JoystickComponent();
     return super.onLoad();
+  }
+
+  @override
+  void update(double dt) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      updateJoystick();
+    }
+    super.update(dt);
+  }
+
+  JoystickComponent addjoystick() {
+    joystick = JoystickComponent(
+      background: SpriteComponent(
+        sprite: Sprite(
+          images.fromCache(
+            'hud/joystick.png',
+          ),
+        ),
+      ),
+      knob: SpriteComponent(
+        sprite: Sprite(
+          images.fromCache(
+            'hud/knob.png',
+          ),
+        ),
+      ),
+      margin: const EdgeInsets.only(
+        left: 16,
+        bottom: 8,
+      ),
+    );
+    return joystick;
+  }
+
+  void updateJoystick() {
+    switch (joystick.direction) {
+      case JoystickDirection.left:
+        // player.playerDirection = PlayerDirection.left;
+        break;
+      case JoystickDirection.right:
+        // player.playerDirection = PlayerDirection.right;
+        break;
+
+      default:
+      // player.playerDirection = PlayerDirection.none;
+    }
   }
 }
