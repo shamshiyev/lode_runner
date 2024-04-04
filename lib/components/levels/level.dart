@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
-import 'package:lode_runner/components/collisions/coliision_block.dart';
+import 'package:lode_runner/helpers/collisions.dart';
 
 class Level extends World {
   Level({
@@ -23,6 +23,7 @@ class Level extends World {
       Vector2.all(16),
     );
     add(level);
+    // Добавление точек спавна
     final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('spawnpoints');
     if (spawnPointsLayer != null) {
       for (final spawnPoint in spawnPointsLayer.objects) {
@@ -39,6 +40,7 @@ class Level extends World {
         }
       }
     }
+    // Добавление слоя коллизий
     final collisionsLayer = level.tileMap.getLayer<ObjectGroup>('collisions');
     if (collisionsLayer != null) {
       for (final collision in collisionsLayer.objects) {
@@ -74,6 +76,7 @@ class Level extends World {
         }
       }
     }
+    player.collisionBlocks = collisionBlocks;
     return super.onLoad();
   }
 }
