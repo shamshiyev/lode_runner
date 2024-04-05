@@ -4,9 +4,11 @@ import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/helpers/background_tile.dart';
 import 'package:lode_runner/helpers/collisions.dart';
+import 'package:lode_runner/lode_runner.dart';
 
-class Level extends World {
+class Level extends World with HasGameRef<LodeRunner> {
   Level({
     required this.levelName,
     required this.player,
@@ -23,7 +25,15 @@ class Level extends World {
       Vector2.all(16),
     );
     add(level);
-    // Добавление точек спавна
+
+    _scrollingBackground();
+    _spawningObjects();
+    _addCollisions();
+    return super.onLoad();
+  }
+
+  // Добавление точек спавна
+  void _spawningObjects() {
     final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('spawnpoints');
     if (spawnPointsLayer != null) {
       for (final spawnPoint in spawnPointsLayer.objects) {
@@ -40,7 +50,10 @@ class Level extends World {
         }
       }
     }
-    // Добавление слоя коллизий
+  }
+
+  // Добавление слоя коллизий
+  void _addCollisions() {
     final collisionsLayer = level.tileMap.getLayer<ObjectGroup>('collisions');
     if (collisionsLayer != null) {
       for (final collision in collisionsLayer.objects) {
@@ -77,6 +90,28 @@ class Level extends World {
       }
     }
     player.collisionBlocks = collisionBlocks;
-    return super.onLoad();
+  }
+
+  void _scrollingBackground() {
+    final backgroundLayer = level.tileMap.getLayer<TileLayer>('background');
+    const tileSize = 64;
+    final numTilesY = (game.size.y / tileSize).floor();
+    final numTilesX = (game.size.x / tileSize).floor();
+    if (backgroundLayer != null) {
+      final backgroundColor =
+          backgroundLayer.properties.getValue('backgroundColor');
+      for (double y = 0; y < numTilesY; y++) {
+        for (double x = 0; x < numTilesX; x++) {
+          final backgroundTile = BackGroundTile(
+            color: backgroundColor ?? 'Gray',
+            position: Vector2(
+              x * tileSize,
+              y * tileSize - tileSize,
+            ),
+          );
+          add(backgroundTile);
+        }
+      }
+    }
   }
 }
