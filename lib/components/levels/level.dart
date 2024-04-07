@@ -92,6 +92,7 @@ class Level extends World with HasGameRef<LodeRunner> {
     player.collisionBlocks = collisionBlocks;
   }
 
+  // Добавление скроллящегося фона
   void _scrollingBackground() {
     final backgroundLayer = level.tileMap.getLayer<TileLayer>('background');
     const tileSize = 64;
@@ -100,10 +101,10 @@ class Level extends World with HasGameRef<LodeRunner> {
     if (backgroundLayer != null) {
       final backgroundColor =
           backgroundLayer.properties.getValue('backgroundColor');
-      for (double y = 0; y < numTilesY; y++) {
+      for (double y = 0; y < game.size.y / numTilesY; y++) {
         for (double x = 0; x < numTilesX; x++) {
           final backgroundTile = BackGroundTile(
-            color: backgroundColor ?? 'Gray',
+            color: backgroundColor ?? 'Blue',
             position: Vector2(
               x * tileSize,
               y * tileSize - tileSize,

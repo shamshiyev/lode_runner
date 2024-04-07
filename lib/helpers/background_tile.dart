@@ -8,7 +8,7 @@ class BackGroundTile extends SpriteComponent with HasGameRef<LodeRunner> {
     this.color = 'Gray',
   });
 
-  final double scrollSpeed = 0.4;
+  final double scrollSpeed = 0.8;
 
   @override
   Future<void> onLoad() async {
@@ -21,7 +21,13 @@ class BackGroundTile extends SpriteComponent with HasGameRef<LodeRunner> {
 
   @override
   void update(double dt) {
-    position.y += scrollSpeed * dt;
+    position.y += scrollSpeed;
+    // TODO: Maybe add diagonal scrolling
+    double tileSize = 64;
+    int scrollHeight = (game.size.y / tileSize).floor();
+    if (position.y > tileSize * scrollHeight) {
+      position.y = -tileSize;
+    }
     super.update(dt);
   }
 }
