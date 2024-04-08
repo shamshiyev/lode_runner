@@ -8,7 +8,7 @@ import 'package:lode_runner/components/actors/player.dart';
 import 'package:lode_runner/components/levels/level.dart';
 
 class LodeRunner extends FlameGame
-    with HasKeyboardHandlerComponents, DragCallbacks {
+    with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
   @override
   Color backgroundColor() => const Color(0xFF211F30);
   late final CameraComponent cam;

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/helpers/background_tile.dart';
 import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
@@ -45,6 +46,19 @@ class Level extends World with HasGameRef<LodeRunner> {
             );
             add(player);
             break;
+          case 'collectable':
+            final collectable = Collectable(
+              type: spawnPoint.name,
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+            );
+            add(collectable);
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
         }

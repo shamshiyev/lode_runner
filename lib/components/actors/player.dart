@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/helpers/animations.dart';
 import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
@@ -17,7 +18,7 @@ enum PlayerState {
 }
 
 class Player extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, KeyboardHandler {
+    with HasGameRef<LodeRunner>, KeyboardHandler, CollisionCallbacks {
   Player({
     super.position,
   });
@@ -46,7 +47,7 @@ class Player extends SpriteAnimationGroupComponent
   bool hasJumped = false;
   List<CollisionBlock> collisionBlocks = [];
   // Хитбокс игрока
-  PlayerHitbox hitbox = PlayerHitbox(
+  CustomHitbox hitbox = CustomHitbox(
     offsetX: 10,
     offsetY: 4,
     width: 14,
@@ -112,6 +113,15 @@ class Player extends SpriteAnimationGroupComponent
     return super.onKeyEvent(event, keysPressed);
   }
 
+  // Коллизия с подбираемыми объектами
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent object) {
+    if (object is Collectable) {
+      object.collidingWithPlayer();
+    }
+    super.onCollision(intersectionPoints, object);
+  }
+
   @override
   void update(double dt) {
     _updatePlayerAnimation();
@@ -119,7 +129,6 @@ class Player extends SpriteAnimationGroupComponent
     _checkHorizontalCollisions();
     _applyGravity(dt);
     _checkVerticalCollisions();
-    // position.x += horizontalSpeed * dt;
     super.update(dt);
   }
 
