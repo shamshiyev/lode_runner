@@ -64,9 +64,8 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
         ),
       );
       _isCollected = true;
-      // _isCollected = true;
-      // removeFromParent();
     }
+    // Удаление монетки после подбора
     Future.delayed(
       const Duration(milliseconds: 300),
       () {

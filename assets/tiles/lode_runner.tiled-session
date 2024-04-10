@@ -27,7 +27,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 320.33333333333326,
-                "y": 179.99999999999997
+                "y": 180.33333333333331
             }
         },
         "level_02.tmx": {
@@ -37,8 +37,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 306.6666666666667,
-                "y": 180.99999999999997
+                "x": 331,
+                "y": 208.33333333333331
             }
         },
         "lode_runner.tsx": {
@@ -57,6 +57,7 @@
         "level_02.tmx"
     ],
     "project": "lode_runner.tiled-project",
+    "property.type": "float",
     "recentFiles": [
         "level_01.tmx",
         "level_02.tmx",

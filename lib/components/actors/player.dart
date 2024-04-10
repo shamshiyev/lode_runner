@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
 import 'package:lode_runner/components/collectable.dart';
+import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/helpers/animations.dart';
 import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
@@ -24,7 +25,7 @@ class Player extends SpriteAnimationGroupComponent
   });
 
   // Скорость всех анимаций
-  final double stepTime = 0.05;
+  static const double stepTime = 0.05;
 
   late final SpriteAnimation doubleJump;
   late final SpriteAnimation fall;
@@ -35,16 +36,21 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation wallJump;
 
   // Гравитация
-  final double gravity = 9.8;
+  static const gravity = 9.8;
   // Сила прыжка
-  final double jumpForce = 260;
+  static const double jumpForce = 260;
   // Предельная скорость падения
-  final double terminalVelocity = 300;
+  static const double terminalVelocity = 300;
   double horizontalSpeed = 0;
-  double moveSpeed = 100;
+  static const double moveSpeed = 100;
+  // Стартовая позиция игрока
+  Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
+
   bool isOnGround = false;
   bool hasJumped = false;
+  bool gotHit = false;
+
   List<CollisionBlock> collisionBlocks = [];
   // Хитбокс игрока
   CustomHitbox hitbox = CustomHitbox(
@@ -58,6 +64,8 @@ class Player extends SpriteAnimationGroupComponent
   Future<void> onLoad() async {
     _loadAllAnimations();
     // debugMode = true;
+
+    startingPosition = Vector2(position.x, position.y);
     // Отображение хитбокса
     add(
       RectangleHitbox(
@@ -115,20 +123,29 @@ class Player extends SpriteAnimationGroupComponent
 
   // Коллизия с подбираемыми объектами
   @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent object) {
-    if (object is Collectable) {
-      object.collidingWithPlayer();
+  void onCollision(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is Collectable) {
+      other.collidingWithPlayer();
     }
-    super.onCollision(intersectionPoints, object);
+    if (other is Saw) {
+      // TODO: Add a slight kickback when player collides with a saw
+      _respawn();
+    }
+    super.onCollision(intersectionPoints, other);
   }
 
   @override
   void update(double dt) {
-    _updatePlayerAnimation();
-    _updatePlayerDirection(dt);
-    _checkHorizontalCollisions();
-    _applyGravity(dt);
-    _checkVerticalCollisions();
+    if (!gotHit) {
+      _updatePlayerAnimation();
+      _updatePlayerDirection(dt);
+      _checkHorizontalCollisions();
+      _applyGravity(dt);
+      _checkVerticalCollisions();
+    }
     super.update(dt);
   }
 
@@ -170,7 +187,7 @@ class Player extends SpriteAnimationGroupComponent
     hit = spriteAnimation(
       src: PlayerAnimations.hit,
       frameAmount: 7,
-    );
+    )..loop = false;
     doubleJump = spriteAnimation(
       src: PlayerAnimations.doubleJump,
       frameAmount: 6,
@@ -295,5 +312,20 @@ class Player extends SpriteAnimationGroupComponent
         }
       }
     }
+  }
+
+  void _respawn() {
+    const hitDuration = Duration(
+      milliseconds: 350,
+    );
+    gotHit = true;
+    current = PlayerState.hit;
+    Future.delayed(hitDuration, () {
+      scale.x = 1;
+      position = startingPosition;
+      gotHit = false;
+    });
+    // position = startingPosition;
+    // velocity = Vector2.zero();
   }
 }

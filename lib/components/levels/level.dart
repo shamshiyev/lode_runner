@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
 import 'package:lode_runner/components/collectable.dart';
+import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/helpers/background_tile.dart';
 import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
@@ -26,7 +27,6 @@ class Level extends World with HasGameRef<LodeRunner> {
       Vector2.all(16),
     );
     add(level);
-
     _scrollingBackground();
     _spawningObjects();
     _addCollisions();
@@ -59,6 +59,26 @@ class Level extends World with HasGameRef<LodeRunner> {
               ),
             );
             add(collectable);
+            break;
+          case 'saw':
+            var isVertical = spawnPoint.properties.getValue('isVertical');
+            var offNeg = spawnPoint.properties.getValue('offNeg');
+            var offPos = spawnPoint.properties.getValue('offPos');
+            final saw = Saw(
+              isVertical: isVertical,
+              offNeg: offNeg,
+              offPos: offPos,
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+            );
+            add(saw);
+            break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
         }
