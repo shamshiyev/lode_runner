@@ -11,38 +11,21 @@ class LodeRunner extends FlameGame
     with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
   @override
   Color backgroundColor() => const Color(0xFF211F30);
-  late final CameraComponent cam;
+  late CameraComponent cam;
   late JoystickComponent joystick;
-  Player player = Player();
+
+  List<String> levelsList = [
+    'level_01',
+    'level_02',
+  ];
+
+  int currentLevel = 0;
 
   @override
   Future<void> onLoad() async {
     // Загрузка анимаций в кэш
     await images.loadAllImages();
-    // Создание игрового мира
-    final world = Level(
-      levelName: 'level_02',
-      player: player,
-    );
-    // Создание камеры
-    cam = CameraComponent.withFixedResolution(
-      world: world,
-      width: 640,
-      height: 360,
-    );
-    cam.viewfinder.anchor = Anchor.topLeft;
-    // Создание джойстика
-    if (Platform.isAndroid || Platform.isIOS) {
-      joystick = addjoystick();
-    }
-    // Добавление камеры и мира в игру
-    addAll(
-      [
-        cam,
-        world,
-        // joystick,
-      ],
-    );
+    _loadLevel();
     return super.onLoad();
   }
 
@@ -90,5 +73,44 @@ class LodeRunner extends FlameGame
       default:
       // player.playerDirection = PlayerDirection.none;
     }
+  }
+
+  // Загрузка следующего уровня
+  void nextLevel() {
+    currentLevel++;
+    if (currentLevel >= levelsList.length) {
+      // TODO: Show game over screen
+      currentLevel = 0;
+    }
+    _loadLevel();
+  }
+
+  void _loadLevel() async {
+    // Удаление всех компонентов предыдущего уровня
+    removeWhere((component) => component is Level);
+    // Создание игрового мира
+    Level world = Level(
+      levelName: levelsList[currentLevel],
+      player: Player(),
+    );
+    // Создание камеры
+    cam = CameraComponent.withFixedResolution(
+      world: world,
+      width: 640,
+      height: 360,
+    );
+    cam.viewfinder.anchor = Anchor.topLeft;
+    // Создание джойстика
+    if (Platform.isAndroid || Platform.isIOS) {
+      joystick = addjoystick();
+    }
+    // Добавление камеры и мира в игру
+    addAll(
+      [
+        cam,
+        world,
+        // joystick,
+      ],
+    );
   }
 }

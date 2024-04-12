@@ -21,24 +21,26 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
+                4,
                 2
             ],
-            "scale": 1.5,
-            "selectedLayer": 0,
+            "scale": 1,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 320.33333333333326,
-                "y": 180.33333333333331
+                "x": 242.5,
+                "y": 113.5
             }
         },
         "level_02.tmx": {
             "expandedObjectLayers": [
+                3,
                 2
             ],
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 331,
-                "y": 208.33333333333331
+                "x": 222.33333333333331,
+                "y": 201.66666666666663
             }
         },
         "lode_runner.tsx": {

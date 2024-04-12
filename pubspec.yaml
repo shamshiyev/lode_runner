@@ -23,6 +23,7 @@ flutter:
     - assets/tiles/
     - assets/images/Terrain/
     - assets/images/Background/
+    - assets/images/Main Characters/
     - assets/images/Main Characters/Virtual Guy/
     - assets/images/Main Characters/Mask Dude/
     - assets/images/Main Characters/Ninja Frog/
@@ -30,5 +31,6 @@ flutter:
     - assets/images/hud/
     - assets/images/Items/Collectables/
     - assets/images/Traps/Saw/
+    - assets/images/Items/Checkpoints/Checkpoint/
     
   

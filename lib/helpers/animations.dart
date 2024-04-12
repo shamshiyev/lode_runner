@@ -8,4 +8,6 @@ class PlayerAnimations {
       'Main Characters/Virtual Guy/Double Jump (32x32).png';
   static const String wallJump =
       'Main Characters/Virtual Guy/Wall Jump (32x32).png';
+  static const appearing = 'Main Characters/Appearing (96x96).png';
+  static const disappearing = 'Main Characters/Disappearing (96x96).png';
 }

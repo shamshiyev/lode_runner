@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/helpers/animations.dart';
@@ -16,6 +17,8 @@ enum PlayerState {
   hit,
   doubleJump,
   wallJump,
+  appearing,
+  disappearing,
 }
 
 class Player extends SpriteAnimationGroupComponent
@@ -34,6 +37,8 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation jump;
   late final SpriteAnimation run;
   late final SpriteAnimation wallJump;
+  late final SpriteAnimation appearing;
+  late final SpriteAnimation disappearing;
 
   // Гравитация
   static const gravity = 9.8;
@@ -50,6 +55,7 @@ class Player extends SpriteAnimationGroupComponent
   bool isOnGround = false;
   bool hasJumped = false;
   bool gotHit = false;
+  bool reachedCheckpoint = false;
 
   List<CollisionBlock> collisionBlocks = [];
   // Хитбокс игрока
@@ -127,19 +133,25 @@ class Player extends SpriteAnimationGroupComponent
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
-    if (other is Collectable) {
-      other.collidingWithPlayer();
+    if (!reachedCheckpoint) {
+      if (other is Collectable) {
+        other.collidingWithPlayer();
+      }
+      if (other is Saw) {
+        // TODO: Add a slight kickback when player collides with a saw
+        _respawn();
+      }
+      if (other is Checkpoint) {
+        _reachedCheckPoint();
+      }
     }
-    if (other is Saw) {
-      // TODO: Add a slight kickback when player collides with a saw
-      _respawn();
-    }
+
     super.onCollision(intersectionPoints, other);
   }
 
   @override
   void update(double dt) {
-    if (!gotHit) {
+    if (!gotHit && !reachedCheckpoint) {
       _updatePlayerAnimation();
       _updatePlayerDirection(dt);
       _checkHorizontalCollisions();
@@ -154,6 +166,7 @@ class Player extends SpriteAnimationGroupComponent
     SpriteAnimation spriteAnimation({
       required String src,
       required int frameAmount,
+      double? textureSize,
     }) {
       return SpriteAnimation.fromFrameData(
         gameRef.images.fromCache(
@@ -162,7 +175,7 @@ class Player extends SpriteAnimationGroupComponent
         SpriteAnimationData.sequenced(
           amount: frameAmount,
           stepTime: stepTime,
-          textureSize: Vector2.all(32),
+          textureSize: Vector2.all(textureSize ?? 32),
         ),
       );
     }
@@ -196,6 +209,16 @@ class Player extends SpriteAnimationGroupComponent
       src: PlayerAnimations.wallJump,
       frameAmount: 5,
     );
+    appearing = spriteAnimation(
+      src: PlayerAnimations.appearing,
+      frameAmount: 7,
+      textureSize: 96,
+    )..loop = false;
+    disappearing = spriteAnimation(
+      src: PlayerAnimations.disappearing,
+      frameAmount: 7,
+      textureSize: 96,
+    )..loop = false;
 
     // TODO: Maybe transform it into stream with RXDart
     // Текущее значение анимации
@@ -210,6 +233,8 @@ class Player extends SpriteAnimationGroupComponent
       PlayerState.hit: hit,
       PlayerState.doubleJump: doubleJump,
       PlayerState.wallJump: wallJump,
+      PlayerState.appearing: appearing,
+      PlayerState.disappearing: disappearing,
     };
   }
 
@@ -320,12 +345,37 @@ class Player extends SpriteAnimationGroupComponent
     );
     gotHit = true;
     current = PlayerState.hit;
-    Future.delayed(hitDuration, () {
-      scale.x = 1;
-      position = startingPosition;
-      gotHit = false;
-    });
-    // position = startingPosition;
-    // velocity = Vector2.zero();
+    Future.delayed(
+      hitDuration,
+      () async {
+        scale.x = 1;
+        position = startingPosition - Vector2.all(32);
+        current = PlayerState.appearing;
+        await Future.delayed(hitDuration);
+        velocity = Vector2.zero();
+        position = startingPosition;
+        _updatePlayerAnimation();
+        gotHit = false;
+      },
+    );
+  }
+
+  void _reachedCheckPoint() {
+    reachedCheckpoint = true;
+    if (scale.x > 0) {
+      position = position - Vector2.all(32);
+    } else if (scale.x < 0) {
+      position = position + Vector2(32, -32);
+    }
+    current = PlayerState.disappearing;
+    Future.delayed(
+      const Duration(milliseconds: 350),
+      () async {
+        reachedCheckpoint = false;
+        removeFromParent();
+        await Future.delayed(const Duration(seconds: 3));
+        game.nextLevel();
+      },
+    );
   }
 }

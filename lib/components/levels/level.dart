@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/helpers/background_tile.dart';
@@ -78,6 +79,19 @@ class Level extends World with HasGameRef<LodeRunner> {
               ),
             );
             add(saw);
+            break;
+          case 'checkpoint':
+            final checkPoint = Checkpoint(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+            );
+            add(checkPoint);
             break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
