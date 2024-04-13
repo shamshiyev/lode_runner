@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player.dart';
@@ -20,6 +19,7 @@ class Level extends World with HasGameRef<LodeRunner> {
   final String levelName;
   final Player player;
   List<CollisionBlock> collisionBlocks = [];
+  late final Checkpoint checkPoint;
 
   @override
   FutureOr<void> onLoad() async {
@@ -34,8 +34,17 @@ class Level extends World with HasGameRef<LodeRunner> {
     return super.onLoad();
   }
 
+  @override
+  void update(double dt) {
+    var collectableCount = Collectable.collectableCount;
+    if (collectableCount == 0) {
+      add(checkPoint);
+    }
+    super.update(dt);
+  }
+
   // Добавление точек спавна
-  void _spawningObjects() {
+  void _spawningObjects() async {
     final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('spawnpoints');
     if (spawnPointsLayer != null) {
       for (final spawnPoint in spawnPointsLayer.objects) {
@@ -81,7 +90,7 @@ class Level extends World with HasGameRef<LodeRunner> {
             add(saw);
             break;
           case 'checkpoint':
-            final checkPoint = Checkpoint(
+            checkPoint = Checkpoint(
               position: Vector2(
                 spawnPoint.x,
                 spawnPoint.y,
@@ -91,7 +100,6 @@ class Level extends World with HasGameRef<LodeRunner> {
                 spawnPoint.height,
               ),
             );
-            add(checkPoint);
             break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');

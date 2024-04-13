@@ -12,7 +12,6 @@ class Checkpoint extends SpriteAnimationComponent
 
   @override
   Future<void> onLoad() async {
-    // Добавление кастомного хитбокса
     add(
       RectangleHitbox(
         position: Vector2(18, 56),

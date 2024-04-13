@@ -129,10 +129,8 @@ class Player extends SpriteAnimationGroupComponent
 
   // Коллизия с подбираемыми объектами
   @override
-  void onCollision(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     if (!reachedCheckpoint) {
       if (other is Collectable) {
         other.collidingWithPlayer();
@@ -145,8 +143,7 @@ class Player extends SpriteAnimationGroupComponent
         _reachedCheckPoint();
       }
     }
-
-    super.onCollision(intersectionPoints, other);
+    super.onCollisionStart(intersectionPoints, other);
   }
 
   @override

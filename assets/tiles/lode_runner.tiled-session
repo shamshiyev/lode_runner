@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_02.tmx",
+    "activeFile": "level_01.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -27,8 +27,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 242.5,
-                "y": 113.5
+                "x": 235.5,
+                "y": 106.5
             }
         },
         "level_02.tmx": {
@@ -37,7 +37,7 @@
                 2
             ],
             "scale": 1.5,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 222.33333333333331,
                 "y": 201.66666666666663
@@ -61,8 +61,8 @@
     "project": "lode_runner.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "level_01.tmx",
         "level_02.tmx",
+        "level_01.tmx",
         "lode_runner.tsx",
         "/Users/saruar/.Trash/tiles/level_01.tmx"
     ],

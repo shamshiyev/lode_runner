@@ -4,9 +4,9 @@ import 'package:lode_runner/components/actors/hitbox.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
-  final String type;
+  final String? type;
   Collectable({
-    required this.type,
+    this.type,
     super.position,
     super.size,
   });
@@ -19,11 +19,12 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
   );
 
   bool _isCollected = false;
+  static int collectableCount = 0;
 
   @override
   Future<void> onLoad() async {
+    collectableCount++;
     priority = -1;
-
     add(
       RectangleHitbox(
         position: type == 'Coin'
@@ -64,6 +65,7 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
         ),
       );
       _isCollected = true;
+      collectableCount--;
     }
     // Удаление монетки после подбора
     Future.delayed(
