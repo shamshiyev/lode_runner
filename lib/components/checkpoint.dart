@@ -33,7 +33,9 @@ class Checkpoint extends SpriteAnimationComponent
 
   @override
   void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
     if (other is Player) {
       _reachedCheckPoint();
       super.onCollision(intersectionPoints, other);
