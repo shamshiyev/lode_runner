@@ -66,6 +66,9 @@ class Player extends SpriteAnimationGroupComponent
     height: 28,
   );
 
+  double fixedDeltaTime = 1 / 60;
+  double accumulatedTime = 0;
+
   @override
   Future<void> onLoad() async {
     _loadAllAnimations();
@@ -148,13 +151,19 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void update(double dt) {
-    if (!gotHit && !reachedCheckpoint) {
-      _updatePlayerAnimation();
-      _updatePlayerDirection(dt);
-      _checkHorizontalCollisions();
-      _applyGravity(dt);
-      _checkVerticalCollisions();
+    // TODO: Refactor this to use a stream
+    accumulatedTime += dt;
+    while (accumulatedTime >= fixedDeltaTime) {
+      if (!gotHit && !reachedCheckpoint) {
+        _updatePlayerAnimation();
+        _updatePlayerDirection(fixedDeltaTime);
+        _checkHorizontalCollisions();
+        _applyGravity(fixedDeltaTime);
+        _checkVerticalCollisions();
+      }
+      accumulatedTime -= fixedDeltaTime;
     }
+
     super.update(dt);
   }
 
@@ -336,30 +345,31 @@ class Player extends SpriteAnimationGroupComponent
     }
   }
 
-  void _respawn() {
-    const hitDuration = Duration(
-      milliseconds: 350,
-    );
+  void _respawn() async {
+    const canMoveDuration = Duration(milliseconds: 400);
     gotHit = true;
     current = PlayerState.hit;
-    Future.delayed(
-      hitDuration,
-      () async {
-        scale.x = 1;
-        position = startingPosition - Vector2.all(32);
-        current = PlayerState.appearing;
-        await Future.delayed(hitDuration);
-        velocity = Vector2.zero();
-        position = startingPosition;
-        _updatePlayerAnimation();
-        gotHit = false;
-      },
-    );
+    // Дожидаемся завершения анимаций
+    await animationTicker?.completed;
+    animationTicker?.reset();
+    //
+    scale.x = 1;
+    position = startingPosition - Vector2.all(32);
+    current = PlayerState.appearing;
+    //
+    await animationTicker?.completed;
+    animationTicker?.reset();
+    //
+    velocity = Vector2.zero();
+    position = startingPosition;
+    _updatePlayerAnimation();
+    Future.delayed(canMoveDuration, () => gotHit = false);
   }
 
   void _reachedCheckPoint() {
     reachedCheckpoint = true;
     if (scale.x > 0) {
+      /// TODO: Need to resize spawn and disappear animation to a proper one
       position = position - Vector2.all(32);
     } else if (scale.x < 0) {
       position = position + Vector2(32, -32);

@@ -1,33 +1,27 @@
 import 'package:flame/components.dart';
-import 'package:lode_runner/lode_runner.dart';
+import 'package:flame/parallax.dart';
+import 'package:flutter/painting.dart';
 
-class BackGroundTile extends SpriteComponent with HasGameRef<LodeRunner> {
+class BackGroundTile extends ParallaxComponent {
   final String color;
   BackGroundTile({
     super.position,
     this.color = 'Gray',
   });
 
-  final double scrollSpeed = 0.8;
+  final double scrollSpeed = 40;
 
   @override
   Future<void> onLoad() async {
     // Размещаем фон на заднем плане
-    priority = -1;
-    size = Vector2.all(64.6);
-    sprite = Sprite(game.images.fromCache('Background/$color.png'));
+    priority = -10;
+    size = Vector2.all(64);
+    parallax = await game.loadParallax(
+      [ParallaxImageData('Background/$color.png')],
+      baseVelocity: Vector2(-scrollSpeed, -scrollSpeed / 2),
+      repeat: ImageRepeat.repeat,
+      fill: LayerFill.none,
+    );
     return super.onLoad();
-  }
-
-  @override
-  void update(double dt) {
-    position.y += scrollSpeed;
-    // TODO: Maybe add diagonal scrolling
-    double tileSize = 64;
-    int scrollHeight = (game.size.y / tileSize).floor();
-    if (position.y > tileSize * scrollHeight) {
-      position.y = -tileSize;
-    }
-    super.update(dt);
   }
 }

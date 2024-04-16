@@ -18,7 +18,6 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
     height: 12,
   );
 
-  bool _isCollected = false;
   static int collectableCount = 0;
 
   @override
@@ -53,26 +52,20 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
     return super.onLoad();
   }
 
-  void collidingWithPlayer() {
-    if (!_isCollected) {
-      animation = SpriteAnimation.fromFrameData(
-        game.images.fromCache('Items/Collectables/Collected.png'),
-        SpriteAnimationData.sequenced(
-          amount: 6,
-          stepTime: 0.1,
-          textureSize: Vector2.all(64),
-          loop: false,
-        ),
-      );
-      _isCollected = true;
-      collectableCount--;
-    }
-    // Удаление монетки после подбора
-    Future.delayed(
-      const Duration(milliseconds: 300),
-      () {
-        removeFromParent();
-      },
+  void collidingWithPlayer() async {
+    animation = SpriteAnimation.fromFrameData(
+      game.images.fromCache('Items/Collectables/Collected.png'),
+      SpriteAnimationData.sequenced(
+        amount: 6,
+        stepTime: 0.1,
+        textureSize: Vector2.all(64),
+        loop: false,
+      ),
     );
+    collectableCount--;
+    // Удаление монетки после подбора
+
+    await animationTicker?.completed;
+    removeFromParent();
   }
 }

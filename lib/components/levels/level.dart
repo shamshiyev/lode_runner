@@ -50,6 +50,7 @@ class Level extends World with HasGameRef<LodeRunner> {
       for (final spawnPoint in spawnPointsLayer.objects) {
         switch (spawnPoint.type) {
           case 'player':
+            player.scale.x = 1;
             player.position = Vector2(
               spawnPoint.x,
               spawnPoint.y,
@@ -151,24 +152,18 @@ class Level extends World with HasGameRef<LodeRunner> {
   // Добавление скроллящегося фона
   void _scrollingBackground() {
     final backgroundLayer = level.tileMap.getLayer<TileLayer>('background');
-    const tileSize = 64;
-    final numTilesY = (game.size.y / tileSize).floor();
-    final numTilesX = (game.size.x / tileSize).floor();
+
     if (backgroundLayer != null) {
       final backgroundColor =
           backgroundLayer.properties.getValue('backgroundColor');
-      for (double y = 0; y < game.size.y / numTilesY; y++) {
-        for (double x = 0; x < numTilesX; x++) {
-          final backgroundTile = BackGroundTile(
-            color: backgroundColor ?? 'Blue',
-            position: Vector2(
-              x * tileSize,
-              y * tileSize - tileSize,
-            ),
-          );
-          add(backgroundTile);
-        }
-      }
+      final backgroundTile = BackGroundTile(
+        color: backgroundColor ?? 'Blue',
+        position: Vector2(
+          0,
+          0,
+        ),
+      );
+      add(backgroundTile);
     }
   }
 }
