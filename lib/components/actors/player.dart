@@ -95,7 +95,7 @@ class Player extends SpriteAnimationGroupComponent
   // TODO: Create a VModel for all keyboard events?
   @override
   bool onKeyEvent(
-    RawKeyEvent event,
+    KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
     // Описываем инпуты для передвижения и остановки по горизонтали
@@ -118,7 +118,7 @@ class Player extends SpriteAnimationGroupComponent
       horizontalSpeed = 0;
     }
     // Остановка при отпускании клавиш движения
-    if (event is RawKeyUpEvent) {
+    if (event is KeyUpEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
           event.logicalKey == LogicalKeyboardKey.arrowRight ||
           event.logicalKey == LogicalKeyboardKey.keyA ||
@@ -128,7 +128,7 @@ class Player extends SpriteAnimationGroupComponent
     }
     // Прыжок
     hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
-    return super.onKeyEvent(event, keysPressed);
+    return false;
   }
 
   // Коллизия с подбираемыми объектами
