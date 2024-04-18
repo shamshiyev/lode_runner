@@ -22,13 +22,15 @@ class LodeRunner extends FlameGame
   /// Creating player here is not correct, it should be created in the level
   Player player = Player();
   late JoystickComponent joystick;
+  bool playSounds = true;
+  double soundVolume = 0.5;
 
   List<String> levelsList = [
     'level_01',
     'level_02',
   ];
 
-  int currentLevel = 1;
+  int currentLevel = 0;
 
   @override
   Future<void> onLoad() async {

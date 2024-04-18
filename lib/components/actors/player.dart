@@ -1,5 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
 import 'package:lode_runner/components/checkpoint.dart';
@@ -277,6 +278,12 @@ class Player extends SpriteAnimationGroupComponent
 
   // Изменение позиции и скорости по оси Y при прыжке
   void _playerJump(double dt) {
+    if (game.playSounds) {
+      FlameAudio.play(
+        'jump.wav',
+        volume: game.soundVolume,
+      );
+    }
     velocity.y = -jumpForce;
     position.y += velocity.y * dt;
     isOnGround = false;
@@ -346,6 +353,9 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _respawn() async {
+    if (game.playSounds) {
+      FlameAudio.play('hit.wav', volume: game.soundVolume);
+    }
     const canMoveDuration = Duration(milliseconds: 400);
     gotHit = true;
     current = PlayerState.hit;
@@ -366,23 +376,23 @@ class Player extends SpriteAnimationGroupComponent
     Future.delayed(canMoveDuration, () => gotHit = false);
   }
 
-  void _reachedCheckPoint() {
+  void _reachedCheckPoint() async {
     reachedCheckpoint = true;
+    if (game.playSounds) {
+      FlameAudio.play('disappear.wav', volume: game.soundVolume);
+    }
     if (scale.x > 0) {
-      /// TODO: Need to resize spawn and disappear animation to a proper one
       position = position - Vector2.all(32);
     } else if (scale.x < 0) {
       position = position + Vector2(32, -32);
     }
     current = PlayerState.disappearing;
-    Future.delayed(
-      const Duration(milliseconds: 350),
-      () async {
-        reachedCheckpoint = false;
-        removeFromParent();
-        await Future.delayed(const Duration(seconds: 3));
-        game.nextLevel();
-      },
-    );
+    //
+    await animationTicker?.completed;
+    animationTicker?.reset();
+    //
+    reachedCheckpoint = false;
+    position = Vector2.all(-640);
+    Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
   }
 }

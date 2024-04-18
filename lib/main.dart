@@ -14,7 +14,7 @@ void main() async {
         'PauseMenu': (context, game) {
           return Container(
             color: const Color(0xFF000000),
-            child: Text('Demo Build'),
+            child: const Text('Demo Build'),
           );
         },
       },
