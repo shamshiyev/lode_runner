@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:lode_runner/components/actors/player.dart';
-import 'package:lode_runner/components/checkpoint.dart';
-import 'package:lode_runner/components/collectable.dart';
-import 'package:lode_runner/components/traps/saw.dart';
-import 'package:lode_runner/helpers/background_tile.dart';
-import 'package:lode_runner/helpers/collisions.dart';
-import 'package:lode_runner/lode_runner.dart';
+
+import '../../helpers/background_tile.dart';
+import '../../helpers/collisions.dart';
+import '../../lode_runner.dart';
+import '../actors/enemy.dart';
+import '../actors/player.dart';
+import '../checkpoint.dart';
+import '../collectable.dart';
+import '../traps/saw.dart';
 
 class Level extends World with HasGameRef<LodeRunner> {
   Level({
@@ -72,9 +74,9 @@ class Level extends World with HasGameRef<LodeRunner> {
             add(collectable);
             break;
           case 'saw':
-            var isVertical = spawnPoint.properties.getValue('isVertical');
-            var offNeg = spawnPoint.properties.getValue('offNeg');
-            var offPos = spawnPoint.properties.getValue('offPos');
+            final isVertical = spawnPoint.properties.getValue('isVertical');
+            final offNeg = spawnPoint.properties.getValue('offNeg');
+            final offPos = spawnPoint.properties.getValue('offPos');
             final saw = Saw(
               isVertical: isVertical,
               offNeg: offNeg,
@@ -101,6 +103,23 @@ class Level extends World with HasGameRef<LodeRunner> {
                 spawnPoint.height,
               ),
             );
+            break;
+          case 'enemy':
+            final offNeg = spawnPoint.properties.getValue('offNeg');
+            final offPos = spawnPoint.properties.getValue('offPos');
+            final enemy = Enemy(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+              offNeg: offNeg,
+              offPos: offPos,
+            );
+            add(enemy);
             break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');

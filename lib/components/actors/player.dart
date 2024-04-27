@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
+import 'package:lode_runner/components/actors/enemy.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
@@ -146,6 +147,9 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Checkpoint) {
         _reachedCheckPoint();
       }
+      if (other is Enemy) {
+        other.collidedWithPlayer();
+      }
     }
     super.onCollisionStart(intersectionPoints, other);
   }
@@ -189,40 +193,40 @@ class Player extends SpriteAnimationGroupComponent
 
     // Значения анимаций
     idle = spriteAnimation(
-      src: PlayerAnimations.idle,
+      src: ActorAnimations.idle,
       frameAmount: 11,
     );
     run = spriteAnimation(
-      src: PlayerAnimations.run,
+      src: ActorAnimations.run,
       frameAmount: 12,
     );
     jump = spriteAnimation(
-      src: PlayerAnimations.jump,
+      src: ActorAnimations.jump,
       frameAmount: 1,
     );
     fall = spriteAnimation(
-      src: PlayerAnimations.fall,
+      src: ActorAnimations.fall,
       frameAmount: 1,
     );
     hit = spriteAnimation(
-      src: PlayerAnimations.hit,
+      src: ActorAnimations.hit,
       frameAmount: 7,
     )..loop = false;
     doubleJump = spriteAnimation(
-      src: PlayerAnimations.doubleJump,
+      src: ActorAnimations.doubleJump,
       frameAmount: 6,
     );
     wallJump = spriteAnimation(
-      src: PlayerAnimations.wallJump,
+      src: ActorAnimations.wallJump,
       frameAmount: 5,
     );
     appearing = spriteAnimation(
-      src: PlayerAnimations.appearing,
+      src: ActorAnimations.appearing,
       frameAmount: 7,
       textureSize: 96,
     )..loop = false;
     disappearing = spriteAnimation(
-      src: PlayerAnimations.disappearing,
+      src: ActorAnimations.disappearing,
       frameAmount: 7,
       textureSize: 96,
     )..loop = false;
@@ -394,5 +398,9 @@ class Player extends SpriteAnimationGroupComponent
     reachedCheckpoint = false;
     position = Vector2.all(-640);
     Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
+  }
+
+  void collidedWithEnemy() async {
+    _respawn();
   }
 }
