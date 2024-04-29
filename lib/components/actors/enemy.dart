@@ -2,10 +2,10 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:lode_runner/components/actors/player/player.dart';
 
 import '../../helpers/animations.dart';
 import '../../lode_runner.dart';
-import 'player.dart';
 
 enum EnemyState { idle, run, hit, aware }
 
@@ -40,18 +40,18 @@ class Enemy extends SpriteAnimationGroupComponent
   late final SpriteAnimation enemyHit;
   late final SpriteAnimation enemyAware;
 
-  @override
-  Future<void> onLoad() async {
-    player = gameRef.player;
-    add(
-      RectangleHitbox(
-        position: Vector2.all(4),
-        size: Vector2(24, 28),
-      ),
-    );
-    _loadAllAnimations();
-    _calculateRange();
-  }
+  // @override
+  // Future<void> onLoad() async {
+  //   player = gameRef.player;
+  //   add(
+  //     RectangleHitbox(
+  //       position: Vector2.all(4),
+  //       size: Vector2(24, 28),
+  //     ),
+  //   );
+  //   _loadAllAnimations();
+  //   _calculateRange();
+  // }
 
   @override
   void update(double dt) {

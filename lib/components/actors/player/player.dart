@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/enemy.dart';
 import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
@@ -24,7 +28,11 @@ enum PlayerState {
 }
 
 class Player extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, KeyboardHandler, CollisionCallbacks {
+    with
+        HasGameRef<LodeRunner>,
+        KeyboardHandler,
+        CollisionCallbacks,
+        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
   Player({
     super.position,
   });
@@ -72,6 +80,12 @@ class Player extends SpriteAnimationGroupComponent
   double accumulatedTime = 0;
 
   @override
+  void onNewState(StatePlayerBloc state) {
+    // TODO: implement onNewState
+    super.onNewState(state);
+  }
+
+  @override
   Future<void> onLoad() async {
     _loadAllAnimations();
     // debugMode = true;
@@ -98,6 +112,7 @@ class Player extends SpriteAnimationGroupComponent
     KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
+    log(bloc.state.player.toString());
     // Описываем инпуты для передвижения и остановки по горизонтали
     horizontalSpeed = 0;
     final leftKeyPressed = keysPressed.contains(
@@ -146,9 +161,9 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Checkpoint) {
         _reachedCheckPoint();
       }
-      if (other is Enemy) {
-        other.collidedWithPlayer();
-      }
+      // if (other is Enemy) {
+      //   other.collidedWithPlayer();
+      // }
     }
     super.onCollisionStart(intersectionPoints, other);
   }

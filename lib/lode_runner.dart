@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/actors/player/player.dart';
 import 'package:lode_runner/components/jump_button.dart';
 import 'package:lode_runner/components/levels/level.dart';
 
@@ -19,10 +20,8 @@ class LodeRunner extends FlameGame
   Color backgroundColor() => const Color(0xFF211F30);
   late CameraComponent cam;
 
-  /// TODO: Creating player here is not correct, it should be created in the level
-  Player player = Player();
   late JoystickComponent joystick;
-  bool playSounds = true;
+  bool playSounds = false;
   double soundVolume = 0.5;
 
   List<String> levelsList = [
@@ -41,13 +40,13 @@ class LodeRunner extends FlameGame
     return super.onLoad();
   }
 
-  @override
-  void update(double dt) {
-    if (Platform.isAndroid || Platform.isIOS) {
-      updateJoystick();
-    }
-    super.update(dt);
-  }
+  // @override
+  // void update(double dt) {
+  //   if (Platform.isAndroid || Platform.isIOS) {
+  //     updateJoystick();
+  //   }
+  //   super.update(dt);
+  // }
 
   JoystickComponent addjoystick() {
     joystick = JoystickComponent(
@@ -75,23 +74,23 @@ class LodeRunner extends FlameGame
     return joystick;
   }
 
-  void updateJoystick() {
-    switch (joystick.direction) {
-      case JoystickDirection.left:
-      case JoystickDirection.upLeft:
-      case JoystickDirection.downLeft:
-        player.horizontalSpeed = -1;
-        break;
-      case JoystickDirection.right:
-      case JoystickDirection.upRight:
-      case JoystickDirection.downRight:
-        player.horizontalSpeed = 1;
-        break;
-      default:
-        player.horizontalSpeed = 0;
-        break;
-    }
-  }
+  // void updateJoystick() {
+  //   switch (joystick.direction) {
+  //     case JoystickDirection.left:
+  //     case JoystickDirection.upLeft:
+  //     case JoystickDirection.downLeft:
+  //       player.horizontalSpeed = -1;
+  //       break;
+  //     case JoystickDirection.right:
+  //     case JoystickDirection.upRight:
+  //     case JoystickDirection.downRight:
+  //       player.horizontalSpeed = 1;
+  //       break;
+  //     default:
+  //       player.horizontalSpeed = 0;
+  //       break;
+  //   }
+  // }
 
   // Загрузка следующего уровня
   void nextLevel() {
@@ -109,7 +108,6 @@ class LodeRunner extends FlameGame
     // Создание игрового мира
     Level world = Level(
       levelName: levelsList[currentLevel],
-      player: player,
     );
     // Создание камеры
     cam = CameraComponent.withFixedResolution(

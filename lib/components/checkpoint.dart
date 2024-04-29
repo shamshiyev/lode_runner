@@ -1,6 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/actors/player/player.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Checkpoint extends SpriteAnimationComponent

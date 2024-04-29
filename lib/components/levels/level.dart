@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flame/components.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 
 import '../../helpers/background_tile.dart';
 import '../../helpers/collisions.dart';
 import '../../lode_runner.dart';
 import '../actors/enemy.dart';
-import '../actors/player.dart';
+import '../actors/player/player.dart';
 import '../checkpoint.dart';
 import '../collectable.dart';
 import '../traps/saw.dart';
@@ -15,11 +17,10 @@ import '../traps/saw.dart';
 class Level extends World with HasGameRef<LodeRunner> {
   Level({
     required this.levelName,
-    required this.player,
   });
   late TiledComponent level;
   final String levelName;
-  final Player player;
+  late final Player player;
   List<CollisionBlock> collisionBlocks = [];
   late final Checkpoint checkPoint;
 
@@ -52,12 +53,22 @@ class Level extends World with HasGameRef<LodeRunner> {
       for (final spawnPoint in spawnPointsLayer.objects) {
         switch (spawnPoint.type) {
           case 'player':
-            player.scale.x = 1;
-            player.position = Vector2(
-              spawnPoint.x,
-              spawnPoint.y,
+            player = Player(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
             );
-            add(player);
+
+            player.scale.x = 1;
+            add(
+              FlameBlocProvider<PlayerBloc, StatePlayerBloc>(
+                create: () => PlayerBloc()..add(PlayerInitialEvent(player)),
+                children: [
+                  player,
+                ],
+              ),
+            );
             break;
           case 'collectable':
             final collectable = Collectable(
@@ -104,23 +115,23 @@ class Level extends World with HasGameRef<LodeRunner> {
               ),
             );
             break;
-          case 'enemy':
-            final offNeg = spawnPoint.properties.getValue('offNeg');
-            final offPos = spawnPoint.properties.getValue('offPos');
-            final enemy = Enemy(
-              position: Vector2(
-                spawnPoint.x,
-                spawnPoint.y,
-              ),
-              size: Vector2(
-                spawnPoint.width,
-                spawnPoint.height,
-              ),
-              offNeg: offNeg,
-              offPos: offPos,
-            );
-            add(enemy);
-            break;
+          // case 'enemy':
+          //   final offNeg = spawnPoint.properties.getValue('offNeg');
+          //   final offPos = spawnPoint.properties.getValue('offPos');
+          //   final enemy = Enemy(
+          //     position: Vector2(
+          //       spawnPoint.x,
+          //       spawnPoint.y,
+          //     ),
+          //     size: Vector2(
+          //       spawnPoint.width,
+          //       spawnPoint.height,
+          //     ),
+          //     offNeg: offNeg,
+          //     offPos: offPos,
+          //   );
+          //   add(enemy);
+          //   break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
         }
