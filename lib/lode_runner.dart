@@ -19,7 +19,7 @@ class LodeRunner extends FlameGame
   Color backgroundColor() => const Color(0xFF211F30);
   late CameraComponent cam;
 
-  /// Creating player here is not correct, it should be created in the level
+  /// TODO: Creating player here is not correct, it should be created in the level
   Player player = Player();
   late JoystickComponent joystick;
   bool playSounds = true;

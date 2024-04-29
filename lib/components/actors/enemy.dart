@@ -1,10 +1,9 @@
 import 'dart:ui';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:lode_runner/helpers/animations.dart';
 
+import '../../helpers/animations.dart';
 import '../../lode_runner.dart';
 import 'player.dart';
 

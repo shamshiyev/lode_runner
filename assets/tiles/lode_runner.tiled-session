@@ -25,9 +25,9 @@
                 2
             ],
             "scale": 1,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 289.5,
+                "x": 266.5,
                 "y": 99.5
             }
         },
@@ -39,8 +39,8 @@
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
-                "y": 183.99999999999997
+                "x": 385,
+                "y": 201.66666666666663
             }
         },
         "lode_runner.tsx": {
