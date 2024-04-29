@@ -75,7 +75,6 @@ class Player extends SpriteAnimationGroupComponent
   Future<void> onLoad() async {
     _loadAllAnimations();
     // debugMode = true;
-
     startingPosition = Vector2(position.x, position.y);
     // Отображение хитбокса
     add(
@@ -177,7 +176,6 @@ class Player extends SpriteAnimationGroupComponent
     SpriteAnimation spriteAnimation({
       required String src,
       required int frameAmount,
-      double? textureSize,
     }) {
       return SpriteAnimation.fromFrameData(
         gameRef.images.fromCache(
@@ -186,7 +184,7 @@ class Player extends SpriteAnimationGroupComponent
         SpriteAnimationData.sequenced(
           amount: frameAmount,
           stepTime: stepTime,
-          textureSize: Vector2.all(textureSize ?? 32),
+          textureSize: Vector2.all(32),
         ),
       );
     }
@@ -223,12 +221,10 @@ class Player extends SpriteAnimationGroupComponent
     appearing = spriteAnimation(
       src: ActorAnimations.appearing,
       frameAmount: 7,
-      textureSize: 96,
     )..loop = false;
     disappearing = spriteAnimation(
       src: ActorAnimations.disappearing,
       frameAmount: 7,
-      textureSize: 96,
     )..loop = false;
 
     // TODO: Maybe transform it into stream with RXDart
@@ -368,7 +364,7 @@ class Player extends SpriteAnimationGroupComponent
     animationTicker?.reset();
     //
     scale.x = 1;
-    position = startingPosition - Vector2.all(32);
+    position = startingPosition;
     current = PlayerState.appearing;
     //
     await animationTicker?.completed;
@@ -385,18 +381,14 @@ class Player extends SpriteAnimationGroupComponent
     if (game.playSounds) {
       FlameAudio.play('disappear.wav', volume: game.soundVolume);
     }
-    if (scale.x > 0) {
-      position = position - Vector2.all(32);
-    } else if (scale.x < 0) {
-      position = position + Vector2(32, -32);
-    }
+
     current = PlayerState.disappearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();
     //
     reachedCheckpoint = false;
-    position = Vector2.all(-640);
+    removeFromParent();
     Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
   }
 

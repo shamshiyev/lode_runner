@@ -51,7 +51,7 @@
   <object id="27" x="624" y="0" width="16" height="368"/>
  </objectgroup>
  <objectgroup id="2" name="spawnpoints">
-  <object id="1" name="Player" type="player" x="112" y="256" width="31.8076" height="32.4437"/>
+  <object id="1" name="Player" type="player" x="464" y="128" width="31.8076" height="32.4437"/>
   <object id="28" name="Bananas" type="collectable" x="32" y="96" width="32" height="32"/>
   <object id="29" name="Orange" type="collectable" x="592" y="144" width="32" height="32"/>
   <object id="30" name="Apple" type="collectable" x="32" y="192" width="32" height="32"/>
@@ -98,12 +98,6 @@
   <object id="50" name="Cherries" type="collectable" x="288" y="80" width="32" height="32"/>
   <object id="51" name="Cherries" type="collectable" x="320" y="32" width="32" height="32"/>
   <object id="57" name="enemy" type="enemy" x="160" y="112" width="32" height="32">
-   <properties>
-    <property name="offNeg" type="float" value="3"/>
-    <property name="offPos" type="float" value="3"/>
-   </properties>
-  </object>
-  <object id="58" name="enemy" type="enemy" x="464" y="128" width="32" height="32">
    <properties>
     <property name="offNeg" type="float" value="3"/>
     <property name="offPos" type="float" value="3"/>

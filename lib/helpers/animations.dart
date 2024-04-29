@@ -8,8 +8,8 @@ class ActorAnimations {
       'Main Characters/Virtual Guy/Double Jump (32x32).png';
   static const String wallJump =
       'Main Characters/Virtual Guy/Wall Jump (32x32).png';
-  static const appearing = 'Main Characters/Appearing (96x96).png';
-  static const disappearing = 'Main Characters/Disappearing (96x96).png';
+  static const appearing = 'Main Characters/Appearing (32x32).png';
+  static const disappearing = 'Main Characters/Disappearing (32x32).png';
   static const String idleEnemy = 'Main Characters/Mask Dude/Idle (32x32).png';
   static const String runEnemy = 'Main Characters/Mask Dude/Run (32x32).png';
   static const String hitEnemy = 'Main Characters/Mask Dude/Hit (32x32).png';
