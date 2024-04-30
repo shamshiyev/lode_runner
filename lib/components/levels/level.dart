@@ -14,8 +14,8 @@ import '../checkpoint.dart';
 import '../collectable.dart';
 import '../traps/saw.dart';
 
-class Level extends World with HasGameRef<LodeRunner> {
-  Level({
+class GameWorld extends World with HasGameRef<LodeRunner> {
+  GameWorld({
     required this.levelName,
   });
   late TiledComponent level;

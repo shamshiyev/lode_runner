@@ -5,7 +5,7 @@ sealed class StatePlayerBloc extends Equatable {
 
   final Player player;
   @override
-  List<Object> get props => [];
+  List<Object> get props => [player];
 }
 
 final class PlayerInitialState extends StatePlayerBloc {

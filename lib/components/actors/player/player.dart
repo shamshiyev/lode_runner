@@ -6,7 +6,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/enemy.dart';
-import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
@@ -112,7 +112,7 @@ class Player extends SpriteAnimationGroupComponent
     KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
-    log(bloc.state.player.toString());
+    // log(bloc.state.player.toString());
     // Описываем инпуты для передвижения и остановки по горизонтали
     horizontalSpeed = 0;
     final leftKeyPressed = keysPressed.contains(

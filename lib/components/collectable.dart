@@ -1,7 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {

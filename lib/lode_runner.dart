@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flame/components.dart';
@@ -44,6 +45,7 @@ class LodeRunner extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    log('Game loaded - ${playerBloc.state.player.toString()}');
     // Загрузка анимаций в кэш
     await images.loadAllImages();
     _loadLevel();
@@ -115,9 +117,9 @@ class LodeRunner extends FlameGame
 
   void _loadLevel() async {
     // Удаление всех компонентов предыдущего уровня
-    removeWhere((component) => component is Level);
+    removeWhere((component) => component is GameWorld);
     // Создание игрового мира
-    Level world = Level(
+    GameWorld world = GameWorld(
       levelName: levelsList[currentLevel],
     );
     // Создание камеры
