@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
 
-import '../../helpers/animations.dart';
+import '../../utilities/animations.dart';
 import '../../lode_runner.dart';
 
 enum EnemyState { idle, run, hit, aware }

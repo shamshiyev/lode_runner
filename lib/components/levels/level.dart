@@ -5,8 +5,8 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 
-import '../../helpers/background_tile.dart';
-import '../../helpers/collisions.dart';
+import '../../utilities/background_tile.dart';
+import '../../utilities/collisions.dart';
 import '../../lode_runner.dart';
 import '../actors/enemy.dart';
 import '../actors/player/player.dart';

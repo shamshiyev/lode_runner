@@ -11,8 +11,8 @@ import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
-import 'package:lode_runner/helpers/animations.dart';
-import 'package:lode_runner/helpers/collisions.dart';
+import 'package:lode_runner/utilities/animations.dart';
+import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 enum PlayerState {

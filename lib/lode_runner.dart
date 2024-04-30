@@ -5,6 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
 import 'package:lode_runner/components/jump_button.dart';
 import 'package:lode_runner/components/levels/level.dart';
@@ -16,8 +17,18 @@ class LodeRunner extends FlameGame
         HasCollisionDetection,
         HasGameRef<LodeRunner>,
         TapCallbacks {
+  final PlayerBloc playerBloc;
+
+  LodeRunner({
+    // super.children,
+    // super.world,
+    // super.camera,
+    required this.playerBloc,
+  });
+
   @override
   Color backgroundColor() => const Color(0xFF211F30);
+
   late CameraComponent cam;
 
   late JoystickComponent joystick;
@@ -122,12 +133,18 @@ class LodeRunner extends FlameGame
       add(JumpButton());
       add(joystick);
     }
-    // Добавление камеры и мира в игру
-    addAll(
-      [
-        cam,
-        world,
-      ],
+    await add(
+      FlameMultiBlocProvider(
+        providers: [
+          FlameBlocProvider.value(
+            value: playerBloc,
+          )
+        ],
+        children: [
+          cam,
+          world,
+        ],
+      ),
     );
   }
 }

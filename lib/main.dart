@@ -1,22 +1,27 @@
 import 'package:flame/flame.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:lode_runner/lode_runner.dart';
+
+import 'modules/home/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
   runApp(
-    GameWidget(
-      overlayBuilderMap: {
-        'PauseMenu': (context, game) {
-          return Container(
-            color: const Color(0xFF000000),
-            child: const Text('Demo Build'),
-          );
-        },
-      },
-      game: LodeRunner(),
+    const MaterialApp(
+      home: HomePage(),
     ),
   );
+  // runApp(
+  //   GameWidget(
+  //     overlayBuilderMap: {
+  //       'PauseMenu': (context, game) {
+  //         return Container(
+  //           color: const Color(0xFF000000),
+  //           child: const Text('Demo Build'),
+  //         );
+  //       },
+  //     },
+  //     game: LodeRunner(),
+  //   ),
+  // );
 }
