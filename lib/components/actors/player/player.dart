@@ -1,13 +1,8 @@
-import 'dart:developer';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:lode_runner/components/actors/enemy.dart';
 import 'package:lode_runner/utilities/hitbox.dart';
-import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
@@ -15,7 +10,7 @@ import 'package:lode_runner/utilities/animations.dart';
 import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
-enum PlayerState {
+enum PlayerAnimationState {
   idle,
   run,
   jump,
@@ -28,11 +23,7 @@ enum PlayerState {
 }
 
 class Player extends SpriteAnimationGroupComponent
-    with
-        HasGameRef<LodeRunner>,
-        KeyboardHandler,
-        CollisionCallbacks,
-        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
+    with HasGameRef<LodeRunner>, KeyboardHandler, CollisionCallbacks {
   Player({
     super.position,
   });
@@ -78,12 +69,6 @@ class Player extends SpriteAnimationGroupComponent
 
   double fixedDeltaTime = 1 / 60;
   double accumulatedTime = 0;
-
-  @override
-  void onNewState(StatePlayerBloc state) {
-    // TODO: implement onNewState
-    super.onNewState(state);
-  }
 
   @override
   Future<void> onLoad() async {
@@ -174,7 +159,7 @@ class Player extends SpriteAnimationGroupComponent
     accumulatedTime += dt;
     while (accumulatedTime >= fixedDeltaTime) {
       if (!gotHit && !reachedCheckpoint) {
-        _updatePlayerAnimation();
+        _upDatePlayerMovement();
         _updatePlayerDirection(fixedDeltaTime);
         _checkHorizontalCollisions();
         _applyGravity(fixedDeltaTime);
@@ -242,26 +227,25 @@ class Player extends SpriteAnimationGroupComponent
       frameAmount: 7,
     )..loop = false;
 
-    // TODO: Maybe transform it into stream with RXDart
     // Текущее значение анимации
-    current = PlayerState.idle;
+    current = PlayerAnimationState.idle;
 
     // Список анимаций
-    animations = <PlayerState, SpriteAnimation>{
-      PlayerState.idle: idle,
-      PlayerState.run: run,
-      PlayerState.jump: jump,
-      PlayerState.fall: fall,
-      PlayerState.hit: hit,
-      PlayerState.doubleJump: doubleJump,
-      PlayerState.wallJump: wallJump,
-      PlayerState.appearing: appearing,
-      PlayerState.disappearing: disappearing,
+    animations = <PlayerAnimationState, SpriteAnimation>{
+      PlayerAnimationState.idle: idle,
+      PlayerAnimationState.run: run,
+      PlayerAnimationState.jump: jump,
+      PlayerAnimationState.fall: fall,
+      PlayerAnimationState.hit: hit,
+      PlayerAnimationState.doubleJump: doubleJump,
+      PlayerAnimationState.wallJump: wallJump,
+      PlayerAnimationState.appearing: appearing,
+      PlayerAnimationState.disappearing: disappearing,
     };
   }
 
-  void _updatePlayerAnimation() {
-    PlayerState playerState = PlayerState.idle;
+  void _upDatePlayerMovement() {
+    PlayerAnimationState playerState = PlayerAnimationState.idle;
 
     // Поворот персонажа осуществляется за счёт прослушивания параметра scale
     if (velocity.x < 0 && scale.x > 0) {
@@ -270,11 +254,11 @@ class Player extends SpriteAnimationGroupComponent
       flipHorizontallyAroundCenter();
     }
     if (velocity.y < 0) {
-      playerState = PlayerState.jump;
+      playerState = PlayerAnimationState.jump;
     } else if (velocity.y > 0) {
-      playerState = PlayerState.fall;
+      playerState = PlayerAnimationState.fall;
     } else if (velocity.x != 0) {
-      playerState = PlayerState.run;
+      playerState = PlayerAnimationState.run;
     }
     current = playerState;
   }
@@ -373,21 +357,21 @@ class Player extends SpriteAnimationGroupComponent
     }
     const canMoveDuration = Duration(milliseconds: 400);
     gotHit = true;
-    current = PlayerState.hit;
+    current = PlayerAnimationState.hit;
     // Дожидаемся завершения анимаций
     await animationTicker?.completed;
     animationTicker?.reset();
     //
     scale.x = 1;
     position = startingPosition;
-    current = PlayerState.appearing;
+    current = PlayerAnimationState.appearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();
     //
     velocity = Vector2.zero();
     position = startingPosition;
-    _updatePlayerAnimation();
+    _upDatePlayerMovement();
     Future.delayed(canMoveDuration, () => gotHit = false);
   }
 
@@ -397,7 +381,7 @@ class Player extends SpriteAnimationGroupComponent
       FlameAudio.play('disappear.wav', volume: game.soundVolume);
     }
 
-    current = PlayerState.disappearing;
+    current = PlayerAnimationState.disappearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();

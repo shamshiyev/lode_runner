@@ -1,6 +1,4 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:lode_runner/lode_runner.dart';
 import 'package:lode_runner/modules/game/game_page.dart';
 
 class HomePageView extends StatelessWidget {

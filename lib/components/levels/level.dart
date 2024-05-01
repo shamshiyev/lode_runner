@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flame/components.dart';
-import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 
@@ -59,16 +58,17 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
                 spawnPoint.y,
               ),
             );
-
             player.scale.x = 1;
-            add(
-              FlameBlocProvider<PlayerBloc, StatePlayerBloc>(
-                create: () => PlayerBloc()..add(PlayerInitialEvent(player)),
-                children: [
-                  player,
-                ],
-              ),
-            );
+            gameRef.playerBloc.add(PlayerInitialEvent(player));
+            add(player);
+            // add(
+            //   FlameBlocProvider<PlayerBloc, StatePlayerBloc>(
+            //     create: () => PlayerBloc()..add(PlayerInitialEvent(player)),
+            //     children: [
+            //       player,
+            //     ],
+            //   ),
+            // );
             break;
           case 'collectable':
             final collectable = Collectable(
