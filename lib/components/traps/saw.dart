@@ -26,7 +26,7 @@ class Saw extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
   @override
   Future<void> onLoad() async {
     priority = -1;
-
+    debugMode = true;
     add(
       CircleHitbox(),
     );

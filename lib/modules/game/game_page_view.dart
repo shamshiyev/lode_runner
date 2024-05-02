@@ -4,9 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/lode_runner.dart';
 
-class GamePageView extends StatelessWidget {
+class GamePageView extends StatefulWidget {
   const GamePageView({super.key});
 
+  @override
+  State<GamePageView> createState() => _GamePageViewState();
+}
+
+class _GamePageViewState extends State<GamePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
