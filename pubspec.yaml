@@ -36,6 +36,7 @@ flutter:
     - assets/images/hud/
     - assets/images/Items/Collectables/
     - assets/images/Traps/Saw/
+    - assets/images/Traps/Spiked Ball/
     - assets/images/Items/Checkpoints/Checkpoint/
     - assets/audio/
     

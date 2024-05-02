@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flame/components.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
+import 'package:lode_runner/components/traps/chain.dart';
 
 import '../../utilities/background_tile.dart';
 import '../../utilities/collisions.dart';
@@ -48,6 +50,22 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
   // Добавление точек спавна
   void _spawningObjects() async {
     final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('spawnpoints');
+    final spritesLayer = level.tileMap.getLayer<ObjectGroup>('sprites');
+    if (spritesLayer != null) {
+      for (final spawnPoint in spritesLayer.objects) {
+        final chain = Chain(
+          position: Vector2(
+            spawnPoint.x,
+            spawnPoint.y,
+          ),
+          size: Vector2(
+            spawnPoint.width,
+            spawnPoint.height,
+          ),
+        );
+        add(chain);
+      }
+    }
     if (spawnPointsLayer != null) {
       for (final spawnPoint in spawnPointsLayer.objects) {
         switch (spawnPoint.type) {
@@ -61,14 +79,6 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
             player.scale.x = 1;
             gameRef.playerBloc.add(PlayerInitialEvent(player));
             add(player);
-            // add(
-            //   FlameBlocProvider<PlayerBloc, StatePlayerBloc>(
-            //     create: () => PlayerBloc()..add(PlayerInitialEvent(player)),
-            //     children: [
-            //       player,
-            //     ],
-            //   ),
-            // );
             break;
           case 'collectable':
             final collectable = Collectable(
@@ -115,23 +125,43 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
               ),
             );
             break;
-          // case 'enemy':
-          //   final offNeg = spawnPoint.properties.getValue('offNeg');
-          //   final offPos = spawnPoint.properties.getValue('offPos');
-          //   final enemy = Enemy(
-          //     position: Vector2(
-          //       spawnPoint.x,
-          //       spawnPoint.y,
-          //     ),
-          //     size: Vector2(
-          //       spawnPoint.width,
-          //       spawnPoint.height,
-          //     ),
-          //     offNeg: offNeg,
-          //     offPos: offPos,
-          //   );
-          //   add(enemy);
-          //   break;
+          case 'enemy':
+            final offNeg = spawnPoint.properties.getValue('offNeg');
+            final offPos = spawnPoint.properties.getValue('offPos');
+            final enemy = Enemy(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+              offNeg: offNeg,
+              offPos: offPos,
+            );
+            await add(
+              FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
+                value: gameRef.playerBloc,
+                children: [
+                  enemy,
+                ],
+              ),
+            );
+            break;
+          case 'sprite':
+            final sprite = Chain(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+            );
+            add(sprite);
+            break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
         }

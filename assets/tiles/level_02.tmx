@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="59">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="194">
  <tileset firstgid="1" source="lode_runner.tsx"/>
+ <tileset firstgid="243" source="chain.tsx"/>
+ <tileset firstgid="244" source="chain.tsx"/>
  <layer id="1" name="background" width="40" height="23">
   <properties>
    <property name="backgroundColor" value="Gray"/>
@@ -50,6 +52,22 @@
   <object id="26" x="96" y="288" width="64" height="32"/>
   <object id="27" x="624" y="0" width="16" height="368"/>
  </objectgroup>
+ <objectgroup id="10" name="sprites">
+  <object id="117" type="sprite" gid="243" x="252" y="36" width="8" height="8"/>
+  <object id="118" type="sprite" gid="244" x="252" y="48" width="8" height="8"/>
+  <object id="119" type="sprite" gid="244" x="252" y="60" width="8" height="8"/>
+  <object id="120" type="sprite" gid="244" x="252" y="84" width="8" height="8"/>
+  <object id="122" type="sprite" gid="244" x="252" y="72" width="8" height="8"/>
+  <object id="123" type="sprite" gid="244" x="252" y="96" width="8" height="8"/>
+  <object id="124" type="sprite" gid="244" x="252" y="108" width="8" height="8"/>
+  <object id="125" type="sprite" gid="244" x="252" y="120" width="8" height="8"/>
+  <object id="126" type="sprite" gid="244" x="252" y="132" width="8" height="8"/>
+  <object id="127" type="sprite" gid="244" x="252" y="144" width="8" height="8"/>
+  <object id="128" type="sprite" gid="244" x="252" y="156" width="8" height="8"/>
+  <object id="130" type="sprite" gid="244" x="252" y="24" width="8" height="8"/>
+  <object id="131" type="sprite" gid="244" x="252" y="168" width="8" height="8"/>
+  <object id="132" type="sprite" gid="244" x="252" y="180" width="8" height="8"/>
+ </objectgroup>
  <objectgroup id="2" name="spawnpoints">
   <object id="1" name="Player" type="player" x="464" y="128" width="31.8076" height="32.4437"/>
   <object id="28" name="Bananas" type="collectable" x="32" y="96" width="32" height="32"/>
@@ -86,8 +104,8 @@
   <object id="43" name="Saw" type="saw" x="240" y="112" width="32" height="32">
    <properties>
     <property name="isVertical" type="bool" value="true"/>
-    <property name="offNeg" type="float" value="5"/>
-    <property name="offPos" type="float" value="5"/>
+    <property name="offNeg" type="float" value="6.5"/>
+    <property name="offPos" type="float" value="4"/>
    </properties>
   </object>
   <object id="44" name="Checkpoint" type="checkpoint" x="464" y="208" width="64" height="64"/>
@@ -97,11 +115,5 @@
   <object id="49" name="Coin" type="collectable" x="208" y="80" width="16" height="16"/>
   <object id="50" name="Cherries" type="collectable" x="288" y="80" width="32" height="32"/>
   <object id="51" name="Cherries" type="collectable" x="320" y="32" width="32" height="32"/>
-  <object id="57" name="enemy" type="enemy" x="160" y="112" width="32" height="32">
-   <properties>
-    <property name="offNeg" type="float" value="3"/>
-    <property name="offPos" type="float" value="3"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>

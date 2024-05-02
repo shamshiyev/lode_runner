@@ -10,7 +10,9 @@ import '../../lode_runner.dart';
 enum EnemyState { idle, run, hit, aware }
 
 class Enemy extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, CollisionCallbacks {
+    with HasGameRef<LodeRunner>, CollisionCallbacks
+// TODO: Should i use blocReader to add events in playerBloc?
+{
   Enemy({
     super.position,
     super.size,
@@ -40,18 +42,19 @@ class Enemy extends SpriteAnimationGroupComponent
   late final SpriteAnimation enemyHit;
   late final SpriteAnimation enemyAware;
 
-  // @override
-  // Future<void> onLoad() async {
-  //   player = gameRef.player;
-  //   add(
-  //     RectangleHitbox(
-  //       position: Vector2.all(4),
-  //       size: Vector2(24, 28),
-  //     ),
-  //   );
-  //   _loadAllAnimations();
-  //   _calculateRange();
-  // }
+  @override
+  Future<void> onLoad() async {
+    player = gameRef.playerBloc.state.player;
+    add(
+      RectangleHitbox(
+        position: Vector2.all(4),
+        size: Vector2(24, 28),
+      ),
+    );
+    _loadAllAnimations();
+    _calculateRange();
+    await super.onLoad();
+  }
 
   @override
   void update(double dt) {

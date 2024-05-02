@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -9,6 +11,8 @@ import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/utilities/animations.dart';
 import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
+
+import '../enemy.dart';
 
 enum PlayerAnimationState {
   idle,
@@ -146,9 +150,9 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Checkpoint) {
         _reachedCheckPoint();
       }
-      // if (other is Enemy) {
-      //   other.collidedWithPlayer();
-      // }
+      if (other is Enemy) {
+        other.collidedWithPlayer();
+      }
     }
     super.onCollisionStart(intersectionPoints, other);
   }
@@ -343,6 +347,8 @@ class Player extends SpriteAnimationGroupComponent
           }
           // Вычисляем коллизию при прыжке
           if (velocity.y < 0) {
+            // FIXME: Problem with the player's hitbox if the collision block is right above the player
+
             velocity.y = 0;
             position.y = block.y + block.height - hitbox.offsetY;
           }
