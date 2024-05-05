@@ -150,22 +150,6 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');
         }
-        // final spritesLayer = level.tileMap.getLayer<ObjectGroup>('sprites');
-        // if (spritesLayer != null) {
-        //   for (final spawnPoint in spritesLayer.objects) {
-        //     final chain = Chain(
-        //       position: Vector2(
-        //         spawnPoint.x,
-        //         spawnPoint.y,
-        //       ),
-        //       size: Vector2(
-        //         spawnPoint.width,
-        //         spawnPoint.height,
-        //       ),
-        //     );
-        //     add(chain);
-        //   }
-        // }
       }
     }
   }

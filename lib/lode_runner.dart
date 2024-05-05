@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
-import 'package:lode_runner/components/actors/player/player.dart';
-import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/jump_button.dart';
 import 'package:lode_runner/components/levels/level.dart';
 
@@ -21,9 +18,6 @@ class LodeRunner extends FlameGame
   final PlayerBloc playerBloc;
 
   LodeRunner({
-    // super.children,
-    // super.world,
-    // super.camera,
     required this.playerBloc,
   });
 
@@ -39,9 +33,10 @@ class LodeRunner extends FlameGame
   List<String> levelsList = [
     'level_01',
     'level_02',
+    'level_03',
   ];
 
-  int currentLevel = 0;
+  int currentLevel = 1;
 
   @override
   Future<void> onLoad() async {
@@ -117,8 +112,7 @@ class LodeRunner extends FlameGame
   void _loadLevel() async {
     // Удаление всех компонентов предыдущего уровня
     removeWhere((component) => component is GameWorld);
-    removeWhere((component) => component is Checkpoint);
-    removeWhere((component) => component is Player);
+
     // Создание игрового мира
     GameWorld world = GameWorld(
       levelName: levelsList[currentLevel],
@@ -136,18 +130,11 @@ class LodeRunner extends FlameGame
       add(JumpButton());
       add(joystick);
     }
-    await add(
-      FlameMultiBlocProvider(
-        providers: [
-          FlameBlocProvider.value(
-            value: playerBloc,
-          )
-        ],
-        children: [
-          cam,
-          world,
-        ],
-      ),
+    addAll(
+      [
+        world,
+        cam,
+      ],
     );
   }
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="220">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="235">
  <tileset firstgid="1" source="lode_runner.tsx"/>
  <tileset firstgid="243" source="chain.tsx"/>
- <tileset firstgid="244" source="chain.tsx"/>
  <layer id="1" name="background" width="40" height="23">
   <properties>
    <property name="backgroundColor" value="Gray"/>
@@ -13,16 +12,16 @@
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
-24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,14,14,14,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
-24,25,41,41,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
+24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,62,63,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,
+24,25,41,41,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,62,63,64,0,0,0,0,111,
 24,25,0,0,0,0,0,0,13,14,14,14,14,15,0,0,0,0,0,0,0,0,0,7,8,8,8,8,8,9,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,0,0,0,0,0,0,0,0,0,111,
-24,25,41,41,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,0,0,0,0,0,0,0,41,42,111,
+24,25,41,41,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,0,0,0,0,0,0,0,40,42,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,14,14,15,30,30,30,30,30,30,0,0,0,0,0,0,0,0,0,111,
 24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,35,7,8,8,9,30,30,30,0,0,0,0,0,0,0,0,0,111,
-24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,40,41,42,0,0,0,0,41,42,111,
+24,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,40,41,42,0,0,0,0,40,42,111,
 4,47,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,0,0,0,0,0,0,0,0,0,111,
 25,95,96,96,96,96,96,97,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,30,30,30,30,30,30,0,0,0,0,0,0,0,0,0,111,
 25,118,118,118,118,118,118,118,0,0,0,0,0,0,0,0,0,0,0,0,0,0,35,30,30,30,7,8,8,9,0,0,0,0,0,0,0,0,0,111,
@@ -44,7 +43,7 @@
   <object id="21" type="platform" x="32" y="176" width="32" height="16"/>
   <object id="22" type="platform" x="32" y="128" width="48" height="16"/>
   <object id="23" type="platform" x="128" y="144" width="96" height="16"/>
-  <object id="24" type="platform" x="288" y="80" width="80" height="16"/>
+  <object id="24" name="falling" type="platform" x="304" y="112" width="48" height="4"/>
   <object id="25" x="368" y="144" width="112" height="176"/>
   <object id="26" x="480" y="288" width="32" height="32"/>
   <object id="27" x="624" y="0" width="16" height="352"/>
@@ -57,39 +56,17 @@
   <object id="214" x="352" y="272" width="16" height="16"/>
   <object id="215" x="352" y="208" width="16" height="16"/>
   <object id="219" x="16" y="16" width="16" height="240"/>
- </objectgroup>
- <objectgroup id="10" name="sprites">
-  <object id="117" type="sprite" gid="243" x="252" y="36" width="8" height="8"/>
-  <object id="194" type="sprite" gid="244" x="252" y="52" width="8" height="8"/>
-  <object id="195" type="sprite" gid="244" x="252" y="68" width="8" height="8"/>
-  <object id="196" type="sprite" gid="244" x="252" y="68" width="8" height="8"/>
-  <object id="197" type="sprite" gid="244" x="252" y="84" width="8" height="8"/>
-  <object id="198" type="sprite" gid="244" x="252" y="100" width="8" height="8"/>
+  <object id="233" name="falling" type="platform" x="512" y="128" width="48" height="4"/>
  </objectgroup>
  <objectgroup id="2" name="spawnpoints">
   <object id="1" name="Player" type="player" x="320" y="256" width="31.8076" height="32.4437"/>
-  <object id="28" name="Bananas" type="collectable" x="32" y="96" width="32" height="32"/>
+  <object id="28" name="Bananas" type="collectable" x="40" y="96" width="32" height="32"/>
   <object id="29" name="Orange" type="collectable" x="592" y="144" width="32" height="32"/>
-  <object id="31" name="Coin" type="collectable" x="128" y="80" width="16" height="16"/>
   <object id="33" name="Coin" type="collectable" x="160" y="256" width="16" height="16"/>
-  <object id="34" name="Kiwi" type="collectable" x="32" y="144" width="32" height="32"/>
+  <object id="34" name="Apple" type="collectable" x="32" y="144" width="32" height="32"/>
   <object id="35" name="Kiwi" type="collectable" x="592" y="192" width="32" height="32"/>
-  <object id="36" name="Coin" type="collectable" x="144" y="112" width="16" height="16"/>
-  <object id="37" name="Coin" type="collectable" x="480" y="192" width="16" height="16"/>
-  <object id="40" name="Saw" type="saw" x="528" y="64" width="32" height="32">
-   <properties>
-    <property name="isVertical" type="bool" value="false"/>
-    <property name="offNeg" type="float" value="6"/>
-    <property name="offPos" type="float" value="6"/>
-   </properties>
-  </object>
-  <object id="41" name="Saw" type="saw" x="432" y="32" width="32" height="32">
-   <properties>
-    <property name="isVertical" type="bool" value="false"/>
-    <property name="offNeg" type="float" value="2"/>
-    <property name="offPos" type="float" value="2"/>
-   </properties>
-  </object>
+  <object id="36" name="Coin" type="collectable" x="152" y="120" width="16" height="16"/>
+  <object id="37" name="Coin" type="collectable" x="496" y="200" width="16" height="16"/>
   <object id="42" name="Saw" type="saw" x="608" y="176" width="32" height="32">
    <properties>
     <property name="isVertical" type="bool" value="true"/>
@@ -105,19 +82,40 @@
    </properties>
   </object>
   <object id="44" name="Checkpoint" type="checkpoint" x="64" y="192" width="64" height="64"/>
-  <object id="46" name="Coin" type="collectable" x="336" y="160" width="16" height="16"/>
-  <object id="47" name="Coin" type="collectable" x="512" y="192" width="16" height="16"/>
-  <object id="48" name="Coin" type="collectable" x="192" y="112" width="16" height="16"/>
-  <object id="49" name="Coin" type="collectable" x="208" y="80" width="16" height="16"/>
-  <object id="51" name="Cherries" type="collectable" x="304" y="48" width="32" height="32"/>
-  <object id="199" type="sprite" gid="244" x="252" y="116" width="8" height="8"/>
-  <object id="200" type="sprite" gid="244" x="252" y="148" width="8" height="8"/>
-  <object id="201" type="sprite" gid="244" x="252" y="148" width="8" height="8"/>
-  <object id="202" type="sprite" gid="244" x="252" y="164" width="8" height="8"/>
-  <object id="205" type="sprite" gid="244" x="252" y="132" width="8" height="8"/>
-  <object id="206" type="sprite" gid="244" x="252" y="180" width="8" height="8"/>
+  <object id="46" name="Coin" type="collectable" x="336" y="168" width="16" height="16"/>
+  <object id="48" name="Coin" type="collectable" x="184" y="120" width="16" height="16"/>
+  <object id="51" name="Cherries" type="collectable" x="312" y="72" width="32" height="32"/>
+  <object id="199" type="sprite" gid="243" x="252" y="116" width="8" height="8"/>
+  <object id="200" type="sprite" gid="243" x="252" y="148" width="8" height="8"/>
+  <object id="201" type="sprite" gid="243" x="252" y="148" width="8" height="8"/>
+  <object id="202" type="sprite" gid="243" x="252" y="164" width="8" height="8"/>
+  <object id="205" type="sprite" gid="243" x="252" y="132" width="8" height="8"/>
+  <object id="206" type="sprite" gid="243" x="252" y="180" width="8" height="8"/>
   <object id="216" name="Coin" type="collectable" x="528" y="288" width="16" height="16"/>
   <object id="217" name="Coin" type="collectable" x="560" y="288" width="16" height="16"/>
   <object id="218" name="Coin" type="collectable" x="592" y="288" width="16" height="16"/>
+  <object id="222" name="Saw" type="saw" x="416" y="64" width="32" height="32">
+   <properties>
+    <property name="isVertical" type="bool" value="true"/>
+    <property name="offNeg" type="float" value="4"/>
+    <property name="offPos" type="float" value="4"/>
+   </properties>
+  </object>
+  <object id="117" type="sprite" gid="243" x="252" y="36" width="8" height="8"/>
+  <object id="194" type="sprite" gid="243" x="252" y="52" width="8" height="8"/>
+  <object id="195" type="sprite" gid="243" x="252" y="68" width="8" height="8"/>
+  <object id="196" type="sprite" gid="243" x="252" y="68" width="8" height="8"/>
+  <object id="197" type="sprite" gid="243" x="252" y="84" width="8" height="8"/>
+  <object id="198" type="sprite" gid="243" x="252" y="100" width="8" height="8"/>
+  <object id="221" type="sprite" gid="243" x="252" y="20" width="8" height="8"/>
+  <object id="224" type="sprite" gid="243" x="428" y="20" width="8" height="8"/>
+  <object id="225" type="sprite" gid="243" x="428" y="36" width="8" height="8"/>
+  <object id="226" type="sprite" gid="243" x="428" y="52" width="8" height="8"/>
+  <object id="227" type="sprite" gid="243" x="428" y="68" width="8" height="8"/>
+  <object id="228" type="sprite" gid="243" x="428" y="84" width="8" height="8"/>
+  <object id="229" type="sprite" gid="243" x="428" y="100" width="8" height="8"/>
+  <object id="230" type="sprite" gid="243" x="428" y="116" width="8" height="8"/>
+  <object id="231" type="sprite" gid="243" x="428" y="132" width="8" height="8"/>
+  <object id="232" type="sprite" gid="243" x="428" y="148" width="8" height="8"/>
  </objectgroup>
 </map>

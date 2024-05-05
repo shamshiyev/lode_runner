@@ -49,10 +49,10 @@
                 4
             ],
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 314.33333333333337,
-                "y": 242.33333333333337
+                "x": 315,
+                "y": 242.99999999999997
             }
         },
         "level_02.tmx": {
@@ -61,14 +61,25 @@
             ],
             "expandedObjectLayers": [
                 2,
-                3,
-                10
+                3
             ],
             "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 289,
+                "y": 172.99999999999997
+            }
+        },
+        "level_03.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4
+            ],
+            "scale": 1.7218749999999998,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 298.33333333333337,
-                "y": 182.33333333333331
+                "x": 316.8058076225046,
+                "y": 184.39201451905626
             }
         },
         "lode_runner.tsx": {
@@ -93,9 +104,10 @@
     "project": "lode_runner.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "chain.tsx",
+        "level_03.tmx",
         "level_01.tmx",
         "level_02.tmx",
+        "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",
         "lode_runner.tsx",

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -56,9 +57,13 @@ class Player extends SpriteAnimationGroupComponent
   // Стартовая позиция игрока
   Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
+  // Скорость скольжения по стене
+  static const double wallSlideSpeed = 50;
 
-  bool isOnGround = false;
+  bool isOnGround = true;
   bool hasJumped = false;
+  bool isSliding = false;
+  bool hasDoubleJumped = false;
   bool gotHit = false;
   bool reachedCheckpoint = false;
 
@@ -132,6 +137,7 @@ class Player extends SpriteAnimationGroupComponent
     }
     // Прыжок
     hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+
     return false;
   }
 
@@ -257,24 +263,39 @@ class Player extends SpriteAnimationGroupComponent
     } else if (velocity.x > 0 && scale.x < 0) {
       flipHorizontallyAroundCenter();
     }
+    // Изменение анимаций при прыжке
     if (velocity.y < 0) {
-      playerState = PlayerAnimationState.jump;
+      if (hasDoubleJumped) {
+        playerState = PlayerAnimationState.doubleJump;
+      } else {
+        playerState = PlayerAnimationState.jump;
+      }
     } else if (velocity.y > 0) {
       playerState = PlayerAnimationState.fall;
     } else if (velocity.x != 0) {
       playerState = PlayerAnimationState.run;
     }
+    if (isSliding) {
+      playerState = PlayerAnimationState.wallJump;
+    }
     current = playerState;
   }
 
   void _updatePlayerDirection(double dt) {
-    if (hasJumped && isOnGround) {
+    if (hasJumped && (isOnGround || !hasDoubleJumped)) {
+      if (!isOnGround) {
+        hasDoubleJumped = true;
+      }
       _playerJump(dt);
+    } else if (isOnGround) {
+      hasDoubleJumped = false;
+    }
+    if (isSliding && velocity.y > 0) {
+      hasJumped = false;
+      hasDoubleJumped = false;
+      velocity.y = min(velocity.y, wallSlideSpeed);
     }
 
-    if (velocity.y > gravity) {
-      isOnGround = false;
-    }
     velocity.x = horizontalSpeed * moveSpeed;
     position.x += velocity.x * dt;
   }
@@ -294,9 +315,13 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _checkHorizontalCollisions() {
+    isSliding = false;
     for (final block in collisionBlocks) {
       if (!block.isPlatform) {
         if (checkCollisions(this, block)) {
+          if (velocity.y > 0) {
+            isSliding = true;
+          }
           // Коллизия и остановка при движении вправо
           if (velocity.x > 0) {
             velocity.x = 0;
@@ -351,6 +376,7 @@ class Player extends SpriteAnimationGroupComponent
 
             velocity.y = 0;
             position.y = block.y + block.height - hitbox.offsetY;
+            break;
           }
         }
       }
