@@ -5,6 +5,7 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/traps/chain.dart';
+import 'package:lode_runner/components/traps/spike.dart';
 
 import '../../utilities/background_tile.dart';
 import '../../utilities/collisions.dart';
@@ -146,6 +147,21 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
               ),
             );
             add(sprite);
+            break;
+          case 'spikes':
+            final direction = spawnPoint.properties.getValue('direction');
+            final spike = Spike(
+              direction: direction,
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+            );
+            add(spike);
             break;
           default:
             log('Unknown spawn point type: ${spawnPoint.type}');

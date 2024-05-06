@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:flame/collisions.dart';
@@ -13,6 +12,7 @@ import 'package:lode_runner/utilities/animations.dart';
 import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
+import '../../traps/spike.dart';
 import '../enemy.dart';
 
 enum PlayerAnimationState {
@@ -149,7 +149,7 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Collectable) {
         other.collidingWithPlayer();
       }
-      if (other is Saw) {
+      if (other is Saw || other is Spike) {
         // TODO: Add a slight kickback when player collides with a saw
         _respawn();
       }
