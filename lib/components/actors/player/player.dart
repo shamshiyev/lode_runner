@@ -53,12 +53,12 @@ class Player extends SpriteAnimationGroupComponent
   // Предельная скорость падения
   static const double terminalVelocity = 300;
   double horizontalSpeed = 0;
-  static const double moveSpeed = 100;
+  static const double moveSpeed = 140;
   // Стартовая позиция игрока
   Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
   // Скорость скольжения по стене
-  static const double wallSlideSpeed = 50;
+  static const double wallSlideSpeed = 80;
 
   bool isOnGround = true;
   bool hasJumped = false;

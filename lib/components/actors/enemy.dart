@@ -25,7 +25,7 @@ class Enemy extends SpriteAnimationGroupComponent
   static const double stepTime = 0.05;
   final textureSize = Vector2(32, 32);
   static const double tileSize = 16;
-  static const double speed = 100;
+  static const double speed = 180;
 
   Vector2 velocity = Vector2.zero();
   double rangeNeg = 0;

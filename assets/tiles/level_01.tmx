@@ -2,6 +2,9 @@
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="72">
  <tileset firstgid="1" source="lode_runner.tsx"/>
  <layer id="1" name="background" width="40" height="23">
+  <properties>
+   <property name="backgroundColor" value="Yellow"/>
+  </properties>
   <data encoding="csv">
 24,92,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,93,112,112,
 24,25,36,37,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,112,112,
