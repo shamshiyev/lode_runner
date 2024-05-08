@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_tiled/flame_tiled.dart';
@@ -64,7 +64,14 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
             );
             player.scale.x = 1;
             gameRef.playerBloc.add(PlayerInitialEvent(player));
-            add(player);
+            await add(
+              FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
+                value: gameRef.playerBloc,
+                children: [
+                  player,
+                ],
+              ),
+            );
             break;
           case 'collectable':
             final collectable = Collectable(
@@ -164,7 +171,7 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
             add(spike);
             break;
           default:
-            log('Unknown spawn point type: ${spawnPoint.type}');
+            dev.log('Unknown spawn point type: ${spawnPoint.type}');
         }
       }
     }

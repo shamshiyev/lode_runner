@@ -9,32 +9,14 @@ class CollisionBlock extends PositionComponent {
     this.isPlatform = false,
   }) {
     // Дебагмод для отображения координат блоков
-    // debugMode = true;
   }
   bool isPlatform;
 }
 
-bool checkCollisions(player, block
-    // Vector2 position,
-    // Vector2 size,
-    // List<Rect> collisions,
-    ) {
-  // final playerRect = Rect.fromLTWH(
-  //   player.position.x,
-  //   player.position.y,
-  //   player.size.x,
-  //   player.size.y,
-  // );
-  // final blockRect = Rect.fromLTWH(
-  //   block.position.x,
-  //   block.position.y,
-  //   block.size.x,
-  //   block.size.y,
-  // );
-  // return (playerRect.overlaps(
-  //   blockRect,
-  // ));
-
+bool checkCollisions(
+  player,
+  block,
+) {
   final hitbox = player.hitbox;
   // Позиция персонажа по оси X
   final playerX = player.position.x + hitbox.offsetX;

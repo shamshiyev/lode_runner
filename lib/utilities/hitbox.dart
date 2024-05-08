@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class CustomHitbox {
   final double offsetX;
   final double offsetY;
@@ -10,4 +11,9 @@ class CustomHitbox {
     required this.width,
     required this.height,
   });
+
+  @override
+  String toString() {
+    return 'CustomHitbox(offsetX: $offsetX, offsetY: $offsetY, width: $width, height: $height)';
+  }
 }

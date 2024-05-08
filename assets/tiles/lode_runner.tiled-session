@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_04.tmx",
+    "activeFile": "level_01.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -45,11 +45,11 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                4,
-                2
+                2,
+                4
             ],
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 320.99999999999994,
                 "y": 180.33333333333331
@@ -66,32 +66,32 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 285,
-                "y": 168.33333333333331
+                "x": 320,
+                "y": 183.99999999999997
             }
         },
         "level_03.tmx": {
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 312.74047186932853,
-                "y": 180.32667876588022
+                "x": 320,
+                "y": 180.6170598911071
             }
         },
         "level_04.tmx": {
             "expandedObjectLayers": [
-                3,
-                4
+                4,
+                3
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 316.22504537205083,
-                "y": 180.32667876588022
+                "x": 320,
+                "y": 184.10163339382942
             }
         },
         "lode_runner.tsx": {
@@ -119,9 +119,9 @@
     "property.type": "string",
     "recentFiles": [
         "level_03.tmx",
-        "level_01.tmx",
-        "level_02.tmx",
         "level_04.tmx",
+        "level_02.tmx",
+        "level_01.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",
