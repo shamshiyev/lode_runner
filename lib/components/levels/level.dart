@@ -63,7 +63,13 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
               ),
             );
             player.scale.x = 1;
-            gameRef.playerBloc.add(PlayerInitialEvent(player));
+            gameRef.playerBloc.add(PlayerInitialEvent(
+              player: player,
+              startingPosition: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+            ));
             await add(
               FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
                 value: gameRef.playerBloc,

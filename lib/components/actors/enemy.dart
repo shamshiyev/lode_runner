@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_bloc/flame_bloc.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
 
 import '../../utilities/animations.dart';
@@ -9,7 +12,10 @@ import '../../lode_runner.dart';
 enum EnemyState { idle, run, hit, aware }
 
 class Enemy extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, CollisionCallbacks {
+    with
+        HasGameRef<LodeRunner>,
+        CollisionCallbacks,
+        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
   Enemy({
     super.position,
     super.size,
@@ -127,19 +133,19 @@ class Enemy extends SpriteAnimationGroupComponent
     }
   }
 
-  // void collidedWithPlayer() async {
-  //   // Make sure the player is jumping on top of the enemy
-  //   if (player.velocity.y > 0 && player.y + player.height > position.y) {
-  //     if (game.playSounds) {
-  //       FlameAudio.play('bounce.wav', volume: game.soundVolume);
-  //     }
-  //     gotHit = true;
-  //     current = EnemyState.hit;
-  //     player.velocity = Vector2(0, -260);
-  //     await animationTicker?.completed;
-  //     removeFromParent();
-  //   } else {
-  //     player.collidedWithEnemy();
-  //   }
-  // }
+  void collidedWithPlayer() async {
+    // Make sure the player is jumping on top of the enemy
+    if (bloc.velocity.y > 0 && player.y + player.height > position.y) {
+      if (game.playSounds) {
+        FlameAudio.play('bounce.wav', volume: game.soundVolume);
+      }
+      gotHit = true;
+      current = EnemyState.hit;
+      bloc.velocity = Vector2(0, -260);
+      await animationTicker?.completed;
+      removeFromParent();
+    } else {
+      player.collidedWithEnemy();
+    }
+  }
 }

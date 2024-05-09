@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_01.tmx",
+    "activeFile": "level_03.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -45,14 +45,14 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                2,
-                4
+                4,
+                2
             ],
             "scale": 1.5,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 320.99999999999994,
-                "y": 180.33333333333331
+                "x": 315.66666666666663,
+                "y": 179.66666666666666
             }
         },
         "level_02.tmx": {
@@ -60,14 +60,14 @@
                 6
             ],
             "expandedObjectLayers": [
-                3,
-                2
+                2,
+                3
             ],
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320,
-                "y": 183.99999999999997
+                "x": 285,
+                "y": 168.33333333333331
             }
         },
         "level_03.tmx": {
@@ -76,10 +76,10 @@
                 3
             ],
             "scale": 1.7218749999999998,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
-                "y": 180.6170598911071
+                "x": 312.74047186932853,
+                "y": 180.32667876588022
             }
         },
         "level_04.tmx": {
@@ -90,8 +90,8 @@
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320,
-                "y": 184.10163339382942
+                "x": 312.15970961887484,
+                "y": 176.26134301270417
             }
         },
         "lode_runner.tsx": {
@@ -119,9 +119,9 @@
     "property.type": "string",
     "recentFiles": [
         "level_01.tmx",
-        "level_03.tmx",
         "level_02.tmx",
         "level_04.tmx",
+        "level_03.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",

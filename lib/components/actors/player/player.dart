@@ -12,6 +12,7 @@ import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 import '../../traps/spike.dart';
+import '../enemy.dart';
 import 'bloc/player_bloc.dart';
 
 class Player extends SpriteAnimationGroupComponent
@@ -37,11 +38,6 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation appearing;
   late final SpriteAnimation disappearing;
 
-  Vector2 startingPosition = Vector2.zero();
-
-  bool isOnGround = true;
-  bool hasJumped = false;
-  bool isSliding = false;
   bool hasDoubleJumped = false;
   bool gotHit = false;
   bool reachedCheckpoint = false;
@@ -55,13 +51,9 @@ class Player extends SpriteAnimationGroupComponent
     height: 28,
   );
 
-  double fixedDeltaTime = 1 / 60;
-  double accumulatedTime = 0;
-
   @override
   Future<void> onLoad() async {
     _loadAllAnimations();
-    startingPosition = Vector2(position.x, position.y);
     // Отображение хитбокса
     add(
       RectangleHitbox(
@@ -106,24 +98,35 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Checkpoint) {
         _reachedCheckPoint();
       }
-      // if (other is Enemy) {
-      //   other.collidedWithPlayer();
-      // }
+      if (other is Enemy) {
+        other.collidedWithPlayer();
+      }
     }
     super.onCollisionStart(intersectionPoints, other);
   }
 
   @override
   void update(double dt) {
-    accumulatedTime += dt;
-    while (accumulatedTime >= fixedDeltaTime) {
-      if (!gotHit && !reachedCheckpoint) {
-        bloc.add(PlayerChangeAnimationEvent());
-        bloc.add(PlayerUpdateDirectionEvent(fixedDeltaTime));
-        bloc.add(PlayerApplyGravityAndCollisionsEvent(fixedDeltaTime));
-      }
-      accumulatedTime -= fixedDeltaTime;
+    if (!gotHit && !reachedCheckpoint) {
+      bloc.add(PlayerChangeAnimationEvent());
+      bloc.add(PlayerUpdateDirectionEvent(dt));
+      bloc.add(
+        PlayerApplyGravityEvent(
+          dt,
+        ),
+      );
+      bloc.add(
+        PlayerCheckVerticalCollisionsEvent(
+          collisionBlocks,
+        ),
+      );
+      bloc.add(
+        PlayerCheckHorizontalCollisionsEvent(
+          collisionBlocks,
+        ),
+      );
     }
+
     super.update(dt);
   }
 

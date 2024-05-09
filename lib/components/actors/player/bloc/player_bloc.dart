@@ -27,7 +27,8 @@ enum PlayerAnimationState {
 class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   PlayerBloc()
       : super(PlayerInitialState(
-          Player(),
+          player: Player(),
+          startingPosition: Vector2.zero(),
         )) {
     on<PlayerInitialEvent>(
       (
@@ -36,7 +37,8 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
       ) {
         emit(
           PlayerInitialState(
-            event.player,
+            player: event.player,
+            startingPosition: event.startingPosition,
           ),
         );
       },
@@ -64,11 +66,21 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
-    on<PlayerApplyGravityAndCollisionsEvent>(
+    on<PlayerApplyGravityEvent>(
       (event, emit) {
-        _applyGravityAndCollisions(
-          event.dt,
+        _applyGravity(event.dt);
+      },
+    );
+    on<PlayerCheckHorizontalCollisionsEvent>(
+      (event, emit) {
+        _checkHorizontalCollisions(
+          event,
         );
+      },
+    );
+    on<PlayerCheckVerticalCollisionsEvent>(
+      (event, emit) {
+        _checkVerticalCollisions(event);
       },
     );
     on<PlayerJumpEvent>(
@@ -97,13 +109,13 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   // Сила прыжка
   // Предельная скорость падения
   static const double terminalVelocity = 300;
+  List<CollisionBlock> collisionBlocks = [];
 
   void _playerKeyPressedEvent(
     Set<LogicalKeyboardKey> keysPressed,
     KeyEvent event,
   ) {
     // TODO: Может добавлять ивенты прямо здесь через add?
-    // log(state.player.toString());
     horizontalSpeed = 0;
     final leftKeyPressed = keysPressed.contains(
           LogicalKeyboardKey.arrowLeft,
@@ -202,19 +214,11 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     state.player.position.y += velocity.y * dt;
   }
 
-  void _applyGravityAndCollisions(double dt) {
-    // _checkHorizontalCollisions();
-    _applyGravity(dt);
-    _checkVerticalCollisions();
-  }
-
-  void _checkHorizontalCollisions() {
+  void _checkHorizontalCollisions(event) {
     isSliding = false;
-    for (final block in state.player.collisionBlocks) {
+    for (final block in event.collisionBlocks) {
       if (!block.isPlatform) {
         // TODO: This should only if player meets a wall
-
-        // Check collision should be called from another place
         if (checkCollisions(state.player, block)) {
           dev.log('Collision with block: $block');
           if (velocity.y > 0) {
@@ -252,8 +256,8 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     state.player.position.y += velocity.y * dt;
   }
 
-  void _checkVerticalCollisions() {
-    for (final block in state.player.collisionBlocks) {
+  void _checkVerticalCollisions(event) {
+    for (final block in event.collisionBlocks) {
       if (block.isPlatform) {
         if (checkCollisions(
           state.player,
@@ -270,7 +274,6 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         }
       } else {
         if (checkCollisions(state.player, block)) {
-          // dev.log('Collision with block: $block');
           // Вычисляем коллизию при падении
           if (velocity.y > 0) {
             velocity.y = 0;

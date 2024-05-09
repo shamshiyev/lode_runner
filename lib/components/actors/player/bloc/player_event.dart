@@ -8,8 +8,12 @@ sealed class EventPlayerBloc extends Equatable {
 }
 
 final class PlayerInitialEvent extends EventPlayerBloc {
-  const PlayerInitialEvent(this.player);
+  const PlayerInitialEvent({
+    required this.player,
+    required this.startingPosition,
+  });
   final Player player;
+  final Vector2 startingPosition;
 }
 
 final class PlayerKeyPressedEvent extends EventPlayerBloc {
@@ -31,9 +35,19 @@ final class PlayerJumpEvent extends EventPlayerBloc {
   final double dt;
 }
 
-final class PlayerApplyGravityAndCollisionsEvent extends EventPlayerBloc {
-  const PlayerApplyGravityAndCollisionsEvent(this.dt);
+final class PlayerApplyGravityEvent extends EventPlayerBloc {
+  const PlayerApplyGravityEvent(this.dt);
   final double dt;
+}
+
+final class PlayerCheckHorizontalCollisionsEvent extends EventPlayerBloc {
+  final List<CollisionBlock> collisionBlocks;
+  const PlayerCheckHorizontalCollisionsEvent(this.collisionBlocks);
+}
+
+final class PlayerCheckVerticalCollisionsEvent extends EventPlayerBloc {
+  final List<CollisionBlock> collisionBlocks;
+  const PlayerCheckVerticalCollisionsEvent(this.collisionBlocks);
 }
 
 final class PlayerChangeAnimationEvent extends EventPlayerBloc {}
