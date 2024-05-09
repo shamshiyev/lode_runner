@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -210,24 +211,32 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   void _checkHorizontalCollisions() {
     isSliding = false;
     for (final block in state.player.collisionBlocks) {
-      if (checkCollisions(state.player, block)) {
-        if (block.isPlatform) {
-          if (velocity.x > 0) {
-            state.player.position.x = block.x -
-                state.player.hitbox.width -
-                state.player.hitbox.offsetX;
-          } else if (velocity.x < 0) {
-            state.player.position.x = block.x + block.width;
+      if (!block.isPlatform) {
+        // TODO: This should only if player meets a wall
+
+        // Check collision should be called from another place
+        if (checkCollisions(state.player, block)) {
+          dev.log('Collision with block: $block');
+          if (velocity.y > 0) {
+            isSliding = true;
           }
-        } else {
+          // Коллизия и остановка при движении вправо
           if (velocity.x > 0) {
+            velocity.x = 0;
             state.player.position.x = block.x -
-                state.player.hitbox.width -
-                state.player.hitbox.offsetX;
-          } else if (velocity.x < 0) {
-            state.player.position.x = block.x + block.width;
+                state.player.hitbox.offsetX -
+                state.player.hitbox.width;
+            break;
           }
-          isSliding = true;
+          // Коллизия и остановка при движении влево
+          if (velocity.x < 0) {
+            velocity.x = 0;
+            state.player.position.x = block.x +
+                block.width +
+                state.player.hitbox.width +
+                state.player.hitbox.offsetX;
+            break;
+          }
         }
       }
     }
@@ -261,6 +270,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         }
       } else {
         if (checkCollisions(state.player, block)) {
+          // dev.log('Collision with block: $block');
           // Вычисляем коллизию при падении
           if (velocity.y > 0) {
             velocity.y = 0;

@@ -118,10 +118,10 @@
     "project": "lode_runner.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "level_03.tmx",
-        "level_04.tmx",
-        "level_02.tmx",
         "level_01.tmx",
+        "level_03.tmx",
+        "level_02.tmx",
+        "level_04.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",
