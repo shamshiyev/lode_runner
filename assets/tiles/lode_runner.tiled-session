@@ -45,14 +45,14 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                2,
-                4
+                4,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 311,
-                "y": 174.99999999999997
+                "x": 773,
+                "y": 226.33333333333331
             }
         },
         "level_02.tmx": {
@@ -60,37 +60,37 @@
                 6
             ],
             "expandedObjectLayers": [
-                2,
-                3
+                3,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 320,
-                "y": 183.99999999999997
+                "y": 183.99999999999994
             }
         },
         "level_03.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
+                "x": 319.99999999999994,
                 "y": 180.6170598911071
             }
         },
         "level_04.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320,
+                "x": 319.99999999999994,
                 "y": 184.10163339382942
             }
         },

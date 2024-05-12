@@ -1,9 +1,8 @@
 import 'dart:developer' as dev;
-import 'dart:math';
-
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,18 +12,6 @@ import '../player.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';
-
-enum PlayerAnimationState {
-  idle,
-  run,
-  jump,
-  fall,
-  hit,
-  doubleJump,
-  wallJump,
-  appearing,
-  disappearing,
-}
 
 class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   PlayerBloc()
@@ -62,6 +49,14 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
+    on<PlayerChangeAnimationEvent>(
+      (event, emit) {
+        _changePlayerAnimation(
+          event,
+          emit,
+        );
+      },
+    );
     on<PlayerJumpEvent>(
       (event, emit) {
         _playerJump(
@@ -73,6 +68,30 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     on<PlayerApplyGravityEvent>(
       (event, emit) {
         _applyGravity(
+          event,
+          emit,
+        );
+      },
+    );
+    on<PlayerCollisionEvent>(
+      (event, emit) {
+        _resolveCollisions(
+          event,
+          emit,
+        );
+      },
+    );
+    on<HandleHorizontalCollisionEvent>(
+      (event, emit) {
+        _handleHorisontalCollision(
+          event,
+          emit,
+        );
+      },
+    );
+    on<HandleVerticalCollisionEvent>(
+      (event, emit) {
+        _handleVerticalCollision(
           event,
           emit,
         );
@@ -132,6 +151,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     bool hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
     emit(
       state.copyWith(
+        player: state.player,
         hasJumped: hasJumped,
         horizontalSpeed: horizontalSpeed,
       ),
@@ -143,10 +163,13 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     Emitter<StatePlayerBloc> emit,
   ) {
     if (state.hasJumped) {
-      add(PlayerJumpEvent(deltaTime: event.deltaTime));
+      add(
+        PlayerJumpEvent(
+          deltaTime: event.deltaTime,
+        ),
+      );
     }
     // TODO: Implement double jump
-    // final dt = event.deltaTime;
     // if (state.hasJumped && (state.isOnGround || !state.hasDoubleJumped)) {
     //   if (!state.isOnGround) {
     //     emit(state.copyWith(hasDoubleJumped: true));
@@ -171,14 +194,16 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     //   );
     // }
 
+    var newVelocityX = state.horizontalSpeed * Constants.moveSpeed;
+    var newPositionX = state.position.x + newVelocityX * event.deltaTime;
     emit(
       state.copyWith(
         velocity: Vector2(
-          state.horizontalSpeed * Constants.moveSpeed,
+          newVelocityX,
           state.velocity.y,
         ),
         position: Vector2(
-          state.position.x + state.velocity.x * event.deltaTime,
+          newPositionX,
           state.player.position.y,
         ),
       ),
@@ -217,7 +242,6 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   ) {
     final dt = event.deltaTime;
     final double updatedVelocityY = state.velocity.y + Constants.gravity;
-
     emit(
       state.copyWith(
         velocity: Vector2(
@@ -234,11 +258,200 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         ),
       ),
     );
-    //  velocity.y += gravity;
-    // velocity.y = velocity.y.clamp(
-    //   -jumpForce,
-    //   terminalVelocity,
-    // );
-    // position.y += velocity.y * dt;
+  }
+
+  void _changePlayerAnimation(
+    PlayerChangeAnimationEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    if (state.velocity.x < 0 && state.player.scale.x > 0) {
+      // TODO: Not sure about this
+      state.player.anchor = Anchor.topCenter;
+
+      state.player.flipHorizontallyAroundCenter();
+    } else if (state.velocity.x > 0 && state.player.scale.x < 0) {
+      state.player.anchor = Anchor.topCenter;
+
+      state.player.flipHorizontallyAroundCenter();
+    }
+    // Изменение анимаций при прыжке
+    if (state.velocity.y < 0) {
+      if (state.hasDoubleJumped) {
+        state.player.current = PlayerAnimationState.doubleJump;
+      } else {
+        state.player.current = PlayerAnimationState.jump;
+      }
+    } else if (state.velocity.y > 0) {
+      // Изменение анимаций при падении
+      state.player.current = PlayerAnimationState.fall;
+    } else if (state.velocity.x != 0) {
+      // Изменение анимаций при движении
+      state.player.current = PlayerAnimationState.run;
+    } else {
+      //  Изменение анимаций при стоянии
+      state.player.current = PlayerAnimationState.idle;
+    }
+    if (state.isSliding) {
+      // Изменение анимаций при скольжении
+      state.player.current = PlayerAnimationState.wallJump;
+    }
+    emit(
+      state.copyWith(
+        player: state.player,
+      ),
+    );
+  }
+
+  void _resolveCollisions(
+    PlayerCollisionEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    final block = event.collisionBlock;
+    final playerX = state.player.position.x + state.player.hitbox.offsetX;
+    final playerWidth = state.player.hitbox.width;
+    final fixedX = state.player.scale.x > 0
+        ? playerX
+        : playerX - (state.player.hitbox.offsetX * 2);
+    // final playerLeft = state.player.position.x + state.player.hitbox.offsetX;
+    final blockX = block.x;
+    final blockWidth = block.width;
+    final isCollisionOnX =
+        (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX);
+
+    if (isCollisionOnX) {
+      add(
+        HandleHorizontalCollisionEvent(
+          block,
+        ),
+      );
+    }
+
+    // double playerLeft = state.player.position.x;
+    // double playerRight = playerLeft + state.player.width;
+
+    // double blockLeft = block.x;
+    // double blockRight = blockLeft + block.width;
+    // bool isCollisionOnY = (playerLeft < blockRight && playerRight > blockLeft);
+    // if (isCollisionOnY) {
+    //   dev.log('Collision on Y axis');
+    // }
+  }
+
+  void _handleHorisontalCollision(
+    HandleHorizontalCollisionEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    final block = event.collisionBlock;
+    if (!block.isPlatform) {
+      if (state.velocity.y > 0) {
+        emit(
+          state.copyWith(
+            isSliding: true,
+          ),
+        );
+      }
+      // Коллизия и остановка при движении вправо
+      if (state.velocity.x > 0) {
+        emit(
+          PlayerCollidedState(
+            player: state.player,
+            position: Vector2(
+              block.x - state.player.hitbox.width / 2,
+              state.position.y,
+            ),
+            velocity: Vector2(
+              0,
+              state.velocity.y,
+            ),
+            isOnGround: state.isOnGround,
+            hasJumped: state.hasJumped,
+            isSliding: state.isSliding,
+            hasDoubleJumped: state.hasDoubleJumped,
+            gotHit: state.gotHit,
+            reachedCheckpoint: state.reachedCheckpoint,
+            horizontalSpeed: state.horizontalSpeed,
+          ),
+        );
+        return;
+      }
+      // Коллизия и остановка при движении влево
+      if (state.velocity.x < 0) {
+        emit(
+          PlayerCollidedState(
+            player: state.player,
+            position: Vector2(
+              block.x + block.width + state.player.hitbox.offsetX,
+              state.position.y,
+            ),
+            velocity: Vector2(
+              0,
+              state.velocity.y,
+            ),
+            isOnGround: state.isOnGround,
+            hasJumped: state.hasJumped,
+            isSliding: state.isSliding,
+            hasDoubleJumped: state.hasDoubleJumped,
+            gotHit: state.gotHit,
+            reachedCheckpoint: state.reachedCheckpoint,
+            horizontalSpeed: state.horizontalSpeed,
+          ),
+        );
+        return;
+      }
+    }
+  }
+
+  // TODO: Some shit with naming
+  void _handleVerticalCollision(
+    HandleVerticalCollisionEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    // final block = event.collisionBlock;
+    // if (block.isPlatform) {
+    //   if (state.velocity.y > 0) {
+    //     emit(
+    //       state.copyWith(
+    //         isOnGround: true,
+    //         position: Vector2(
+    //             state.player.position.x,
+    //             block.y -
+    //                 state.player.hitbox.height -
+    //                 state.player.hitbox.offsetY),
+    //       ),
+    //     );
+    //     return;
+    //   }
+    // } else {
+    //   // Вычисляем коллизию при падении
+    //   if (state.velocity.y > 0) {
+    //     // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
+    //     emit(state.copyWith(
+    //       velocity: Vector2(
+    //         state.velocity.x,
+    //         0,
+    //       ),
+    //       position: Vector2(
+    //         state.player.position.x,
+    //         block.y - state.player.hitbox.height - state.player.hitbox.offsetY,
+    //       ),
+    //       isOnGround: true,
+    //     ));
+    //     return;
+    //   }
+    //   // Вычисляем коллизию при прыжке
+    //   if (state.velocity.y < 0) {
+    //     emit(state.copyWith(
+    //       velocity: Vector2(
+    //         state.velocity.x,
+    //         0,
+    //       ),
+    //       position: Vector2(
+    //         state.player.position.x,
+    //         block.y + block.height - state.player.hitbox.offsetY,
+    //       ),
+    //     ));
+    //     return;
+    //   }
+    // }
   }
 }

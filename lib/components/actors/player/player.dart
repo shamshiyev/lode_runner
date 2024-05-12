@@ -1,20 +1,14 @@
-import 'dart:math';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
-import 'package:lode_runner/utilities/hitbox.dart';
-import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
-import 'package:lode_runner/components/traps/saw.dart';
 import 'package:lode_runner/utilities/animations.dart';
 import 'package:lode_runner/utilities/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
-import '../../traps/spike.dart';
+import '../../../utilities/hitbox.dart';
 import '../enemy.dart';
 
 enum PlayerAnimationState {
@@ -52,19 +46,8 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation appearing;
   late final SpriteAnimation disappearing;
 
-  // Гравитация
-  static const gravity = 9.8;
-  // Сила прыжка
-  static const double jumpForce = 260;
-  // Предельная скорость падения
-  static const double terminalVelocity = 300;
-  double horizontalSpeed = 0;
-  static const double moveSpeed = 140;
-  // Стартовая позиция игрока
-  Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
   // Скорость скольжения по стене
-  static const double wallSlideSpeed = 80;
 
   bool isOnGround = true;
   bool hasJumped = false;
@@ -77,32 +60,29 @@ class Player extends SpriteAnimationGroupComponent
   // Хитбокс игрока
   CustomHitbox hitbox = CustomHitbox(
     offsetX: 10,
+    // This sets the hitbox bottom
     offsetY: 4,
     width: 14,
     height: 28,
   );
-
   double fixedDeltaTime = 1 / 60;
   double accumulatedTime = 0;
 
   @override
   Future<void> onLoad() async {
+    // Finding out this parameter'importancy cost me 4 days of my life
+    // anchor = Anchor.topCenter;
     _loadAllAnimations();
-    // debugMode = true;
-    startingPosition = Vector2(position.x, position.y);
     // Отображение хитбокса
+    debugColor = const Color(0xFFFF0000).withOpacity(0.0);
     add(
       RectangleHitbox(
-        position: Vector2(
-          hitbox.offsetX,
-          hitbox.offsetY,
-        ),
-        size: Vector2(
-          hitbox.width,
-          hitbox.height,
-        ),
+        priority: 100,
+        size: Vector2(hitbox.width, hitbox.height),
+        position: Vector2(hitbox.offsetX, hitbox.offsetY),
       ),
     );
+    debugMode = true;
     return super.onLoad();
   }
 
@@ -119,11 +99,20 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void onNewState(StatePlayerBloc state) {
-    if (state is PlayerActiveState) {
-      position = state.position;
-      velocity = state.velocity;
-    }
+    position = state.position;
+    velocity = state.velocity;
     super.onNewState(state);
+  }
+
+  @override
+  void onCollision(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is CollisionBlock) {
+      bloc.add(PlayerCollisionEvent(other));
+    }
+    super.onCollision(intersectionPoints, other);
   }
 
   // Коллизия с подбираемыми объектами
@@ -134,12 +123,12 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Collectable) {
         other.collidingWithPlayer();
       }
-      if (other is Saw || other is Spike) {
-        _respawn();
-      }
-      if (other is Checkpoint) {
-        _reachedCheckPoint();
-      }
+      // if (other is Saw || other is Spike) {
+      //   _respawn();
+      // }
+      // if (other is Checkpoint) {
+      //   _reachedCheckPoint();
+      // }
       if (other is Enemy) {
         other.collidedWithPlayer();
       }
@@ -152,10 +141,10 @@ class Player extends SpriteAnimationGroupComponent
     accumulatedTime += dt;
     while (accumulatedTime >= fixedDeltaTime) {
       if (!gotHit && !reachedCheckpoint) {
-        _upDatePlayerMovement();
+        bloc.add(PlayerChangeAnimationEvent());
         bloc.add(PlayerUpdateDirectionEvent(deltaTime: fixedDeltaTime));
         // _checkHorizontalCollisions();
-        bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
+        // bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
         // _checkVerticalCollisions();
       }
       accumulatedTime -= fixedDeltaTime;
@@ -220,9 +209,6 @@ class Player extends SpriteAnimationGroupComponent
       frameAmount: 7,
     )..loop = false;
 
-    // Текущее значение анимации
-    current = PlayerAnimationState.idle;
-
     // Список анимаций
     animations = <PlayerAnimationState, SpriteAnimation>{
       PlayerAnimationState.idle: idle,
@@ -237,133 +223,47 @@ class Player extends SpriteAnimationGroupComponent
     };
   }
 
-  void _upDatePlayerMovement() {
-    PlayerAnimationState playerState = PlayerAnimationState.idle;
+  // void _respawn() async {
+  //   if (game.playSounds) {
+  //     FlameAudio.play('hit.wav', volume: game.soundVolume);
+  //   }
+  //   const canMoveDuration = Duration(milliseconds: 400);
+  //   gotHit = true;
+  //   current = PlayerAnimationState.hit;
+  //   // Дожидаемся завершения анимаций
+  //   await animationTicker?.completed;
+  //   animationTicker?.reset();
+  //   //
+  //   scale.x = 1;
+  //   position = startingPosition;
+  //   current = PlayerAnimationState.appearing;
+  //   //
+  //   await animationTicker?.completed;
+  //   animationTicker?.reset();
+  //   //
+  //   velocity = Vector2.zero();
+  //   position = startingPosition;
+  //   _upDatePlayerMovement();
+  //   Future.delayed(canMoveDuration, () => gotHit = false);
+  // }
 
-    // Поворот персонажа осуществляется за счёт прослушивания параметра scale
-    if (velocity.x < 0 && scale.x > 0) {
-      flipHorizontallyAroundCenter();
-    } else if (velocity.x > 0 && scale.x < 0) {
-      flipHorizontallyAroundCenter();
-    }
-    // Изменение анимаций при прыжке
-    if (velocity.y < 0) {
-      if (hasDoubleJumped) {
-        playerState = PlayerAnimationState.doubleJump;
-      } else {
-        playerState = PlayerAnimationState.jump;
-      }
-    } else if (velocity.y > 0) {
-      playerState = PlayerAnimationState.fall;
-    } else if (velocity.x != 0) {
-      playerState = PlayerAnimationState.run;
-    }
-    if (isSliding) {
-      playerState = PlayerAnimationState.wallJump;
-    }
-    current = playerState;
-  }
+  // void _reachedCheckPoint() async {
+  //   reachedCheckpoint = true;
+  //   if (game.playSounds) {
+  //     FlameAudio.play('disappear.wav', volume: game.soundVolume);
+  //   }
 
-  void _checkHorizontalCollisions() {
-    isSliding = false;
-    for (final block in collisionBlocks) {
-      if (!block.isPlatform) {
-        if (checkCollisions(this, block)) {
-          if (velocity.y > 0) {
-            isSliding = true;
-          }
-          // Коллизия и остановка при движении вправо
-          if (velocity.x > 0) {
-            velocity.x = 0;
-            position.x = block.x - hitbox.offsetX - hitbox.width;
-            break;
-          }
-          // Коллизия и остановка при движении влево
-          if (velocity.x < 0) {
-            velocity.x = 0;
-            position.x = block.x + block.width + hitbox.width + hitbox.offsetX;
-            break;
-          }
-        }
-      }
-    }
-  }
+  //   current = PlayerAnimationState.disappearing;
+  //   //
+  //   await animationTicker?.completed;
+  //   animationTicker?.reset();
+  //   //
+  //   reachedCheckpoint = false;
+  //   removeFromParent();
+  //   Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
+  // }
 
-  void _checkVerticalCollisions() {
-    for (final block in collisionBlocks) {
-      if (block.isPlatform) {
-        if (checkCollisions(this, block)) {
-          if (velocity.y > 0) {
-            velocity.y = 0;
-            position.y = block.y - hitbox.height - hitbox.offsetY;
-            isOnGround = true;
-            break;
-          }
-        }
-      } else {
-        if (checkCollisions(this, block)) {
-          // Вычисляем коллизию при падении
-          if (velocity.y > 0) {
-            velocity.y = 0;
-            position.y = block.y - hitbox.height - hitbox.offsetY;
-            // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
-            isOnGround = true;
-            break;
-          }
-          // Вычисляем коллизию при прыжке
-          if (velocity.y < 0) {
-            // FIXME: Problem with the player's hitbox if the collision block is right above the player
-
-            velocity.y = 0;
-            position.y = block.y + block.height - hitbox.offsetY;
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  void _respawn() async {
-    if (game.playSounds) {
-      FlameAudio.play('hit.wav', volume: game.soundVolume);
-    }
-    const canMoveDuration = Duration(milliseconds: 400);
-    gotHit = true;
-    current = PlayerAnimationState.hit;
-    // Дожидаемся завершения анимаций
-    await animationTicker?.completed;
-    animationTicker?.reset();
-    //
-    scale.x = 1;
-    position = startingPosition;
-    current = PlayerAnimationState.appearing;
-    //
-    await animationTicker?.completed;
-    animationTicker?.reset();
-    //
-    velocity = Vector2.zero();
-    position = startingPosition;
-    _upDatePlayerMovement();
-    Future.delayed(canMoveDuration, () => gotHit = false);
-  }
-
-  void _reachedCheckPoint() async {
-    reachedCheckpoint = true;
-    if (game.playSounds) {
-      FlameAudio.play('disappear.wav', volume: game.soundVolume);
-    }
-
-    current = PlayerAnimationState.disappearing;
-    //
-    await animationTicker?.completed;
-    animationTicker?.reset();
-    //
-    reachedCheckpoint = false;
-    removeFromParent();
-    Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
-  }
-
-  void collidedWithEnemy() async {
-    _respawn();
-  }
+  // void collidedWithEnemy() async {
+  //   _respawn();
+  // }
 }

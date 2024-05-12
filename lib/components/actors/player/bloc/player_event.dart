@@ -48,12 +48,19 @@ final class PlayerApplyGravityEvent extends EventPlayerBloc {
   final double deltaTime;
 }
 
-final class PlayerHorizontalCollisionsEvent extends EventPlayerBloc {
-  const PlayerHorizontalCollisionsEvent(this.collisionBlocks);
-  final List<CollisionBlock> collisionBlocks;
+final class PlayerChangeAnimationEvent extends EventPlayerBloc {}
+
+final class PlayerCollisionEvent extends EventPlayerBloc {
+  const PlayerCollisionEvent(this.collisionBlock);
+  final CollisionBlock collisionBlock;
 }
 
-final class PlayerVerticalCollisionsEvent extends EventPlayerBloc {
-  const PlayerVerticalCollisionsEvent(this.collisionBlocks);
-  final List<CollisionBlock> collisionBlocks;
+final class HandleHorizontalCollisionEvent extends EventPlayerBloc {
+  const HandleHorizontalCollisionEvent(this.collisionBlock);
+  final CollisionBlock collisionBlock;
+}
+
+final class HandleVerticalCollisionEvent extends EventPlayerBloc {
+  const HandleVerticalCollisionEvent(this.collisionBlock);
+  final CollisionBlock collisionBlock;
 }
