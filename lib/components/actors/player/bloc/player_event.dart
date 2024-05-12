@@ -11,9 +11,11 @@ final class PlayerInitialEvent extends EventPlayerBloc {
   const PlayerInitialEvent({
     required this.player,
     required this.startingPosition,
+    required this.startingVelocity,
   });
   final Player player;
   final Vector2 startingPosition;
+  final Vector2 startingVelocity;
 }
 
 final class PlayerKeyPressedEvent extends EventPlayerBloc {
@@ -26,28 +28,32 @@ final class PlayerKeyPressedEvent extends EventPlayerBloc {
 }
 
 final class PlayerUpdateDirectionEvent extends EventPlayerBloc {
-  const PlayerUpdateDirectionEvent(this.dt);
-  final double dt;
+  const PlayerUpdateDirectionEvent({
+    required this.deltaTime,
+  });
+  final double deltaTime;
 }
 
 final class PlayerJumpEvent extends EventPlayerBloc {
-  const PlayerJumpEvent(this.dt);
-  final double dt;
+  const PlayerJumpEvent({
+    required this.deltaTime,
+  });
+  final double deltaTime;
 }
 
 final class PlayerApplyGravityEvent extends EventPlayerBloc {
-  const PlayerApplyGravityEvent(this.dt);
-  final double dt;
+  const PlayerApplyGravityEvent({
+    required this.deltaTime,
+  });
+  final double deltaTime;
 }
 
-final class PlayerCheckHorizontalCollisionsEvent extends EventPlayerBloc {
+final class PlayerHorizontalCollisionsEvent extends EventPlayerBloc {
+  const PlayerHorizontalCollisionsEvent(this.collisionBlocks);
   final List<CollisionBlock> collisionBlocks;
-  const PlayerCheckHorizontalCollisionsEvent(this.collisionBlocks);
 }
 
-final class PlayerCheckVerticalCollisionsEvent extends EventPlayerBloc {
+final class PlayerVerticalCollisionsEvent extends EventPlayerBloc {
+  const PlayerVerticalCollisionsEvent(this.collisionBlocks);
   final List<CollisionBlock> collisionBlocks;
-  const PlayerCheckVerticalCollisionsEvent(this.collisionBlocks);
 }
-
-final class PlayerChangeAnimationEvent extends EventPlayerBloc {}

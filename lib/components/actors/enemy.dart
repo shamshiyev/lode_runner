@@ -135,13 +135,13 @@ class Enemy extends SpriteAnimationGroupComponent
 
   void collidedWithPlayer() async {
     // Make sure the player is jumping on top of the enemy
-    if (bloc.velocity.y > 0 && player.y + player.height > position.y) {
+    if (player.velocity.y > 0 && player.y + player.height > position.y) {
       if (game.playSounds) {
         FlameAudio.play('bounce.wav', volume: game.soundVolume);
       }
       gotHit = true;
       current = EnemyState.hit;
-      bloc.velocity = Vector2(0, -260);
+      player.velocity = Vector2(0, -260);
       await animationTicker?.completed;
       removeFromParent();
     } else {

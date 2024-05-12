@@ -1,13 +1,15 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lode_runner/components/actors/player/player.dart';
 
 import '../../../../utilities/collisions.dart';
+import '../../../../utilities/constants.dart';
+import '../player.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';
@@ -26,41 +28,43 @@ enum PlayerAnimationState {
 
 class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   PlayerBloc()
-      : super(PlayerInitialState(
-          player: Player(),
-          startingPosition: Vector2.zero(),
-        )) {
+      : super(
+          PlayerInitialState(
+            player: Player(),
+            position: Vector2.zero(),
+            velocity: Vector2.zero(),
+          ),
+        ) {
     on<PlayerInitialEvent>(
-      (
-        event,
-        emit,
-      ) {
+      (event, emit) {
         emit(
           PlayerInitialState(
             player: event.player,
-            startingPosition: event.startingPosition,
+            position: event.startingPosition,
+            velocity: event.startingVelocity,
           ),
         );
       },
     );
     on<PlayerKeyPressedEvent>(
       (event, emit) {
-        _playerKeyPressedEvent(
-          event.keysPressed,
-          event.keyEvent,
+        _buttonPressed(
+          event,
+          emit,
         );
       },
     );
     on<PlayerUpdateDirectionEvent>(
       (event, emit) {
         _updateDirection(
-          event.dt,
+          event,
+          emit,
         );
       },
     );
-    on<PlayerChangeAnimationEvent>(
+    on<PlayerJumpEvent>(
       (event, emit) {
-        _changePlayerAnimation(
+        _playerJump(
           event,
           emit,
         );
@@ -68,55 +72,36 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     );
     on<PlayerApplyGravityEvent>(
       (event, emit) {
-        _applyGravity(event.dt);
-      },
-    );
-    on<PlayerCheckHorizontalCollisionsEvent>(
-      (event, emit) {
-        _checkHorizontalCollisions(
+        _applyGravity(
           event,
-        );
-      },
-    );
-    on<PlayerCheckVerticalCollisionsEvent>(
-      (event, emit) {
-        _checkVerticalCollisions(event);
-      },
-    );
-    on<PlayerJumpEvent>(
-      (event, emit) {
-        _playerJump(
-          event.dt,
+          emit,
         );
       },
     );
   }
 
-  double horizontalSpeed = 0;
-  Vector2 startingPosition = Vector2.zero();
-  Vector2 velocity = Vector2.zero();
-  bool hasJumped = false;
-  bool isOnGround = true;
-  bool isSliding = false;
-  bool hasDoubleJumped = false;
-  bool gotHit = false;
-  bool reachedCheckpoint = false;
-  static const double jumpForce = 260;
-  static const double wallSlideSpeed = 80;
-  static const double moveSpeed = 140;
-
-  static const gravity = 9.8;
-  // Сила прыжка
-  // Предельная скорость падения
-  static const double terminalVelocity = 300;
-  List<CollisionBlock> collisionBlocks = [];
-
-  void _playerKeyPressedEvent(
-    Set<LogicalKeyboardKey> keysPressed,
-    KeyEvent event,
+  void _buttonPressed(
+    PlayerKeyPressedEvent event,
+    Emitter<StatePlayerBloc> emit,
   ) {
-    // TODO: Может добавлять ивенты прямо здесь через add?
-    horizontalSpeed = 0;
+    final keysPressed = event.keysPressed;
+    final logicalKey = event.keyEvent.logicalKey;
+    int horizontalSpeed = 0;
+    emit(
+      PlayerActiveState(
+        player: state.player,
+        position: state.player.position,
+        velocity: state.velocity,
+        isOnGround: state.isOnGround,
+        hasJumped: state.hasJumped,
+        isSliding: state.isSliding,
+        hasDoubleJumped: state.hasDoubleJumped,
+        gotHit: state.gotHit,
+        reachedCheckpoint: state.reachedCheckpoint,
+        horizontalSpeed: state.horizontalSpeed,
+      ),
+    );
+    // Описываем инпуты для передвижения и остановки по горизонтали
     final leftKeyPressed = keysPressed.contains(
           LogicalKeyboardKey.arrowLeft,
         ) ||
@@ -136,163 +121,124 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     }
     // Остановка при отпускании клавиш движения
     if (event is KeyUpEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
-          event.logicalKey == LogicalKeyboardKey.arrowRight ||
-          event.logicalKey == LogicalKeyboardKey.keyA ||
-          event.logicalKey == LogicalKeyboardKey.keyD) {
+      if (logicalKey == LogicalKeyboardKey.arrowLeft ||
+          logicalKey == LogicalKeyboardKey.arrowRight ||
+          logicalKey == LogicalKeyboardKey.keyA ||
+          logicalKey == LogicalKeyboardKey.keyD) {
         horizontalSpeed = 0;
       }
     }
     // Прыжок
-    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+    bool hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+    emit(
+      state.copyWith(
+        hasJumped: hasJumped,
+        horizontalSpeed: horizontalSpeed,
+      ),
+    );
   }
 
-  void _playerJump(double dt) {
-    if (state.player.gameRef.game.playSounds) {
-      FlameAudio.play(
-        'jump.wav',
-        volume: state.player.gameRef.game.soundVolume,
-      );
-    }
-    velocity.y = -jumpForce;
-    state.player.position.y += velocity.y * dt;
-    isOnGround = false;
-    hasJumped = false;
-  }
-
-  void _changePlayerAnimation(
-    PlayerChangeAnimationEvent event,
+  void _updateDirection(
+    PlayerUpdateDirectionEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    if (velocity.x < 0 && state.player.scale.x > 0) {
-      state.player.flipHorizontallyAroundCenter();
-    } else if (velocity.x > 0 && state.player.scale.x < 0) {
-      state.player.flipHorizontallyAroundCenter();
+    if (state.hasJumped) {
+      add(PlayerJumpEvent(deltaTime: event.deltaTime));
     }
-    // Изменение анимаций при прыжке
-    if (velocity.y < 0) {
-      if (hasDoubleJumped) {
-        state.player.current = PlayerAnimationState.doubleJump;
-      } else {
-        state.player.current = PlayerAnimationState.jump;
-      }
-    } else if (velocity.y > 0) {
-      state.player.current = PlayerAnimationState.fall;
-    } else if (velocity.x != 0) {
-      state.player.current = PlayerAnimationState.run;
-    } else {
-      state.player.current = PlayerAnimationState.idle;
-    }
+    // TODO: Implement double jump
+    // final dt = event.deltaTime;
+    // if (state.hasJumped && (state.isOnGround || !state.hasDoubleJumped)) {
+    //   if (!state.isOnGround) {
+    //     emit(state.copyWith(hasDoubleJumped: true));
+    //   }
+    //   add(PlayerJumpEvent(deltaTime: dt));
+    // } else if (state.isOnGround) {
+    //   emit(state.copyWith(hasDoubleJumped: false));
+    // }
+    // if (state.isSliding && state.velocity.y > 0) {
+    //   emit(
+    //     state.copyWith(
+    //       hasJumped: false,
+    //       hasDoubleJumped: false,
+    //       velocity: Vector2(
+    //         state.velocity.x,
+    //         min(
+    //           state.velocity.y,
+    //           Constants.wallSlideSpeed,
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
-    if (isSliding) {
-      state.player.current = PlayerAnimationState.wallJump;
-    }
-  }
-
-  void _updateDirection(double dt) {
-    if (hasJumped && (isOnGround || !hasDoubleJumped)) {
-      if (!isOnGround) {
-        hasDoubleJumped = true;
-      }
-      add(PlayerJumpEvent(dt));
-    } else if (isOnGround) {
-      hasDoubleJumped = false;
-    }
-    if (isSliding && velocity.y > 0) {
-      hasJumped = false;
-      hasDoubleJumped = false;
-      velocity.y = min(velocity.y, wallSlideSpeed);
-    }
-    velocity.x = horizontalSpeed * moveSpeed;
-    state.player.position.x += velocity.x * dt;
-    velocity.y += gravity;
-    // Ограничение скорости падения и прыжка
-    velocity.y = velocity.y.clamp(
-      -jumpForce,
-      terminalVelocity,
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          state.horizontalSpeed * Constants.moveSpeed,
+          state.velocity.y,
+        ),
+        position: Vector2(
+          state.position.x + state.velocity.x * event.deltaTime,
+          state.player.position.y,
+        ),
+      ),
     );
-    state.player.position.y += velocity.y * dt;
   }
 
-  void _checkHorizontalCollisions(event) {
-    isSliding = false;
-    for (final block in event.collisionBlocks) {
-      if (!block.isPlatform) {
-        // TODO: This should only if player meets a wall
-        if (checkCollisions(state.player, block)) {
-          dev.log('Collision with block: $block');
-          if (velocity.y > 0) {
-            isSliding = true;
-          }
-          // Коллизия и остановка при движении вправо
-          if (velocity.x > 0) {
-            velocity.x = 0;
-            state.player.position.x = block.x -
-                state.player.hitbox.offsetX -
-                state.player.hitbox.width;
-            break;
-          }
-          // Коллизия и остановка при движении влево
-          if (velocity.x < 0) {
-            velocity.x = 0;
-            state.player.position.x = block.x +
-                block.width +
-                state.player.hitbox.width +
-                state.player.hitbox.offsetX;
-            break;
-          }
-        }
-      }
+  void _playerJump(
+    PlayerJumpEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    if (state.player.gameRef.playSounds) {
+      FlameAudio.play(
+        'jump.wav',
+        volume: state.player.gameRef.soundVolume,
+      );
     }
-  }
-
-  void _applyGravity(double dt) {
-    velocity.y += gravity;
-    // Ограничение скорости падения и прыжка
-    velocity.y = velocity.y.clamp(
-      -jumpForce,
-      terminalVelocity,
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          state.velocity.x,
+          -Constants.jumpForce,
+        ),
+        position: Vector2(
+          state.position.x,
+          state.position.y + state.velocity.y * event.deltaTime,
+        ),
+        isOnGround: false,
+        hasJumped: false,
+      ),
     );
-    state.player.position.y += velocity.y * dt;
   }
 
-  void _checkVerticalCollisions(event) {
-    for (final block in event.collisionBlocks) {
-      if (block.isPlatform) {
-        if (checkCollisions(
-          state.player,
-          block,
-        )) {
-          if (velocity.y > 0) {
-            velocity.y = 0;
-            state.player.position.y = block.y -
-                state.player.hitbox.height -
-                state.player.hitbox.offsetY;
-            isOnGround = true;
-            break;
-          }
-        }
-      } else {
-        if (checkCollisions(state.player, block)) {
-          // Вычисляем коллизию при падении
-          if (velocity.y > 0) {
-            velocity.y = 0;
-            state.player.position.y = block.y -
-                state.player.hitbox.height -
-                state.player.hitbox.offsetY;
-            // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
-            isOnGround = true;
-            break;
-          }
-          // Вычисляем коллизию при прыжке
-          if (velocity.y < 0) {
-            velocity.y = 0;
-            state.player.position.y =
-                block.y + block.height - state.player.hitbox.offsetY;
-            break;
-          }
-        }
-      }
-    }
+  void _applyGravity(
+    PlayerApplyGravityEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    final dt = event.deltaTime;
+    final double updatedVelocityY = state.velocity.y + Constants.gravity;
+
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          // Ограничение скорости падения и прыжка
+          state.velocity.x,
+          updatedVelocityY.clamp(
+            -Constants.jumpForce,
+            Constants.terminalVelocity,
+          ),
+        ),
+        position: Vector2(
+          state.position.x,
+          state.position.y + state.velocity.y * dt,
+        ),
+      ),
+    );
+    //  velocity.y += gravity;
+    // velocity.y = velocity.y.clamp(
+    //   -jumpForce,
+    //   terminalVelocity,
+    // );
+    // position.y += velocity.y * dt;
   }
 }

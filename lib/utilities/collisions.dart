@@ -1,8 +1,8 @@
-// import 'dart:ui';
-
+import 'dart:async';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-class CollisionBlock extends PositionComponent {
+class CollisionBlock extends PositionComponent with CollisionCallbacks {
   CollisionBlock({
     super.position,
     super.size,
@@ -11,6 +11,18 @@ class CollisionBlock extends PositionComponent {
     // Дебагмод для отображения координат блоков
   }
   bool isPlatform;
+  @override
+  FutureOr<void> onLoad() {
+    debugMode = true;
+    // add(
+    //   RectangleHitbox(
+    //     size: Vector2(size.x, size.y),
+    //     collisionType:
+    //         isPlatform ? CollisionType.passive : CollisionType.active,
+    //   ),
+    // );
+    return super.onLoad();
+  }
 }
 
 bool checkCollisions(

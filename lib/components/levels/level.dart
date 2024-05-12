@@ -69,6 +69,7 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
                 spawnPoint.x,
                 spawnPoint.y,
               ),
+              startingVelocity: Vector2.zero(),
             ));
             await add(
               FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
