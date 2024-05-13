@@ -1,8 +1,12 @@
+import 'dart:developer' as dev;
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../utilities/collisions.dart';
+import '../../../../utilities/constants.dart';
 import '../player.dart';
 
 part 'player_event.dart';
@@ -36,12 +40,45 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
-
+    on<PlayerUpdateDirectionEvent>(
+      (event, emit) {
+        _updateDirection(
+          event,
+          emit,
+        );
+      },
+    );
     on<PlayerChangeAnimationEvent>(
-      (event, emit) {},
+      (event, emit) {
+        _changePlayerAnimation(
+          event,
+          emit,
+        );
+      },
     );
     on<PlayerJumpEvent>(
-      (event, emit) {},
+      (event, emit) {
+        _playerJump(
+          event,
+          emit,
+        );
+      },
+    );
+    on<PlayerApplyGravityEvent>(
+      (event, emit) {
+        _applyGravity(
+          event,
+          emit,
+        );
+      },
+    );
+    on<PlayerCollisionEvent>(
+      (event, emit) {
+        _resolveCollisions(
+          event,
+          emit,
+        );
+      },
     );
   }
 
@@ -49,59 +86,351 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     PlayerKeyPressedEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    //   final keysPressed = event.keysPressed;
-    //   final logicalKey = event.keyEvent.logicalKey;
-    //   int horizontalSpeed = 0;
-    //   emit(
-    //     PlayerActiveState(
-    //       player: state.player,
-    //       position: state.player.position,
-    //       velocity: state.velocity,
-    //       isOnGround: state.isOnGround,
-    //       hasJumped: state.hasJumped,
-    //       isSliding: state.isSliding,
-    //       hasDoubleJumped: state.hasDoubleJumped,
-    //       gotHit: state.gotHit,
-    //       reachedCheckpoint: state.reachedCheckpoint,
-    //       horizontalSpeed: state.horizontalSpeed,
-    //     ),
-    //   );
-    //   // Описываем инпуты для передвижения и остановки по горизонтали
-    //   final leftKeyPressed = keysPressed.contains(
-    //         LogicalKeyboardKey.arrowLeft,
-    //       ) ||
-    //       keysPressed.contains(
-    //         LogicalKeyboardKey.keyA,
-    //       );
-    //   final rightKeyPressed = keysPressed.contains(
-    //         LogicalKeyboardKey.arrowRight,
-    //       ) ||
-    //       keysPressed.contains(
-    //         LogicalKeyboardKey.keyD,
-    //       );
-    //   horizontalSpeed += leftKeyPressed ? -1 : 0;
-    //   horizontalSpeed += rightKeyPressed ? 1 : 0;
-    //   if (leftKeyPressed && rightKeyPressed) {
-    //     horizontalSpeed = 0;
+    final keysPressed = event.keysPressed;
+    final logicalKey = event.keyEvent.logicalKey;
+    int horizontalSpeed = 0;
+    emit(
+      PlayerActiveState(
+        player: state.player,
+        position: state.player.position,
+        velocity: state.velocity,
+        isOnGround: state.isOnGround,
+        hasJumped: state.hasJumped,
+        isSliding: state.isSliding,
+        hasDoubleJumped: state.hasDoubleJumped,
+        gotHit: state.gotHit,
+        reachedCheckpoint: state.reachedCheckpoint,
+        horizontalSpeed: state.horizontalSpeed,
+      ),
+    );
+    // Описываем инпуты для передвижения и остановки по горизонтали
+    final leftKeyPressed = keysPressed.contains(
+          LogicalKeyboardKey.arrowLeft,
+        ) ||
+        keysPressed.contains(
+          LogicalKeyboardKey.keyA,
+        );
+    final rightKeyPressed = keysPressed.contains(
+          LogicalKeyboardKey.arrowRight,
+        ) ||
+        keysPressed.contains(
+          LogicalKeyboardKey.keyD,
+        );
+    horizontalSpeed += leftKeyPressed ? -1 : 0;
+    horizontalSpeed += rightKeyPressed ? 1 : 0;
+    if (leftKeyPressed && rightKeyPressed) {
+      horizontalSpeed = 0;
+    }
+    // Остановка при отпускании клавиш движения
+    if (event is KeyUpEvent) {
+      if (logicalKey == LogicalKeyboardKey.arrowLeft ||
+          logicalKey == LogicalKeyboardKey.arrowRight ||
+          logicalKey == LogicalKeyboardKey.keyA ||
+          logicalKey == LogicalKeyboardKey.keyD) {
+        horizontalSpeed = 0;
+      }
+    }
+    // Прыжок
+    bool hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+    emit(
+      state.copyWith(
+        player: state.player,
+        hasJumped: hasJumped,
+        horizontalSpeed: horizontalSpeed,
+      ),
+    );
+  }
+
+  void _updateDirection(
+    PlayerUpdateDirectionEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    if (state.hasJumped) {
+      add(
+        PlayerJumpEvent(
+          deltaTime: event.deltaTime,
+        ),
+      );
+    }
+    // TODO: Implement double jump
+    // if (state.hasJumped && (state.isOnGround || !state.hasDoubleJumped)) {
+    //   if (!state.isOnGround) {
+    //     emit(state.copyWith(hasDoubleJumped: true));
     //   }
-    //   // Остановка при отпускании клавиш движения
-    //   if (event is KeyUpEvent) {
-    //     if (logicalKey == LogicalKeyboardKey.arrowLeft ||
-    //         logicalKey == LogicalKeyboardKey.arrowRight ||
-    //         logicalKey == LogicalKeyboardKey.keyA ||
-    //         logicalKey == LogicalKeyboardKey.keyD) {
-    //       horizontalSpeed = 0;
-    //     }
-    //   }
-    //   // Прыжок
-    //   bool hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
+    //   add(PlayerJumpEvent(deltaTime: dt));
+    // } else if (state.isOnGround) {
+    //   emit(state.copyWith(hasDoubleJumped: false));
+    // }
+    // if (state.isSliding && state.velocity.y > 0) {
     //   emit(
     //     state.copyWith(
-    //       player: state.player,
-    //       hasJumped: hasJumped,
-    //       horizontalSpeed: horizontalSpeed,
+    //       hasJumped: false,
+    //       hasDoubleJumped: false,
+    //       velocity: Vector2(
+    //         state.velocity.x,
+    //         min(
+    //           state.velocity.y,
+    //           Constants.wallSlideSpeed,
+    //         ),
+    //       ),
     //     ),
     //   );
     // }
+
+    var newVelocityX = state.horizontalSpeed * Constants.moveSpeed;
+    var newPositionX = state.position.x + newVelocityX * event.deltaTime;
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          newVelocityX,
+          state.velocity.y,
+        ),
+        position: Vector2(
+          newPositionX,
+          state.player.position.y,
+        ),
+      ),
+    );
   }
+
+  void _playerJump(
+    PlayerJumpEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    if (state.player.gameRef.playSounds) {
+      FlameAudio.play(
+        'jump.wav',
+        volume: state.player.gameRef.soundVolume,
+      );
+    }
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          state.velocity.x,
+          -Constants.jumpForce,
+        ),
+        position: Vector2(
+          state.position.x,
+          state.position.y + state.velocity.y * event.deltaTime,
+        ),
+        isOnGround: false,
+        hasJumped: false,
+      ),
+    );
+  }
+
+  void _applyGravity(
+    PlayerApplyGravityEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    final dt = event.deltaTime;
+    final double updatedVelocityY = state.velocity.y + Constants.gravity;
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          // Ограничение скорости падения и прыжка
+          state.velocity.x,
+          updatedVelocityY.clamp(
+            -Constants.jumpForce,
+            Constants.terminalVelocity,
+          ),
+        ),
+        position: Vector2(
+          state.position.x,
+          state.position.y + state.velocity.y * dt,
+        ),
+      ),
+    );
+  }
+
+  void _changePlayerAnimation(
+    PlayerChangeAnimationEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    if (state.velocity.x < 0 && state.player.scale.x > 0) {
+      // TODO: Not sure about this part
+      state.player.anchor = Anchor.topCenter;
+      state.player.flipHorizontallyAroundCenter();
+    } else if (state.velocity.x > 0 && state.player.scale.x < 0) {
+      state.player.anchor = Anchor.topCenter;
+      state.player.flipHorizontallyAroundCenter();
+    }
+    // Изменение анимаций при прыжке
+    if (state.velocity.y < 0) {
+      if (state.hasDoubleJumped) {
+        state.player.current = PlayerAnimationState.doubleJump;
+      } else {
+        state.player.current = PlayerAnimationState.jump;
+      }
+    } else if (state.velocity.y > 0) {
+      // Изменение анимаций при падении
+      state.player.current = PlayerAnimationState.fall;
+    } else if (state.velocity.x != 0) {
+      // Изменение анимаций при движении
+      state.player.current = PlayerAnimationState.run;
+    } else {
+      //  Изменение анимаций при стоянии
+      state.player.current = PlayerAnimationState.idle;
+    }
+    if (state.isSliding) {
+      // Изменение анимаций при скольжении
+      state.player.current = PlayerAnimationState.wallJump;
+    }
+    emit(
+      state.copyWith(
+        player: state.player,
+      ),
+    );
+  }
+
+  void _resolveCollisions(
+    PlayerCollisionEvent event,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    final block = event.collisionBlock;
+    final hitbox = state.player.hitbox;
+    // Позиция персонажа по оси X
+    final playerX = state.player.position.x + hitbox.offsetX;
+    // Верхняя точка игрока
+    final playerY = state.player.position.y + hitbox.offsetY;
+    final playerWidth = hitbox.width;
+    final playerHeight = hitbox.height;
+
+    // Позиция блока по оси X
+    final blockX = block.x;
+    // Верхняя точка блока
+    final blockY = block.y;
+    final blockWidth = block.width;
+    final blockHeight = block.height;
+
+    // Проверяем развернута ли модель влево
+    final fixedX = state.player.scale.x < 0
+        ? playerX - (hitbox.offsetX * 2) - playerWidth
+        : playerX;
+    bool isCollisionOnX = (playerY < blockY + blockHeight &&
+        playerY + playerHeight > blockY &&
+        fixedX < blockX + blockWidth &&
+        fixedX + playerWidth > blockX);
+    if (isCollisionOnX) {
+      dev.log('Collision on X axis');
+    }
+  }
+
+  // void _handleHorisontalCollision(
+  //   HandleHorizontalCollisionEvent event,
+  //   Emitter<StatePlayerBloc> emit,
+  // ) {
+  //   final block = event.collisionBlock;
+  //   if (!block.isPlatform) {
+  //     if (state.velocity.y > 0) {
+  //       emit(
+  //         state.copyWith(
+  //           isSliding: true,
+  //         ),
+  //       );
+  //     }
+  //     // Коллизия и остановка при движении вправо
+  //     if (state.velocity.x > 0) {
+  //       emit(
+  //         PlayerCollidedState(
+  //           player: state.player,
+  //           position: Vector2(
+  //             block.x - state.player.hitbox.width / 2,
+  //             state.position.y,
+  //           ),
+  //           velocity: Vector2(
+  //             0,
+  //             state.velocity.y,
+  //           ),
+  //           isOnGround: state.isOnGround,
+  //           hasJumped: state.hasJumped,
+  //           isSliding: state.isSliding,
+  //           hasDoubleJumped: state.hasDoubleJumped,
+  //           gotHit: state.gotHit,
+  //           reachedCheckpoint: state.reachedCheckpoint,
+  //           horizontalSpeed: state.horizontalSpeed,
+  //         ),
+  //       );
+  //       return;
+  //     }
+  //     // Коллизия и остановка при движении влево
+  //     if (state.velocity.x < 0) {
+  //       emit(
+  //         PlayerCollidedState(
+  //           player: state.player,
+  //           position: Vector2(
+  //             block.x + block.width + state.player.hitbox.offsetX,
+  //             state.position.y,
+  //           ),
+  //           velocity: Vector2(
+  //             0,
+  //             state.velocity.y,
+  //           ),
+  //           isOnGround: state.isOnGround,
+  //           hasJumped: state.hasJumped,
+  //           isSliding: state.isSliding,
+  //           hasDoubleJumped: state.hasDoubleJumped,
+  //           gotHit: state.gotHit,
+  //           reachedCheckpoint: state.reachedCheckpoint,
+  //           horizontalSpeed: state.horizontalSpeed,
+  //         ),
+  //       );
+  //       return;
+  //     }
+  //   }
+  // }
+
+  // TODO: Some shit with naming
+  // void _handleVerticalCollision(
+  //   HandleVerticalCollisionEvent event,
+  //   Emitter<StatePlayerBloc> emit,
+  // ) {
+  // final block = event.collisionBlock;
+  // if (block.isPlatform) {
+  //   if (state.velocity.y > 0) {
+  //     emit(
+  //       state.copyWith(
+  //         isOnGround: true,
+  //         position: Vector2(
+  //             state.player.position.x,
+  //             block.y -
+  //                 state.player.hitbox.height -
+  //                 state.player.hitbox.offsetY),
+  //       ),
+  //     );
+  //     return;
+  //   }
+  // } else {
+  //   // Вычисляем коллизию при падении
+  //   if (state.velocity.y > 0) {
+  //     // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
+  //     emit(state.copyWith(
+  //       velocity: Vector2(
+  //         state.velocity.x,
+  //         0,
+  //       ),
+  //       position: Vector2(
+  //         state.player.position.x,
+  //         block.y - state.player.hitbox.height - state.player.hitbox.offsetY,
+  //       ),
+  //       isOnGround: true,
+  //     ));
+  //     return;
+  //   }
+  //   // Вычисляем коллизию при прыжке
+  //   if (state.velocity.y < 0) {
+  //     emit(state.copyWith(
+  //       velocity: Vector2(
+  //         state.velocity.x,
+  //         0,
+  //       ),
+  //       position: Vector2(
+  //         state.player.position.x,
+  //         block.y + block.height - state.player.hitbox.offsetY,
+  //       ),
+  //     ));
+  //     return;
+  //   }
+  // }
+  // }
 }

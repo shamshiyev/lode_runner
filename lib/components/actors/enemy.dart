@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
@@ -133,18 +132,18 @@ class Enemy extends SpriteAnimationGroupComponent
     }
   }
 
-  void collidedWithPlayer() async {
-    if (player.velocity.y > 0 && player.y + player.height > position.y) {
-      if (game.playSounds) {
-        FlameAudio.play('bounce.wav', volume: game.soundVolume);
-      }
-      gotHit = true;
-      current = EnemyState.hit;
-      player.velocity = Vector2(0, -260);
-      await animationTicker?.completed;
-      removeFromParent();
-    } else {
-      player.collidedWithEnemy();
-    }
-  }
+  // void collidedWithPlayer() async {
+  //   if (player.velocity.y > 0 && player.y + player.height > position.y) {
+  //     if (game.playSounds) {
+  //       FlameAudio.play('bounce.wav', volume: game.soundVolume);
+  //     }
+  //     gotHit = true;
+  //     current = EnemyState.hit;
+  //     player.velocity = Vector2(0, -260);
+  //     await animationTicker?.completed;
+  //     removeFromParent();
+  //   } else {
+  //     player.collidedWithEnemy();
+  //   }
+  // }
 }

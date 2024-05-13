@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
@@ -10,43 +12,22 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
   }) {
     // Дебагмод для отображения координат блоков
     debugMode = true;
-    debugColor = Colors.amber;
+    debugColor = Colors.amber.withOpacity(0.0);
   }
   bool isPlatform;
-}
-
-bool checkCollisions(
-  player,
-  block,
-) {
-  final hitbox = player.hitbox;
-  // Позиция персонажа по оси X
-  final playerX = player.position.x + hitbox.offsetX;
-  // Верхняя точка игрока
-  final playerY = player.position.y + hitbox.offsetY;
-  final playerWidth = hitbox.width;
-  final playerHeight = hitbox.height;
-
-  // Позиция блока по оси X
-  final blockX = block.x;
-  // Верхняя точка блока
-  final blockY = block.y;
-  final blockWidth = block.width;
-  final blockHeight = block.height;
-
-  // Проверяем развернута ли модель влево
-  final fixedX = player.scale.x < 0
-      ? playerX - (hitbox.offsetX * 2) - playerWidth
-      : playerX;
-
-  // Коллизия с платформой при учёте высоты модели
-  final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
-
-  return (
-      // Коллизия по оси Y (верхняя и нижняя точка игрока и блока пересекаются)
-      fixedY < blockY + blockHeight &&
-          playerY + playerHeight > blockY &&
-          // Коллизия по оси X
-          fixedX < blockX + blockWidth &&
-          fixedX + playerWidth > blockX);
+  @override
+  FutureOr<void> onLoad() {
+    // TODO: Maybe add a relative hitbox with enlarged Y?
+    /// With this constructor you define the [RectangleHitbox] in relation to
+    /// the [parentSize]. For example having [relation] as of (0.8, 0.5) would
+    /// create a rectangle that fills 80% of the width and 50% of the height of
+    /// [parentSize].
+    // RectangleHitbox.relative(
+    add(
+      RectangleHitbox(
+        priority: 100,
+      ),
+    );
+    return super.onLoad();
+  }
 }
