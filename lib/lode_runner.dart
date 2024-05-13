@@ -27,7 +27,7 @@ class LodeRunner extends FlameGame
   late CameraComponent cam;
 
   late JoystickComponent joystick;
-  bool playSounds = false;
+  bool playSounds = true;
   double soundVolume = 0.5;
 
   List<String> levelsList = [
@@ -37,7 +37,7 @@ class LodeRunner extends FlameGame
     'level_04',
   ];
 
-  int currentLevel = 0;
+  int currentLevel = 3;
 
   @override
   Future<void> onLoad() async {
