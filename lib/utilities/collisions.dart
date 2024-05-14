@@ -31,3 +31,37 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
     return super.onLoad();
   }
 }
+
+
+
+// bool isCollisionOnX = (
+//   fixedX < blockX + blockWidth &&
+//   fixedX + playerWidth > blockX);
+
+// bool isCollisionOnY = (
+//   playerY < blockY + blockHeight &&
+//   playerY + playerHeight > blockY);
+
+// if (isCollisionOnX && isCollisionOnY) {
+//   // Both x and y collisions detected, determine which happened first
+//   double overlapX = min(
+//     fixedX + playerWidth - blockX,
+//     blockX + blockWidth - fixedX);
+//   double overlapY = min(
+//     playerY + playerHeight - blockY,
+//     blockY + blockHeight - playerY);
+
+//   if (overlapX < overlapY) {
+//     // X collision happened first
+//     // Handle x collision
+//   } else {
+//     // Y collision happened first
+//     // Handle y collision
+//   }
+// } else if (isCollisionOnX) {
+//   // Only x collision detected
+//   // Handle x collision
+// } else if (isCollisionOnY) {
+//   // Only y collision detected
+//   // Handle y collision
+// }

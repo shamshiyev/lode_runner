@@ -46,7 +46,6 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation disappearing;
 
   Vector2 velocity = Vector2.zero();
-  // Скорость скольжения по стене
 
   bool isOnGround = true;
   bool hasJumped = false;
@@ -98,6 +97,7 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void onNewState(StatePlayerBloc state) {
+    // TODO: Bouncing of collision happens here
     position = state.position;
     velocity = state.velocity;
     super.onNewState(state);
@@ -142,9 +142,7 @@ class Player extends SpriteAnimationGroupComponent
       if (!gotHit && !reachedCheckpoint) {
         bloc.add(PlayerChangeAnimationEvent());
         bloc.add(PlayerUpdateDirectionEvent(deltaTime: fixedDeltaTime));
-        // _checkHorizontalCollisions();
-        // bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
-        // _checkVerticalCollisions();
+        bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
       }
       accumulatedTime -= fixedDeltaTime;
     }

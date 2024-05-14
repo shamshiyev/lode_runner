@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_01.tmx",
+    "activeFile": "level_04.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -45,14 +45,14 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                4,
-                2
+                2,
+                4
             ],
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 768.3333333333334,
-                "y": 221.66666666666666
+                "x": 320,
+                "y": 184
             }
         },
         "level_02.tmx": {
@@ -66,8 +66,8 @@
             "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320.33333333333337,
-                "y": 184.33333333333331
+                "x": 320,
+                "y": 184
             }
         },
         "level_03.tmx": {
@@ -78,8 +78,8 @@
             "scale": 1.7218749999999998,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 319.99999999999994,
-                "y": 180.6170598911071
+                "x": 319.7096188747732,
+                "y": 180.9074410163339
             }
         },
         "level_04.tmx": {
@@ -88,10 +88,10 @@
                 3
             ],
             "scale": 1.7218749999999998,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 319.99999999999994,
-                "y": 184.10163339382942
+                "x": 320,
+                "y": 180.6170598911071
             }
         },
         "lode_runner.tsx": {
@@ -110,7 +110,6 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
-        "level_03.tmx",
         "level_04.tmx",
         "level_02.tmx",
         "level_01.tmx"
@@ -118,10 +117,10 @@
     "project": "lode_runner.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "level_03.tmx",
-        "level_04.tmx",
-        "level_02.tmx",
         "level_01.tmx",
+        "level_02.tmx",
+        "level_04.tmx",
+        "level_03.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",

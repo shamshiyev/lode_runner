@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'dart:developer' as dev;
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
@@ -223,21 +224,19 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     PlayerApplyGravityEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    final dt = event.deltaTime;
-    final double updatedVelocityY = state.velocity.y + Constants.gravity;
     emit(
       state.copyWith(
         velocity: Vector2(
           // Ограничение скорости падения и прыжка
           state.velocity.x,
-          updatedVelocityY.clamp(
+          (state.velocity.y + Constants.gravity).clamp(
             -Constants.jumpForce,
             Constants.terminalVelocity,
           ),
         ),
         position: Vector2(
           state.position.x,
-          state.position.y + state.velocity.y * dt,
+          state.position.y + state.velocity.y * event.deltaTime,
         ),
       ),
     );
@@ -290,7 +289,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final block = event.collisionBlock;
     final hitbox = state.player.hitbox;
     // Позиция персонажа по оси X
-    final playerX = state.player.position.x + hitbox.offsetX;
+    final playerX = state.player.position.x;
     // Верхняя точка игрока
     final playerY = state.player.position.y + hitbox.offsetY;
     final playerWidth = hitbox.width;
@@ -307,130 +306,85 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final fixedX = state.player.scale.x < 0
         ? playerX - (hitbox.offsetX * 2) - playerWidth
         : playerX;
-    bool isCollisionOnX = (playerY < blockY + blockHeight &&
-        playerY + playerHeight > blockY &&
-        fixedX < blockX + blockWidth &&
-        fixedX + playerWidth > blockX);
-    if (isCollisionOnX) {
-      dev.log('Collision on X axis');
+    bool isCollisionOnX = (
+        // playerY < blockY + blockHeight &&
+        //   playerY + playerHeight > blockY &&
+        fixedX < blockX + blockWidth && fixedX + playerWidth > blockX);
+    bool isCollisionOnY =
+        (playerY < blockY + blockHeight && playerY + playerHeight > blockY);
+    if (isCollisionOnY) {
+      _handleVerticalCollision(
+        block,
+        emit,
+      );
+
+      if (isCollisionOnX && isCollisionOnY) {
+        dev.log(
+            'Both x and y collisions detected, determine which happened first');
+        // emit(
+        //   state.copyWith(
+        //     velocity: Vector2(
+        //       0,
+        //       state.velocity.y,
+        //     ),
+        //     position: Vector2(
+        //       state.player.scale.x > 0
+        //           ? block.x - state.player.hitbox.width
+        //           : block.x + block.width + state.player.hitbox.offsetX,
+        //       state.position.y,
+        //     ),
+        //   ),
+        // );
+      }
     }
   }
 
-  // void _handleHorisontalCollision(
-  //   HandleHorizontalCollisionEvent event,
-  //   Emitter<StatePlayerBloc> emit,
-  // ) {
-  //   final block = event.collisionBlock;
-  //   if (!block.isPlatform) {
-  //     if (state.velocity.y > 0) {
-  //       emit(
-  //         state.copyWith(
-  //           isSliding: true,
-  //         ),
-  //       );
-  //     }
-  //     // Коллизия и остановка при движении вправо
-  //     if (state.velocity.x > 0) {
-  //       emit(
-  //         PlayerCollidedState(
-  //           player: state.player,
-  //           position: Vector2(
-  //             block.x - state.player.hitbox.width / 2,
-  //             state.position.y,
-  //           ),
-  //           velocity: Vector2(
-  //             0,
-  //             state.velocity.y,
-  //           ),
-  //           isOnGround: state.isOnGround,
-  //           hasJumped: state.hasJumped,
-  //           isSliding: state.isSliding,
-  //           hasDoubleJumped: state.hasDoubleJumped,
-  //           gotHit: state.gotHit,
-  //           reachedCheckpoint: state.reachedCheckpoint,
-  //           horizontalSpeed: state.horizontalSpeed,
-  //         ),
-  //       );
-  //       return;
-  //     }
-  //     // Коллизия и остановка при движении влево
-  //     if (state.velocity.x < 0) {
-  //       emit(
-  //         PlayerCollidedState(
-  //           player: state.player,
-  //           position: Vector2(
-  //             block.x + block.width + state.player.hitbox.offsetX,
-  //             state.position.y,
-  //           ),
-  //           velocity: Vector2(
-  //             0,
-  //             state.velocity.y,
-  //           ),
-  //           isOnGround: state.isOnGround,
-  //           hasJumped: state.hasJumped,
-  //           isSliding: state.isSliding,
-  //           hasDoubleJumped: state.hasDoubleJumped,
-  //           gotHit: state.gotHit,
-  //           reachedCheckpoint: state.reachedCheckpoint,
-  //           horizontalSpeed: state.horizontalSpeed,
-  //         ),
-  //       );
-  //       return;
-  //     }
-  //   }
-  // }
-
-  // TODO: Some shit with naming
-  // void _handleVerticalCollision(
-  //   HandleVerticalCollisionEvent event,
-  //   Emitter<StatePlayerBloc> emit,
-  // ) {
-  // final block = event.collisionBlock;
-  // if (block.isPlatform) {
-  //   if (state.velocity.y > 0) {
-  //     emit(
-  //       state.copyWith(
-  //         isOnGround: true,
-  //         position: Vector2(
-  //             state.player.position.x,
-  //             block.y -
-  //                 state.player.hitbox.height -
-  //                 state.player.hitbox.offsetY),
-  //       ),
-  //     );
-  //     return;
-  //   }
-  // } else {
-  //   // Вычисляем коллизию при падении
-  //   if (state.velocity.y > 0) {
-  //     // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
-  //     emit(state.copyWith(
-  //       velocity: Vector2(
-  //         state.velocity.x,
-  //         0,
-  //       ),
-  //       position: Vector2(
-  //         state.player.position.x,
-  //         block.y - state.player.hitbox.height - state.player.hitbox.offsetY,
-  //       ),
-  //       isOnGround: true,
-  //     ));
-  //     return;
-  //   }
-  //   // Вычисляем коллизию при прыжке
-  //   if (state.velocity.y < 0) {
-  //     emit(state.copyWith(
-  //       velocity: Vector2(
-  //         state.velocity.x,
-  //         0,
-  //       ),
-  //       position: Vector2(
-  //         state.player.position.x,
-  //         block.y + block.height - state.player.hitbox.offsetY,
-  //       ),
-  //     ));
-  //     return;
-  //   }
-  // }
-  // }
+  void _handleVerticalCollision(
+    CollisionBlock block,
+    Emitter<StatePlayerBloc> emit,
+  ) {
+    // Проверяем, является ли блок платформой
+    if (!block.isPlatform) {
+      // if (state.velocity.y > 0) {
+      //   emit(
+      //     state.copyWith(
+      //       isSliding: true,
+      //     ),
+      //   );
+      // }
+      if (state.velocity.y > 0) {
+        // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
+        emit(
+          state.copyWith(
+            velocity: Vector2(
+              state.velocity.x,
+              0,
+            ),
+            position: Vector2(
+              state.player.position.x,
+              block.y -
+                  state.player.hitbox.height -
+                  state.player.hitbox.offsetY,
+            ),
+            isOnGround: true,
+          ),
+        );
+      }
+      // Вычисляем коллизию при прыжке
+      if (state.velocity.y < 0) {
+        emit(
+          state.copyWith(
+            velocity: Vector2(
+              state.velocity.x,
+              0,
+            ),
+            position: Vector2(
+              state.player.position.x,
+              block.y + block.height + state.player.hitbox.offsetY,
+            ),
+          ),
+        );
+      }
+    }
+  }
 }
