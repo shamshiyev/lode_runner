@@ -142,7 +142,7 @@ class Player extends SpriteAnimationGroupComponent
       if (!gotHit && !reachedCheckpoint) {
         bloc.add(PlayerChangeAnimationEvent());
         bloc.add(PlayerUpdateDirectionEvent(deltaTime: fixedDeltaTime));
-        bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
+        // bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
       }
       accumulatedTime -= fixedDeltaTime;
     }

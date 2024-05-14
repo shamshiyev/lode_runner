@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'dart:developer' as dev;
+import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -290,51 +291,48 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final hitbox = state.player.hitbox;
     // Позиция персонажа по оси X
     final playerX = state.player.position.x;
-    // Верхняя точка игрока
-    final playerY = state.player.position.y + hitbox.offsetY;
     final playerWidth = hitbox.width;
-    final playerHeight = hitbox.height;
-
     // Позиция блока по оси X
     final blockX = block.x;
-    // Верхняя точка блока
-    final blockY = block.y;
     final blockWidth = block.width;
-    final blockHeight = block.height;
-
     // Проверяем развернута ли модель влево
     final fixedX = state.player.scale.x < 0
         ? playerX - (hitbox.offsetX * 2) - playerWidth
         : playerX;
-    bool isCollisionOnX = (
-        // playerY < blockY + blockHeight &&
-        //   playerY + playerHeight > blockY &&
-        fixedX < blockX + blockWidth && fixedX + playerWidth > blockX);
-    bool isCollisionOnY =
-        (playerY < blockY + blockHeight && playerY + playerHeight > blockY);
-    if (isCollisionOnY) {
-      _handleVerticalCollision(
-        block,
-        emit,
-      );
+    bool isCollisionOnX =
+        (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX);
 
-      if (isCollisionOnX && isCollisionOnY) {
-        dev.log(
-            'Both x and y collisions detected, determine which happened first');
-        // emit(
-        //   state.copyWith(
-        //     velocity: Vector2(
-        //       0,
-        //       state.velocity.y,
-        //     ),
-        //     position: Vector2(
-        //       state.player.scale.x > 0
-        //           ? block.x - state.player.hitbox.width
-        //           : block.x + block.width + state.player.hitbox.offsetX,
-        //       state.position.y,
-        //     ),
-        //   ),
-        // );
+    // Верхняя точка игрока
+    final playerY = state.player.position.y + hitbox.offsetY;
+    // Верхняя точка блока
+    final blockY = block.y;
+    final playerHeight = hitbox.height;
+    final blockHeight = block.height;
+
+    final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
+
+    bool isCollisionOnY =
+        (fixedY < blockY + blockHeight && playerY + playerHeight > blockY);
+    if (isCollisionOnX) {
+      dev.log('Collision on X');
+    }
+    if (isCollisionOnY) {
+      dev.log('Collision on Y');
+    } else if (isCollisionOnX && isCollisionOnY) {
+      dev.log('Collision on X and Y');
+      double overlapX =
+          min(fixedX + playerWidth - blockX, blockX + blockWidth - fixedX);
+      double overlapY =
+          min(playerY + playerHeight - blockY, blockY + blockHeight - playerY);
+
+      if (overlapX < overlapY) {
+        // X collision happened first
+        // Handle x collision
+        _handleHorizontalCollision(block, emit);
+      } else {
+        // Y collision happened first
+        // Handle y collision
+        _handleVerticalCollision(block, emit);
       }
     }
   }
@@ -386,5 +384,23 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       }
     }
+  }
+
+  void _handleHorizontalCollision(
+      CollisionBlock block, Emitter<StatePlayerBloc> emit) {
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          0,
+          state.velocity.y,
+        ),
+        position: Vector2(
+          state.player.scale.x > 0
+              ? block.x - state.player.hitbox.width
+              : block.x + block.width + state.player.hitbox.offsetX,
+          state.position.y,
+        ),
+      ),
+    );
   }
 }
