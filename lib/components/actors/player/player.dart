@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
@@ -142,7 +144,7 @@ class Player extends SpriteAnimationGroupComponent
       if (!gotHit && !reachedCheckpoint) {
         bloc.add(PlayerChangeAnimationEvent());
         bloc.add(PlayerUpdateDirectionEvent(deltaTime: fixedDeltaTime));
-        // bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
+        bloc.add(PlayerApplyGravityEvent(deltaTime: fixedDeltaTime));
       }
       accumulatedTime -= fixedDeltaTime;
     }

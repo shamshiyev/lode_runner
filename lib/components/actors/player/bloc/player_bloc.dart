@@ -103,8 +103,6 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         gotHit: state.gotHit,
         reachedCheckpoint: state.reachedCheckpoint,
         horizontalSpeed: state.horizontalSpeed,
-        canMoveRight: state.canMoveRight,
-        canMoveLeft: state.canMoveLeft,
       ),
     );
     // Описываем инпуты для передвижения и остановки по горизонтали
@@ -157,77 +155,77 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
       );
     }
     // TODO: Implement double jump
-    // if (state.hasJumped && (state.isOnGround || !state.hasDoubleJumped)) {
-    //   if (!state.isOnGround) {
-    //     emit(state.copyWith(hasDoubleJumped: true));
-    //   }
-    //   add(PlayerJumpEvent(deltaTime: dt));
-    // } else if (state.isOnGround) {
-    //   emit(state.copyWith(hasDoubleJumped: false));
-    // }
-    // if (state.isSliding && state.velocity.y > 0) {
-    //   emit(
-    //     state.copyWith(
-    //       hasJumped: false,
-    //       hasDoubleJumped: false,
-    //       velocity: Vector2(
-    //         state.velocity.x,
-    //         min(
-    //           state.velocity.y,
-    //           Constants.wallSlideSpeed,
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
+    if (state.hasJumped && (state.isOnGround || !state.hasDoubleJumped)) {
+      if (!state.isOnGround) {
+        emit(state.copyWith(hasDoubleJumped: true));
+      }
+      add(PlayerJumpEvent(deltaTime: event.deltaTime));
+    } else if (state.isOnGround) {
+      emit(state.copyWith(hasDoubleJumped: false));
+    }
+    if (state.isSliding && state.velocity.y > 0) {
+      emit(
+        state.copyWith(
+          hasJumped: false,
+          hasDoubleJumped: false,
+          velocity: Vector2(
+            state.velocity.x,
+            min(
+              state.velocity.y,
+              Constants.wallSlideSpeed,
+            ),
+          ),
+        ),
+      );
+    }
 
     var newVelocityX = state.horizontalSpeed * Constants.moveSpeed;
     var newPositionX = state.position.x + newVelocityX * event.deltaTime;
-    if (newVelocityX < 0) {
-      if (state.canMoveLeft) {
-        emit(
-          state.copyWith(
-            velocity: Vector2(
-              newVelocityX,
-              state.velocity.y,
-            ),
-            position: Vector2(
-              newPositionX,
-              state.player.position.y,
-            ),
-            canMoveRight: true,
-          ),
-        );
-      }
-    } else if (newVelocityX > 0) {
-      if (state.canMoveRight) {
-        emit(
-          state.copyWith(
-            velocity: Vector2(
-              newVelocityX,
-              state.velocity.y,
-            ),
-            position: Vector2(
-              newPositionX,
-              state.player.position.y,
-            ),
-            canMoveLeft: true,
-          ),
-        );
-      }
-    }
-    // emit(
-    //   state.copyWith(
-    //     velocity: Vector2(
-    //       newVelocityX,
-    //       state.velocity.y,
-    //     ),
-    //     position: Vector2(
-    //       newPositionX,
-    //       state.player.position.y,
-    //     ),
-    //   ),
-    // );
+    // if (newVelocityX < 0) {
+    //   if (state.canMoveLeft) {
+    //     emit(
+    //       state.copyWith(
+    //         velocity: Vector2(
+    //           newVelocityX,
+    //           state.velocity.y,
+    //         ),
+    //         position: Vector2(
+    //           newPositionX,
+    //           state.player.position.y,
+    //         ),
+    //         canMoveRight: true,
+    //       ),
+    //     );
+    //   }
+    // } else if (newVelocityX > 0) {
+    //   if (state.canMoveRight) {
+    //     emit(
+    //       state.copyWith(
+    //         velocity: Vector2(
+    //           newVelocityX,
+    //           state.velocity.y,
+    //         ),
+    //         position: Vector2(
+    //           newPositionX,
+    //           state.player.position.y,
+    //         ),
+    //         canMoveLeft: true,
+    //       ),
+    //     );
+    //   }
+    // }
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          newVelocityX,
+          state.velocity.y,
+        ),
+        position: Vector2(
+          newPositionX,
+          state.player.position.y,
+        ),
+      ),
+    );
   }
 
   void _playerJump(
@@ -260,22 +258,24 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     PlayerApplyGravityEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    emit(
-      state.copyWith(
-        velocity: Vector2(
-          // Ограничение скорости падения и прыжка
-          state.velocity.x,
-          (state.velocity.y + Constants.gravity).clamp(
-            -Constants.jumpForce,
-            Constants.terminalVelocity,
+    if (!state.isOnGround) {
+      emit(
+        state.copyWith(
+          velocity: Vector2(
+            // Ограничение скорости падения и прыжка
+            state.velocity.x,
+            (state.velocity.y + Constants.gravity).clamp(
+              -Constants.jumpForce,
+              Constants.terminalVelocity,
+            ),
+          ),
+          position: Vector2(
+            state.position.x,
+            state.position.y + state.velocity.y * event.deltaTime,
           ),
         ),
-        position: Vector2(
-          state.position.x,
-          state.position.y + state.velocity.y * event.deltaTime,
-        ),
-      ),
-    );
+      );
+    }
   }
 
   void _changePlayerAnimation(
@@ -283,7 +283,6 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     Emitter<StatePlayerBloc> emit,
   ) {
     if (state.velocity.x < 0 && state.player.scale.x > 0) {
-      // TODO: Not sure about this part
       state.player.anchor = Anchor.topCenter;
       state.player.flipHorizontallyAroundCenter();
     } else if (state.velocity.x > 0 && state.player.scale.x < 0) {
@@ -297,11 +296,10 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
       } else {
         state.player.current = PlayerAnimationState.jump;
       }
-    } else if (state.velocity.y > 0) {
+    } else if (state.velocity.y > 0 && !state.isOnGround) {
       // Изменение анимаций при падении
       state.player.current = PlayerAnimationState.fall;
     } else if (state.horizontalSpeed != 0) {
-      dev.log(state.velocity.x.toString());
       // Изменение анимаций при движении
       state.player.current = PlayerAnimationState.run;
     } else {
@@ -348,30 +346,28 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
     bool isCollisionOnX =
         (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX) &&
-            (playerY + playerHeight > blockY && playerY < blockY + blockHeight);
+            (fixedY < blockY + blockHeight && fixedY + playerHeight > blockY);
 
-    bool isCollisionOnY = (playerY + playerHeight >= blockY);
+    bool isCollisionOnY =
+        (playerY + playerHeight >= blockY && playerY <= blockY + blockHeight);
 
-    if (isCollisionOnX) {
-      _handleHorizontalCollision(block, emit);
-    }
-    if (isCollisionOnY) {
-      _handleVerticalCollision(block, emit);
-    }
-    if (isCollisionOnX && isCollisionOnY) {
-      dev.log('Collision on X and Y');
-      double overlapX =
-          min(fixedX + playerWidth - blockX, blockX + blockWidth - fixedX);
-      double overlapY =
-          min(playerY + playerHeight - blockY, blockY + blockHeight - playerY);
+    if (isCollisionOnY && isCollisionOnX) {
+      double overlapX = max(0,
+          min(fixedX + playerWidth, blockX + blockWidth) - max(fixedX, blockX));
+      double overlapY = max(
+        0,
+        min(playerY + playerHeight, blockY + blockHeight) -
+            max(
+              playerY,
+              blockY,
+            ),
+      );
+      // dev.log('overlapX: $overlapX, overlapY: $overlapY');
+      //!  Когда overlaY больше overlapX, значит коллизия произошла по оси X
 
-      if (overlapX < overlapY) {
-        // X collision happened first
-        // Handle x collision
+      if (overlapY > overlapX) {
         _handleHorizontalCollision(block, emit);
       } else {
-        // Y collision happened first
-        // Handle y collision
         _handleVerticalCollision(block, emit);
       }
     }
@@ -382,16 +378,24 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     Emitter<StatePlayerBloc> emit,
   ) {
     // Проверяем, является ли блок платформой
-    if (!block.isPlatform) {
-      // if (state.velocity.y > 0) {
-      //   emit(
-      //     state.copyWith(
-      //       isSliding: true,
-      //     ),
-      //   );
-      // }
+    // final block = event.collisionBlock;
+    if (block.isPlatform) {
       if (state.velocity.y > 0) {
-        // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
+        emit(
+          state.copyWith(
+            isOnGround: true,
+            position: Vector2(
+              state.player.position.x,
+              block.y -
+                  state.player.hitbox.height -
+                  state.player.hitbox.offsetY,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (state.velocity.y > 0) {
+        // При запрыгивании и коллизии по вертикали сверху вниз мы понимаем, что "на земле"
         emit(
           state.copyWith(
             velocity: Vector2(
@@ -428,6 +432,14 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
 
   void _handleHorizontalCollision(
       CollisionBlock block, Emitter<StatePlayerBloc> emit) {
+    // if (!block.isPlatform) {
+    //   if (state.velocity.y > 0) {
+    //     emit(
+    //       state.copyWith(
+    //         isSliding: true,
+    //       ),
+    //     );
+    //   }
     emit(
       state.copyWith(
         velocity: Vector2(
@@ -446,3 +458,4 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     );
   }
 }
+// }

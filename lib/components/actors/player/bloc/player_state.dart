@@ -13,8 +13,6 @@ class StatePlayerBloc extends Equatable {
     this.gotHit = false,
     this.reachedCheckpoint = false,
     this.horizontalSpeed = 0,
-    this.canMoveRight = true,
-    this.canMoveLeft = true,
   });
 
   final Player player;
@@ -27,8 +25,6 @@ class StatePlayerBloc extends Equatable {
   final bool gotHit;
   final bool reachedCheckpoint;
   final int horizontalSpeed;
-  final bool canMoveRight;
-  final bool canMoveLeft;
 
   @override
   List<Object> get props => [
@@ -42,8 +38,6 @@ class StatePlayerBloc extends Equatable {
         gotHit,
         reachedCheckpoint,
         horizontalSpeed,
-        canMoveRight,
-        canMoveLeft,
       ];
 
   StatePlayerBloc copyWith({
@@ -71,8 +65,6 @@ class StatePlayerBloc extends Equatable {
       gotHit: gotHit ?? this.gotHit,
       reachedCheckpoint: reachedCheckpoint ?? this.reachedCheckpoint,
       horizontalSpeed: horizontalSpeed ?? this.horizontalSpeed,
-      canMoveRight: canMoveRight ?? this.canMoveRight,
-      canMoveLeft: canMoveLeft ?? this.canMoveLeft,
     );
   }
 }
@@ -97,8 +89,6 @@ final class PlayerActiveState extends StatePlayerBloc {
     required super.gotHit,
     required super.reachedCheckpoint,
     required super.horizontalSpeed,
-    required super.canMoveRight,
-    required super.canMoveLeft,
   });
 }
 
