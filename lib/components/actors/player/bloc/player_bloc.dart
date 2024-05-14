@@ -103,6 +103,8 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         gotHit: state.gotHit,
         reachedCheckpoint: state.reachedCheckpoint,
         horizontalSpeed: state.horizontalSpeed,
+        canMoveRight: state.canMoveRight,
+        canMoveLeft: state.canMoveLeft,
       ),
     );
     // Описываем инпуты для передвижения и остановки по горизонтали
@@ -181,18 +183,51 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
 
     var newVelocityX = state.horizontalSpeed * Constants.moveSpeed;
     var newPositionX = state.position.x + newVelocityX * event.deltaTime;
-    emit(
-      state.copyWith(
-        velocity: Vector2(
-          newVelocityX,
-          state.velocity.y,
-        ),
-        position: Vector2(
-          newPositionX,
-          state.player.position.y,
-        ),
-      ),
-    );
+    if (newVelocityX < 0) {
+      if (state.canMoveLeft) {
+        emit(
+          state.copyWith(
+            velocity: Vector2(
+              newVelocityX,
+              state.velocity.y,
+            ),
+            position: Vector2(
+              newPositionX,
+              state.player.position.y,
+            ),
+            canMoveRight: true,
+          ),
+        );
+      }
+    } else if (newVelocityX > 0) {
+      if (state.canMoveRight) {
+        emit(
+          state.copyWith(
+            velocity: Vector2(
+              newVelocityX,
+              state.velocity.y,
+            ),
+            position: Vector2(
+              newPositionX,
+              state.player.position.y,
+            ),
+            canMoveLeft: true,
+          ),
+        );
+      }
+    }
+    // emit(
+    //   state.copyWith(
+    //     velocity: Vector2(
+    //       newVelocityX,
+    //       state.velocity.y,
+    //     ),
+    //     position: Vector2(
+    //       newPositionX,
+    //       state.player.position.y,
+    //     ),
+    //   ),
+    // );
   }
 
   void _playerJump(
@@ -265,7 +300,8 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     } else if (state.velocity.y > 0) {
       // Изменение анимаций при падении
       state.player.current = PlayerAnimationState.fall;
-    } else if (state.velocity.x != 0) {
+    } else if (state.horizontalSpeed != 0) {
+      dev.log(state.velocity.x.toString());
       // Изменение анимаций при движении
       state.player.current = PlayerAnimationState.run;
     } else {
@@ -299,9 +335,6 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final fixedX = state.player.scale.x < 0
         ? playerX - (hitbox.offsetX * 2) - playerWidth
         : playerX;
-    bool isCollisionOnX =
-        (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX);
-
     // Верхняя точка игрока
     final playerY = state.player.position.y + hitbox.offsetY;
     // Верхняя точка блока
@@ -309,16 +342,23 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final playerHeight = hitbox.height;
     final blockHeight = block.height;
 
-    final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
+    //TODO: Важно, не удалять
+    bool isOnGround = playerY + playerHeight == blockY;
 
-    bool isCollisionOnY =
-        (fixedY < blockY + blockHeight && playerY + playerHeight > blockY);
+    final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
+    bool isCollisionOnX =
+        (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX) &&
+            (playerY + playerHeight > blockY && playerY < blockY + blockHeight);
+
+    bool isCollisionOnY = (playerY + playerHeight >= blockY);
+
     if (isCollisionOnX) {
-      dev.log('Collision on X');
+      _handleHorizontalCollision(block, emit);
     }
     if (isCollisionOnY) {
-      dev.log('Collision on Y');
-    } else if (isCollisionOnX && isCollisionOnY) {
+      _handleVerticalCollision(block, emit);
+    }
+    if (isCollisionOnX && isCollisionOnY) {
       dev.log('Collision on X and Y');
       double overlapX =
           min(fixedX + playerWidth - blockX, blockX + blockWidth - fixedX);
@@ -396,10 +436,12 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         ),
         position: Vector2(
           state.player.scale.x > 0
-              ? block.x - state.player.hitbox.width
+              ? block.x - state.player.hitbox.offsetX
               : block.x + block.width + state.player.hitbox.offsetX,
           state.position.y,
         ),
+        canMoveLeft: state.player.scale.x > 0,
+        canMoveRight: state.player.scale.x < 0,
       ),
     );
   }
