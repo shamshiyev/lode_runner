@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
@@ -82,7 +80,7 @@ class Player extends SpriteAnimationGroupComponent
         position: Vector2(hitbox.offsetX, hitbox.offsetY),
       ),
     );
-    debugMode = true;
+    // debugMode = true;
     return super.onLoad();
   }
 
@@ -99,7 +97,6 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void onNewState(StatePlayerBloc state) {
-    // TODO: Bouncing of collision happens here
     position = state.position;
     velocity = state.velocity;
     super.onNewState(state);

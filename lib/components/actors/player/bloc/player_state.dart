@@ -51,8 +51,6 @@ class StatePlayerBloc extends Equatable {
     bool? gotHit,
     bool? reachedCheckpoint,
     int? horizontalSpeed,
-    bool? canMoveRight,
-    bool? canMoveLeft,
   }) {
     return StatePlayerBloc(
       player: player ?? this.player,

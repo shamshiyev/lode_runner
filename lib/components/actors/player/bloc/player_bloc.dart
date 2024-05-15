@@ -132,6 +132,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         horizontalSpeed = 0;
       }
     }
+
     // Прыжок
     bool hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
     emit(
@@ -214,6 +215,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     //     );
     //   }
     // }
+
     emit(
       state.copyWith(
         velocity: Vector2(
@@ -258,24 +260,22 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     PlayerApplyGravityEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    if (!state.isOnGround) {
-      emit(
-        state.copyWith(
-          velocity: Vector2(
-            // Ограничение скорости падения и прыжка
-            state.velocity.x,
-            (state.velocity.y + Constants.gravity).clamp(
-              -Constants.jumpForce,
-              Constants.terminalVelocity,
-            ),
-          ),
-          position: Vector2(
-            state.position.x,
-            state.position.y + state.velocity.y * event.deltaTime,
+    emit(
+      state.copyWith(
+        velocity: Vector2(
+          // Ограничение скорости падения и прыжка
+          state.velocity.x,
+          (state.velocity.y + Constants.gravity).clamp(
+            -Constants.jumpForce,
+            Constants.terminalVelocity,
           ),
         ),
-      );
-    }
+        position: Vector2(
+          state.position.x,
+          state.position.y + state.velocity.y * event.deltaTime,
+        ),
+      ),
+    );
   }
 
   void _changePlayerAnimation(
@@ -296,7 +296,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
       } else {
         state.player.current = PlayerAnimationState.jump;
       }
-    } else if (state.velocity.y > 0 && !state.isOnGround) {
+    } else if (state.velocity.y > 20 && !state.isOnGround) {
       // Изменение анимаций при падении
       state.player.current = PlayerAnimationState.fall;
     } else if (state.horizontalSpeed != 0) {
@@ -330,9 +330,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final blockX = block.x;
     final blockWidth = block.width;
     // Проверяем развернута ли модель влево
-    final fixedX = state.player.scale.x < 0
-        ? playerX - (hitbox.offsetX * 2) - playerWidth
-        : playerX;
+
     // Верхняя точка игрока
     final playerY = state.player.position.y + hitbox.offsetY;
     // Верхняя точка блока
@@ -340,20 +338,24 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
     final playerHeight = hitbox.height;
     final blockHeight = block.height;
 
-    //TODO: Важно, не удалять
+    //! Важно, не удалять
     bool isOnGround = playerY + playerHeight == blockY;
 
-    final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
     bool isCollisionOnX =
-        (fixedX < blockX + blockWidth && fixedX + playerWidth > blockX) &&
-            (fixedY < blockY + blockHeight && fixedY + playerHeight > blockY);
+        (playerX + playerWidth >= blockX && playerX <= blockX + blockWidth);
 
     bool isCollisionOnY =
         (playerY + playerHeight >= blockY && playerY <= blockY + blockHeight);
 
+    // TODO: При самой первой коллизии с платформой, игрок должен остановиться
+
+    if (isCollisionOnX) {}
+
     if (isCollisionOnY && isCollisionOnX) {
-      double overlapX = max(0,
-          min(fixedX + playerWidth, blockX + blockWidth) - max(fixedX, blockX));
+      double overlapX = max(
+          0,
+          min(playerX + playerWidth, blockX + blockWidth) -
+              max(playerX, blockX));
       double overlapY = max(
         0,
         min(playerY + playerHeight, blockY + blockHeight) -
@@ -362,13 +364,26 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
               blockY,
             ),
       );
-      // dev.log('overlapX: $overlapX, overlapY: $overlapY');
-      //!  Когда overlaY больше overlapX, значит коллизия произошла по оси X
 
-      if (overlapY > overlapX) {
-        _handleHorizontalCollision(block, emit);
-      } else {
+      // dev.log('OverlapX: $overlapX, OverlapY: $overlapY');
+
+      if (overlapX == 0) {
         _handleVerticalCollision(block, emit);
+      }
+
+      //!  Когда overlaY больше overlapX, значит коллизия произошла по оси X
+      if (overlapX != 0 && overlapY != 0) {
+        if (overlapX >= overlapY) {
+          _handleVerticalCollision(block, emit);
+        } else {
+          _handleHorizontalCollision(block, emit);
+        }
+      } else {
+        emit(
+          state.copyWith(
+            isOnGround: false,
+          ),
+        );
       }
     }
   }
@@ -432,30 +447,29 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
 
   void _handleHorizontalCollision(
       CollisionBlock block, Emitter<StatePlayerBloc> emit) {
-    // if (!block.isPlatform) {
-    //   if (state.velocity.y > 0) {
-    //     emit(
-    //       state.copyWith(
-    //         isSliding: true,
-    //       ),
-    //     );
-    //   }
-    emit(
-      state.copyWith(
-        velocity: Vector2(
-          0,
-          state.velocity.y,
+    if (!block.isPlatform) {
+      // if (state.velocity.y > 0) {
+      //   emit(
+      //     state.copyWith(
+      //       isSliding: true,
+      //     ),
+      //   );
+      // }
+      emit(
+        state.copyWith(
+          horizontalSpeed: 0,
+          velocity: Vector2(
+            0,
+            state.velocity.y,
+          ),
+          position: Vector2(
+            state.player.scale.x > 0
+                ? block.x - state.player.hitbox.offsetX
+                : block.x + block.width + state.player.hitbox.offsetX,
+            state.position.y,
+          ),
         ),
-        position: Vector2(
-          state.player.scale.x > 0
-              ? block.x - state.player.hitbox.offsetX
-              : block.x + block.width + state.player.hitbox.offsetX,
-          state.position.y,
-        ),
-        canMoveLeft: state.player.scale.x > 0,
-        canMoveRight: state.player.scale.x < 0,
-      ),
-    );
+      );
+    }
   }
 }
-// }

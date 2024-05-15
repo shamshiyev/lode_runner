@@ -45,8 +45,8 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                2,
-                4
+                4,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 1,
@@ -88,10 +88,10 @@
                 3
             ],
             "scale": 1.7218749999999998,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 315.0635208711434,
-                "y": 180.32667876588027
+                "x": 305.7713248638838,
+                "y": 172.1960072595282
             }
         },
         "lode_runner.tsx": {
