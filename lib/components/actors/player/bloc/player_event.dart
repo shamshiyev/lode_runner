@@ -27,13 +27,6 @@ final class PlayerKeyPressedEvent extends EventPlayerBloc {
   final KeyEvent keyEvent;
 }
 
-final class PlayerUpdateDirectionEvent extends EventPlayerBloc {
-  const PlayerUpdateDirectionEvent({
-    required this.deltaTime,
-  });
-  final double deltaTime;
-}
-
 final class PlayerJumpEvent extends EventPlayerBloc {
   const PlayerJumpEvent({
     required this.deltaTime,
@@ -41,26 +34,4 @@ final class PlayerJumpEvent extends EventPlayerBloc {
   final double deltaTime;
 }
 
-final class PlayerApplyGravityEvent extends EventPlayerBloc {
-  const PlayerApplyGravityEvent({
-    required this.deltaTime,
-  });
-  final double deltaTime;
-}
-
 final class PlayerChangeAnimationEvent extends EventPlayerBloc {}
-
-final class PlayerCollisionEvent extends EventPlayerBloc {
-  const PlayerCollisionEvent(this.collisionBlock);
-  final CollisionBlock collisionBlock;
-}
-
-final class HandleHorizontalCollisionEvent extends EventPlayerBloc {
-  const HandleHorizontalCollisionEvent(this.collisionBlock);
-  final CollisionBlock collisionBlock;
-}
-
-final class HandleVerticalCollisionEvent extends EventPlayerBloc {
-  const HandleVerticalCollisionEvent(this.collisionBlock);
-  final CollisionBlock collisionBlock;
-}

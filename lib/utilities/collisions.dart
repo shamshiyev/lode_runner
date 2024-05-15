@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
@@ -12,50 +10,43 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
   }) {
     // Дебагмод для отображения координат блоков
     debugMode = true;
-    debugColor = Colors.amber.withOpacity(0.0);
+    debugColor = Colors.amber;
   }
   bool isPlatform;
-  @override
-  FutureOr<void> onLoad() {
-    add(
-      RectangleHitbox(
-        priority: 100,
-      ),
-    );
-    return super.onLoad();
-  }
 }
 
+bool checkCollisions(
+  player,
+  block,
+) {
+  final hitbox = player.hitbox;
+  // Позиция персонажа по оси X
+  final playerX = player.position.x + hitbox.offsetX;
+  // Верхняя точка игрока
+  final playerY = player.position.y + hitbox.offsetY;
+  final playerWidth = hitbox.width;
+  final playerHeight = hitbox.height;
 
+  // Позиция блока по оси X
+  final blockX = block.x;
+  // Верхняя точка блока
+  final blockY = block.y;
+  final blockWidth = block.width;
+  final blockHeight = block.height;
 
-// bool isCollisionOnX = (
-//   fixedX < blockX + blockWidth &&
-//   fixedX + playerWidth > blockX);
+  // Проверяем развернута ли модель влево
+  final fixedX = player.scale.x < 0
+      ? playerX - (hitbox.offsetX * 2) - playerWidth
+      : playerX;
 
-// bool isCollisionOnY = (
-//   playerY < blockY + blockHeight &&
-//   playerY + playerHeight > blockY);
+  // Коллизия с платформой при учёте высоты модели
+  final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
 
-// if (isCollisionOnX && isCollisionOnY) {
-//   // Both x and y collisions detected, determine which happened first
-//   double overlapX = min(
-//     fixedX + playerWidth - blockX,
-//     blockX + blockWidth - fixedX);
-//   double overlapY = min(
-//     playerY + playerHeight - blockY,
-//     blockY + blockHeight - playerY);
-
-//   if (overlapX < overlapY) {
-//     // X collision happened first
-//     // Handle x collision
-//   } else {
-//     // Y collision happened first
-//     // Handle y collision
-//   }
-// } else if (isCollisionOnX) {
-//   // Only x collision detected
-//   // Handle x collision
-// } else if (isCollisionOnY) {
-//   // Only y collision detected
-//   // Handle y collision
-// }
+  return (
+      // Коллизия по оси Y (верхняя и нижняя точка игрока и блока пересекаются)
+      fixedY < blockY + blockHeight &&
+          playerY + playerHeight > blockY &&
+          // Коллизия по оси X
+          fixedX < blockX + blockWidth &&
+          fixedX + playerWidth > blockX);
+}

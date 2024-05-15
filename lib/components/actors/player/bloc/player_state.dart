@@ -1,106 +1,23 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'player_bloc.dart';
 
-class StatePlayerBloc extends Equatable {
+sealed class StatePlayerBloc extends Equatable {
   const StatePlayerBloc({
     required this.player,
-    required this.position,
-    required this.velocity,
-    this.isOnGround = true,
-    this.hasJumped = false,
-    this.isSliding = false,
-    this.hasDoubleJumped = false,
-    this.gotHit = false,
-    this.reachedCheckpoint = false,
-    this.horizontalSpeed = 0,
+    required this.startingPosition,
   });
 
   final Player player;
-  final Vector2 position;
-  final Vector2 velocity;
-  final bool isOnGround;
-  final bool hasJumped;
-  final bool isSliding;
-  final bool hasDoubleJumped;
-  final bool gotHit;
-  final bool reachedCheckpoint;
-  final int horizontalSpeed;
-
+  final Vector2 startingPosition;
   @override
   List<Object> get props => [
         player,
-        position,
-        velocity,
-        isOnGround,
-        hasJumped,
-        isSliding,
-        hasDoubleJumped,
-        gotHit,
-        reachedCheckpoint,
-        horizontalSpeed,
+        startingPosition,
       ];
-
-  StatePlayerBloc copyWith({
-    Player? player,
-    Vector2? position,
-    Vector2? velocity,
-    bool? isOnGround,
-    bool? hasJumped,
-    bool? isSliding,
-    bool? hasDoubleJumped,
-    bool? gotHit,
-    bool? reachedCheckpoint,
-    int? horizontalSpeed,
-  }) {
-    return StatePlayerBloc(
-      player: player ?? this.player,
-      position: position ?? this.position,
-      velocity: velocity ?? this.velocity,
-      isOnGround: isOnGround ?? this.isOnGround,
-      hasJumped: hasJumped ?? this.hasJumped,
-      isSliding: isSliding ?? this.isSliding,
-      hasDoubleJumped: hasDoubleJumped ?? this.hasDoubleJumped,
-      gotHit: gotHit ?? this.gotHit,
-      reachedCheckpoint: reachedCheckpoint ?? this.reachedCheckpoint,
-      horizontalSpeed: horizontalSpeed ?? this.horizontalSpeed,
-    );
-  }
 }
 
 final class PlayerInitialState extends StatePlayerBloc {
   const PlayerInitialState({
     required super.player,
-    required super.position,
-    required super.velocity,
-  });
-}
-
-final class PlayerActiveState extends StatePlayerBloc {
-  const PlayerActiveState({
-    required super.player,
-    required super.position,
-    required super.velocity,
-    required super.isOnGround,
-    required super.hasJumped,
-    required super.isSliding,
-    required super.hasDoubleJumped,
-    required super.gotHit,
-    required super.reachedCheckpoint,
-    required super.horizontalSpeed,
-  });
-}
-
-final class PlayerCollidedState extends StatePlayerBloc {
-  const PlayerCollidedState({
-    required super.player,
-    required super.position,
-    required super.velocity,
-    required super.isOnGround,
-    required super.hasJumped,
-    required super.isSliding,
-    required super.hasDoubleJumped,
-    required super.gotHit,
-    required super.reachedCheckpoint,
-    required super.horizontalSpeed,
+    required super.startingPosition,
   });
 }

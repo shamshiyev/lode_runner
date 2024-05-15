@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_04.tmx",
+    "activeFile": "level_02.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -45,14 +45,14 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                4,
-                2
+                2,
+                4
             ],
             "scale": 1.5,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
-                "y": 184
+                "x": 315.6666666666667,
+                "y": 179.66666666666666
             }
         },
         "level_02.tmx": {
@@ -64,10 +64,10 @@
                 3
             ],
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 320,
-                "y": 184
+                "x": 320.33333333333326,
+                "y": 184.33333333333331
             }
         },
         "level_03.tmx": {
@@ -88,10 +88,10 @@
                 3
             ],
             "scale": 1.7218749999999998,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 305.7713248638838,
-                "y": 172.1960072595282
+                "x": 316.22504537205083,
+                "y": 179.74591651542653
             }
         },
         "lode_runner.tsx": {
@@ -117,9 +117,9 @@
     "project": "lode_runner.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "level_04.tmx",
         "level_01.tmx",
         "level_02.tmx",
-        "level_04.tmx",
         "level_03.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
