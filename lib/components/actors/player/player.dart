@@ -287,7 +287,6 @@ class Player extends SpriteAnimationGroupComponent
       hasDoubleJumped = false;
       velocity.y = min(velocity.y, wallSlideSpeed);
     }
-
     velocity.x = horizontalSpeed * Constants.moveSpeed;
     position.x += velocity.x * dt;
   }
@@ -320,8 +319,13 @@ class Player extends SpriteAnimationGroupComponent
           //     'VERTICAL collision occured - overlapX: $overlapX, overlapY: $overlapY');
           return;
         } else {
-          if (velocity.y > 0) {
+          // Скольжение только по достаточно высоким блокам
+          if (velocity.y > 0 && block.height > hitbox.height * 2) {
             isSliding = true;
+          }
+          // Отмена скольжения при достижении нижней границы блока
+          if (position.y + hitbox.height >= block.y + block.height) {
+            isSliding = false;
           }
           if (!block.isPlatform) {
             if (velocity.x > 0) {
@@ -358,8 +362,6 @@ class Player extends SpriteAnimationGroupComponent
       double overlapY = overlaps[1];
       if (overlapX > hitbox.offsetY / 2 && overlapY != 0) {
         if (overlapY > overlapX) {
-          dev.log(
-              'Unexpected horizontal collision - overlapX: $overlapX, overlapY: $overlapY');
           return;
           // Когда overlapY < overlapX, значит коллизия происходит по оси Y
         } else {

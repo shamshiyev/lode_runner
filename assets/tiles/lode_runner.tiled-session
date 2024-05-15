@@ -51,8 +51,8 @@
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 315.6666666666667,
-                "y": 179.66666666666666
+                "x": 311,
+                "y": 175
             }
         },
         "level_02.tmx": {
@@ -72,8 +72,8 @@
         },
         "level_03.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 2,
@@ -84,14 +84,14 @@
         },
         "level_04.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
-                "y": 180.6170598911071
+                "x": 319.7096188747732,
+                "y": 180.9074410163339
             }
         },
         "lode_runner.tsx": {

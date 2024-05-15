@@ -32,7 +32,7 @@ List<double> checkCollisions(player, block) {
   final fixedX = player.scale.x < 0
       ? playerX - (hitbox.offsetX * 2) - playerWidth
       : playerX;
-  final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
+  // final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
 
   double overlapX = max(
       0,
@@ -40,8 +40,8 @@ List<double> checkCollisions(player, block) {
           max(fixedX, blockX));
   double overlapY = max(
       0,
-      min<double>(fixedY + playerHeight, blockY + blockHeight) -
-          max(fixedY, blockY));
+      min<double>(playerY + playerHeight, blockY + blockHeight) -
+          max(playerY, blockY));
 
   return [overlapX, overlapY];
 }
