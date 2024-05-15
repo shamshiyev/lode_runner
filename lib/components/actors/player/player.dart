@@ -309,58 +309,31 @@ class Player extends SpriteAnimationGroupComponent
   void _checkHorizontalCollisions() {
     isSliding = false;
     for (final block in collisionBlocks) {
-// Позиция персонажа по оси X
-      final playerX = position.x + hitbox.offsetX;
-      // Верхняя точка игрока
-      final playerY = position.y + hitbox.offsetY;
-      final playerWidth = hitbox.width;
-      final playerHeight = hitbox.height;
+      List<double> overlaps = checkCollisions(this, block);
+      double overlapX = overlaps[0];
+      double overlapY = overlaps[1];
 
-      // Позиция блока по оси X
-      final blockX = block.x;
-      // Верхняя точка блока
-      final blockY = block.y;
-      final blockWidth = block.width;
-      final blockHeight = block.height;
-
-      // Проверяем развернута ли модель влево
-      final fixedX =
-          scale.x < 0 ? playerX - (hitbox.offsetX * 2) - playerWidth : playerX;
-
-      final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
-
-      double overlapX = max(0,
-          min(fixedX + playerWidth, blockX + blockWidth) - max(fixedX, blockX));
-      double overlapY = max(
-        0,
-        min(fixedY + playerHeight, blockY + blockHeight) -
-            max(
-              fixedY,
-              blockY,
-            ),
-      );
       if (overlapX != 0 && overlapY != 0) {
+        // Когда overlapX < overlapY, значит коллизия происходит по оси X
         if (overlapX > overlapY) {
+          // dev.log(
+          //     'VERTICAL collision occured - overlapX: $overlapX, overlapY: $overlapY');
           return;
         } else {
+          if (velocity.y > 0) {
+            isSliding = true;
+          }
           if (!block.isPlatform) {
-            if (checkCollisions(this, block)) {
-              // if (velocity.y > 0) {
-              //   isSliding = true;
-              // }
-              // Коллизия и остановка при движении вправо
-              if (velocity.x > 0) {
-                velocity.x = 0;
-                position.x = block.x - hitbox.offsetX - hitbox.width;
-                break;
-              }
-              // Коллизия и остановка при движении влево
-              if (velocity.x < 0) {
-                velocity.x = 0;
-                position.x =
-                    block.x + block.width + hitbox.width + hitbox.offsetX;
-                break;
-              }
+            if (velocity.x > 0) {
+              velocity.x = 0;
+              position.x = block.x - hitbox.offsetX - hitbox.width;
+              break;
+            }
+            if (velocity.x < 0) {
+              velocity.x = 0;
+              position.x =
+                  block.x + block.width + hitbox.width + hitbox.offsetX;
+              break;
             }
           }
         }
@@ -380,64 +353,37 @@ class Player extends SpriteAnimationGroupComponent
 
   void _checkVerticalCollisions() {
     for (final block in collisionBlocks) {
-      final playerX = position.x + hitbox.offsetX;
-      // Верхняя точка игрока
-      final playerY = position.y + hitbox.offsetY;
-      final playerWidth = hitbox.width;
-      final playerHeight = hitbox.height;
-
-      // Позиция блока по оси X
-      final blockX = block.x;
-      // Верхняя точка блока
-      final blockY = block.y;
-      final blockWidth = block.width;
-      final blockHeight = block.height;
-
-      // Проверяем развернута ли модель влево
-      final fixedX =
-          scale.x < 0 ? playerX - (hitbox.offsetX * 2) - playerWidth : playerX;
-
-      final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
-
-      double overlapX = max(0,
-          min(fixedX + playerWidth, blockX + blockWidth) - max(fixedX, blockX));
-      double overlapY = max(
-        0,
-        min(fixedY + playerHeight, blockY + blockHeight) -
-            max(
-              fixedY,
-              blockY,
-            ),
-      );
-      if (overlapX != 0 && overlapY != 0) {
+      List<double> overlaps = checkCollisions(this, block);
+      double overlapX = overlaps[0];
+      double overlapY = overlaps[1];
+      if (overlapX > hitbox.offsetY / 2 && overlapY != 0) {
         if (overlapY > overlapX) {
+          dev.log(
+              'Unexpected horizontal collision - overlapX: $overlapX, overlapY: $overlapY');
           return;
+          // Когда overlapY < overlapX, значит коллизия происходит по оси Y
         } else {
           if (block.isPlatform) {
-            if (checkCollisions(this, block)) {
-              if (velocity.y > 0) {
-                velocity.y = 0;
-                position.y = block.y - hitbox.height - hitbox.offsetY;
-                isOnGround = true;
-                break;
-              }
+            if (velocity.y > 0) {
+              velocity.y = 0;
+              position.y = block.y - hitbox.height - hitbox.offsetY;
+              isOnGround = true;
+              break;
             }
           } else {
-            if (checkCollisions(this, block)) {
-              // Вычисляем коллизию при падении
-              if (velocity.y > 0) {
-                velocity.y = 0;
-                position.y = block.y - hitbox.height - hitbox.offsetY;
-                // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
-                isOnGround = true;
-                break;
-              }
-              // Вычисляем коллизию при прыжке
-              if (velocity.y < 0) {
-                velocity.y = 0;
-                position.y = block.y + block.height - hitbox.offsetY;
-                break;
-              }
+            // Вычисляем коллизию при падении
+            if (velocity.y > 0) {
+              velocity.y = 0;
+              position.y = block.y - hitbox.height - hitbox.offsetY;
+              // При коллизии по вертикали сверху вниз мы понимаем, что "на земле"
+              isOnGround = true;
+              break;
+            }
+            // Вычисляем коллизию при прыжке
+            if (velocity.y < 0) {
+              velocity.y = 0;
+              position.y = block.y + block.height - hitbox.offsetY;
+              break;
             }
           }
         }
