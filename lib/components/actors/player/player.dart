@@ -88,7 +88,10 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void onNewState(StatePlayerBloc state) {
-    // TODO: implement onNewState
+    if (state is PlayerKeyPressedState) {
+      horizontalSpeed = state.horizontalSpeed;
+      hasJumped = state.hasJumped;
+    }
     super.onNewState(state);
   }
 
@@ -97,37 +100,12 @@ class Player extends SpriteAnimationGroupComponent
     KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
-    // Описываем инпуты для передвижения и остановки по горизонтали
-    horizontalSpeed = 0;
-    final leftKeyPressed = keysPressed.contains(
-          LogicalKeyboardKey.arrowLeft,
-        ) ||
-        keysPressed.contains(
-          LogicalKeyboardKey.keyA,
-        );
-    final rightKeyPressed = keysPressed.contains(
-          LogicalKeyboardKey.arrowRight,
-        ) ||
-        keysPressed.contains(
-          LogicalKeyboardKey.keyD,
-        );
-    horizontalSpeed += leftKeyPressed ? -1 : 0;
-    horizontalSpeed += rightKeyPressed ? 1 : 0;
-    if (leftKeyPressed && rightKeyPressed) {
-      horizontalSpeed = 0;
-    }
-    // Остановка при отпускании клавиш движения
-    if (event is KeyUpEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
-          event.logicalKey == LogicalKeyboardKey.arrowRight ||
-          event.logicalKey == LogicalKeyboardKey.keyA ||
-          event.logicalKey == LogicalKeyboardKey.keyD) {
-        horizontalSpeed = 0;
-      }
-    }
-    // Прыжок
-    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
-
+    bloc.add(
+      PlayerKeyPressedEvent(
+        keysPressed: keysPressed,
+        keyEvent: event,
+      ),
+    );
     return false;
   }
 

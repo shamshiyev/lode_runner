@@ -1,6 +1,6 @@
 part of 'player_bloc.dart';
 
-sealed class StatePlayerBloc extends Equatable {
+class StatePlayerBloc extends Equatable {
   const StatePlayerBloc({
     required this.player,
     required this.startingPosition,
@@ -13,6 +13,16 @@ sealed class StatePlayerBloc extends Equatable {
         player,
         startingPosition,
       ];
+
+  StatePlayerBloc copyWith({
+    Player? player,
+    Vector2? startingPosition,
+  }) {
+    return StatePlayerBloc(
+      player: player ?? this.player,
+      startingPosition: startingPosition ?? this.startingPosition,
+    );
+  }
 }
 
 final class PlayerInitialState extends StatePlayerBloc {
@@ -20,4 +30,24 @@ final class PlayerInitialState extends StatePlayerBloc {
     required super.player,
     required super.startingPosition,
   });
+}
+
+final class PlayerKeyPressedState extends StatePlayerBloc {
+  const PlayerKeyPressedState({
+    required super.player,
+    required super.startingPosition,
+    this.horizontalSpeed = 0,
+    this.hasJumped = false,
+  });
+
+  final double horizontalSpeed;
+  final bool hasJumped;
+
+  @override
+  List<Object> get props => [
+        player,
+        startingPosition,
+        horizontalSpeed,
+        hasJumped,
+      ];
 }
