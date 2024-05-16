@@ -45,14 +45,14 @@
         },
         "level_01.tmx": {
             "expandedObjectLayers": [
-                2,
-                4
+                4,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 311,
-                "y": 175
+                "x": 306.33333333333326,
+                "y": 170.33333333333331
             }
         },
         "level_02.tmx": {
@@ -60,14 +60,14 @@
                 6
             ],
             "expandedObjectLayers": [
-                2,
-                3
+                3,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 315.6666666666667,
-                "y": 179.66666666666666
+                "x": 320,
+                "y": 184
             }
         },
         "level_03.tmx": {
@@ -112,15 +112,16 @@
     "openFiles": [
         "level_04.tmx",
         "level_02.tmx",
-        "level_01.tmx"
+        "level_01.tmx",
+        "level_03.tmx"
     ],
     "project": "lode_runner.tiled-project",
     "property.type": "string",
     "recentFiles": [
         "level_04.tmx",
         "level_02.tmx",
-        "level_01.tmx",
         "level_03.tmx",
+        "level_01.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",

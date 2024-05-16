@@ -4,7 +4,9 @@ import 'dart:developer' as dev;
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/utilities/constants.dart';
 import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/components/checkpoint.dart';
@@ -17,26 +19,17 @@ import 'package:lode_runner/lode_runner.dart';
 import '../../traps/spike.dart';
 import '../enemy.dart';
 
-enum PlayerAnimationState {
-  idle,
-  run,
-  jump,
-  fall,
-  hit,
-  doubleJump,
-  wallJump,
-  appearing,
-  disappearing,
-}
+part 'animations_view.dart';
 
 class Player extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, KeyboardHandler, CollisionCallbacks {
+    with
+        HasGameRef<LodeRunner>,
+        KeyboardHandler,
+        CollisionCallbacks,
+        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
   Player({
     super.position,
   });
-
-  // Скорость всех анимаций
-  static const double stepTime = 0.05;
 
   late final SpriteAnimation doubleJump;
   late final SpriteAnimation fall;
@@ -52,8 +45,6 @@ class Player extends SpriteAnimationGroupComponent
   // Стартовая позиция игрока
   Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
-  // Скорость скольжения по стене
-  static const double wallSlideSpeed = 80;
 
   bool isOnGround = true;
   bool hasJumped = false;
@@ -76,9 +67,8 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
-    _loadAllAnimations();
     debugMode = true;
-    debugColor = const Color(0xFF00FF00).withOpacity(0.0);
+    PlayerAnimationsView(this)._loadAllAnimations();
     startingPosition = Vector2(position.x, position.y);
     // Создание хитбокса
     add(
@@ -94,6 +84,12 @@ class Player extends SpriteAnimationGroupComponent
       ),
     );
     return super.onLoad();
+  }
+
+  @override
+  void onNewState(StatePlayerBloc state) {
+    // TODO: implement onNewState
+    super.onNewState(state);
   }
 
   @override
@@ -163,87 +159,14 @@ class Player extends SpriteAnimationGroupComponent
       if (!gotHit && !reachedCheckpoint) {
         _upDatePlayerMovement();
         _updatePlayerDirection(fixedDeltaTime);
-        _checkHorizontalCollisions();
+        _checkCollisionsOnX();
         _applyGravity(fixedDeltaTime);
-        _checkVerticalCollisions();
+        _checkCollisionsOnY();
       }
       accumulatedTime -= fixedDeltaTime;
     }
 
     super.update(dt);
-  }
-
-  void _loadAllAnimations() {
-    // Базовый метод
-    SpriteAnimation spriteAnimation({
-      required String src,
-      required int frameAmount,
-    }) {
-      return SpriteAnimation.fromFrameData(
-        gameRef.images.fromCache(
-          src,
-        ),
-        SpriteAnimationData.sequenced(
-          amount: frameAmount,
-          stepTime: stepTime,
-          textureSize: Vector2.all(32),
-        ),
-      );
-    }
-
-    // Значения анимаций
-    idle = spriteAnimation(
-      src: ActorAnimations.idle,
-      frameAmount: 11,
-    );
-    run = spriteAnimation(
-      src: ActorAnimations.run,
-      frameAmount: 12,
-    );
-    jump = spriteAnimation(
-      src: ActorAnimations.jump,
-      frameAmount: 1,
-    );
-    fall = spriteAnimation(
-      src: ActorAnimations.fall,
-      frameAmount: 1,
-    );
-    hit = spriteAnimation(
-      src: ActorAnimations.hit,
-      frameAmount: 7,
-    )..loop = false;
-    doubleJump = spriteAnimation(
-      src: ActorAnimations.doubleJump,
-      frameAmount: 6,
-    );
-    wallJump = spriteAnimation(
-      src: ActorAnimations.wallJump,
-      frameAmount: 5,
-    );
-    appearing = spriteAnimation(
-      src: ActorAnimations.appearing,
-      frameAmount: 7,
-    )..loop = false;
-    disappearing = spriteAnimation(
-      src: ActorAnimations.disappearing,
-      frameAmount: 7,
-    )..loop = false;
-
-    // Текущее значение анимации
-    current = PlayerAnimationState.idle;
-
-    // Список анимаций
-    animations = <PlayerAnimationState, SpriteAnimation>{
-      PlayerAnimationState.idle: idle,
-      PlayerAnimationState.run: run,
-      PlayerAnimationState.jump: jump,
-      PlayerAnimationState.fall: fall,
-      PlayerAnimationState.hit: hit,
-      PlayerAnimationState.doubleJump: doubleJump,
-      PlayerAnimationState.wallJump: wallJump,
-      PlayerAnimationState.appearing: appearing,
-      PlayerAnimationState.disappearing: disappearing,
-    };
   }
 
   void _upDatePlayerMovement() {
@@ -285,7 +208,7 @@ class Player extends SpriteAnimationGroupComponent
     if (isSliding && velocity.y > 0) {
       hasJumped = false;
       hasDoubleJumped = false;
-      velocity.y = min(velocity.y, wallSlideSpeed);
+      velocity.y = min(velocity.y, Constants.wallSlideSpeed);
     }
     velocity.x = horizontalSpeed * Constants.moveSpeed;
     position.x += velocity.x * dt;
@@ -305,19 +228,22 @@ class Player extends SpriteAnimationGroupComponent
     hasJumped = false;
   }
 
-  void _checkHorizontalCollisions() {
+  void _checkCollisionsOnX() {
     isSliding = false;
     for (final block in collisionBlocks) {
       List<double> overlaps = checkCollisions(this, block);
       double overlapX = overlaps[0];
       double overlapY = overlaps[1];
-
       if (overlapX != 0 && overlapY != 0) {
-        // Когда overlapX < overlapY, значит коллизия происходит по оси X
-        if (overlapX > overlapY) {
-          // dev.log(
-          //     'VERTICAL collision occured - overlapX: $overlapX, overlapY: $overlapY');
+        // dev.log(
+        //     'Unexpected collision on Y, overlapX: $overlapX, overlapY: $overlapY');
+        // Минорные случаи (при коллизии на углах)
+        if (overlapX > overlapY && !block.isPlatform) {
+          if (velocity.y < 0) {
+            position.y -= overlapY;
+          }
           return;
+          // Когда overlapX < overlapY, значит коллизия происходит по оси X
         } else {
           // Скольжение только по достаточно высоким блокам
           if (velocity.y > 0 && block.height > hitbox.height * 2) {
@@ -355,14 +281,19 @@ class Player extends SpriteAnimationGroupComponent
     position.y += velocity.y * dt;
   }
 
-  void _checkVerticalCollisions() {
+  void _checkCollisionsOnY() {
     for (final block in collisionBlocks) {
       List<double> overlaps = checkCollisions(this, block);
       double overlapX = overlaps[0];
       double overlapY = overlaps[1];
-      if (overlapX > hitbox.offsetY / 2 && overlapY != 0) {
-        if (overlapY > overlapX) {
+      if (overlapX != 0 && overlapY != 0) {
+        if (overlapY > overlapX && isOnGround) {
+          // [log] Unexpected collision on X, overlapX: 2.3333333333332575, overlapY: 4.216666666666754, velocity.y: 269.2000000000003
+          dev.log(
+            'Unexpected collision on X, overlapX: $overlapX, overlapY: $overlapY, velocity.y: ${velocity.y}',
+          );
           return;
+
           // Когда overlapY < overlapX, значит коллизия происходит по оси Y
         } else {
           if (block.isPlatform) {

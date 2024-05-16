@@ -63,7 +63,7 @@
   <object id="176" x="544" y="208" width="48" height="112"/>
   <object id="177" x="496" y="304" width="48" height="16"/>
   <object id="178" x="128" y="304" width="48" height="32"/>
-  <object id="179" x="112" y="320" width="16" height="16"/>
+  <object id="179" x="112" y="320" width="64" height="16"/>
   <object id="183" x="304" y="96" width="224" height="64"/>
  </objectgroup>
 </map>
