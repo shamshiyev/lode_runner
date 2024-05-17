@@ -6,11 +6,12 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
 
-import '../../utilities/animations.dart';
-import '../../lode_runner.dart';
+import '../../../utilities/animations.dart';
+import '../../../lode_runner.dart';
 
 enum EnemyState { idle, run, hit, aware }
 
+// Will be replaced with some specific type of enemy
 class Enemy extends SpriteAnimationGroupComponent
     with
         HasGameRef<LodeRunner>,

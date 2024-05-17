@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="166">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="167">
  <tileset firstgid="1" source="chain.tsx"/>
  <tileset firstgid="2" source="lode_runner.tsx"/>
  <layer id="2" name="background" width="40" height="23">
@@ -16,7 +16,7 @@
 113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
 113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
 113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,134,94,113,
-113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,184,185,185,185,186,200,113,
+113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,195,196,196,196,197,200,113,
 113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,207,207,207,207,207,200,113,
 113,202,124,102,103,103,104,0,0,0,102,103,103,104,124,124,0,0,0,207,207,207,207,207,207,207,0,0,0,0,0,0,0,207,207,207,207,207,200,113,
 113,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,207,207,207,207,207,207,207,0,0,0,0,0,0,0,207,207,207,207,207,200,113,
@@ -172,6 +172,7 @@
     <property name="direction" value="right"/>
    </properties>
   </object>
+  <object id="166" name="Strawberry" type="collectable" x="344" y="32" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="4" name="collisions">
   <object id="70" x="16" y="16" width="16" height="256"/>

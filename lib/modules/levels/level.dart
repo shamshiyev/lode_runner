@@ -7,10 +7,11 @@ import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/components/traps/chain.dart';
 import 'package:lode_runner/components/traps/spike.dart';
 
+import '../../components/actors/enemies/blue_bird.dart';
 import '../../utilities/background_tile.dart';
 import '../../helpers/collisions.dart';
 import '../../lode_runner.dart';
-import '../../components/actors/enemy.dart';
+import '../../components/actors/enemies/basic_enemy.dart';
 import '../../components/actors/player/player.dart';
 import '../../components/checkpoint.dart';
 import '../../components/collectable.dart';
@@ -145,6 +146,31 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
               ),
             );
             break;
+          case 'bluebird':
+            final offNeg = spawnPoint.properties.getValue('offNeg');
+            final offPos = spawnPoint.properties.getValue('offPos');
+            final blueBird = BlueBird(
+              position: Vector2(
+                spawnPoint.x,
+                spawnPoint.y,
+              ),
+              size: Vector2(
+                spawnPoint.width,
+                spawnPoint.height,
+              ),
+              offNeg: offNeg,
+              offPos: offPos,
+            );
+            await add(
+              FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
+                value: gameRef.playerBloc,
+                children: [
+                  blueBird,
+                ],
+              ),
+            );
+            break;
+
           case 'sprite':
             final sprite = Chain(
               position: Vector2(

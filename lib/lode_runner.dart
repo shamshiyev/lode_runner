@@ -35,6 +35,8 @@ class LodeRunner extends FlameGame
     'level_02',
     'level_03',
     'level_04',
+    'level_05',
+    'level_06',
   ];
 
   int currentLevel = 2;

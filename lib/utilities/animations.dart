@@ -15,4 +15,6 @@ class ActorAnimations {
   static const String hitEnemy = 'Main Characters/Mask Dude/Hit (32x32).png';
   static const String awareEnemy =
       'Main Characters/Mask Dude/Wall Jump (32x32).png';
+  static const String blueBirdFly = 'Enemies/BlueBird/Flying (32x32).png';
+  static const String blueBirdHit = 'Enemies/BlueBird/Hit (32x32).png';
 }

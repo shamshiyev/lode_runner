@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="220">
+ <tileset firstgid="1" source="chain.tsx"/>
+ <tileset firstgid="2" source="lode_runner.tsx"/>
+ <layer id="2" name="background" width="40" height="23">
+  <properties>
+   <property name="backgroundColor" value="Gray"/>
+  </properties>
+  <data encoding="csv">
+113,93,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,135,94,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,212,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,64,65,8,9,9,10,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,112,113,113,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,134,135,94,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,65,31,31,31,31,8,10,24,
+113,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,53,53,53,53,31,24,
+113,26,8,9,9,9,9,10,63,64,65,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,0,0,31,31,24,
+113,26,31,31,31,31,31,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,0,0,31,31,24,
+113,26,31,31,31,31,31,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,9,34,31,0,0,31,31,24,
+113,26,31,31,31,31,31,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,0,0,31,31,24,
+5,48,31,31,31,31,31,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,0,0,31,31,24,
+26,213,214,31,31,31,8,9,9,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,9,9,9,9,34,31,33,9,9,34,31,24,
+26,235,236,190,192,31,190,191,191,191,192,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,31,31,31,31,31,31,31,31,31,31,212,24,
+27,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,195,196,196,197,3,3,3,4,31,31,31,31,31,190,191,192,24,
+113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,27,3,3,3,3,3,3,3,3,113
+</data>
+ </layer>
+ <objectgroup id="3" name="spawnpoints">
+  <object id="164" name="Player" type="player" x="192" y="304" width="31.8076" height="32.4437"/>
+  <object id="184" name="Checkpoint" type="checkpoint" x="368" y="272" width="64" height="64"/>
+  <object id="185" name="Coin" type="collectable" x="104" y="200" width="16" height="16"/>
+  <object id="186" name="Coin" type="collectable" x="72" y="200" width="16" height="16"/>
+  <object id="189" name="Coin" type="collectable" x="40" y="200" width="16" height="16"/>
+  <object id="191" name="Apple" type="collectable" x="496" y="160" width="32" height="32"/>
+  <object id="193" name="Bananas" type="collectable" x="544" y="64" width="32" height="32"/>
+  <object id="198" name="Cherries" type="collectable" x="496" y="224" width="32" height="32"/>
+  <object id="216" name="Saw" type="saw" x="400" y="320" width="32" height="32">
+   <properties>
+    <property name="isVertical" type="bool" value="false"/>
+    <property name="offNeg" type="float" value="14"/>
+    <property name="offPos" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="217" name="Bluebird" type="bluebird" x="80" y="144" width="32" height="32">
+   <properties>
+    <property name="isVertical" type="bool" value="false"/>
+    <property name="offNeg" type="float" value="4"/>
+    <property name="offPos" type="float" value="8"/>
+   </properties>
+  </object>
+  <object id="218" name="Bluebird" type="bluebird" x="320" y="240" width="32" height="32">
+   <properties>
+    <property name="isVertical" type="bool" value="false"/>
+    <property name="offNeg" type="float" value="8"/>
+    <property name="offPos" type="float" value="4"/>
+   </properties>
+  </object>
+  <object id="219" name="Bluebird" type="bluebird" x="416" y="80" width="32" height="32">
+   <properties>
+    <property name="isVertical" type="bool" value="false"/>
+    <property name="offNeg" type="float" value="22"/>
+    <property name="offPos" type="float" value="4"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="collisions">
+  <object id="200" x="32" y="224" width="96" height="112"/>
+  <object id="202" x="16" y="16" width="16" height="288"/>
+  <object id="203" x="16" y="336" width="480" height="16"/>
+  <object id="204" x="432" y="304" width="64" height="32"/>
+  <object id="205" x="528" y="128" width="64" height="128"/>
+  <object id="206" x="496" y="256" width="128" height="96"/>
+  <object id="208" x="32" y="0" width="560" height="16"/>
+  <object id="209" x="592" y="16" width="16" height="176"/>
+  <object id="210" x="128" y="304" width="32" height="32"/>
+  <object id="211" x="160" y="320" width="16" height="16"/>
+  <object id="212" x="576" y="112" width="16" height="16"/>
+  <object id="213" type="platform" x="480" y="128" width="48" height="4"/>
+  <object id="214" type="platform" x="496" y="192" width="32" height="4"/>
+  <object id="215" type="platform" x="128" y="224" width="48" height="4"/>
+ </objectgroup>
+</map>

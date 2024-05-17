@@ -6,38 +6,28 @@ import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
+import 'package:lode_runner/components/actors/enemies/blue_bird.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/helpers/constants.dart';
 import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/components/checkpoint.dart';
 import 'package:lode_runner/components/collectable.dart';
 import 'package:lode_runner/components/traps/saw.dart';
-import 'package:lode_runner/utilities/animations.dart';
 import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 import '../../traps/spike.dart';
-import '../enemy.dart';
-
-part 'animations_view.dart';
+import '../enemies/basic_enemy.dart';
+import 'animations_mixin.dart';
 
 class Player extends SpriteAnimationGroupComponent
     with
         HasGameRef<LodeRunner>,
         KeyboardHandler,
         CollisionCallbacks,
-        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
+        FlameBlocListenable<PlayerBloc, StatePlayerBloc>,
+        PlayerAnimationsMixin {
   Player();
-
-  late final SpriteAnimation doubleJump;
-  late final SpriteAnimation fall;
-  late final SpriteAnimation hit;
-  late final SpriteAnimation idle;
-  late final SpriteAnimation jump;
-  late final SpriteAnimation run;
-  late final SpriteAnimation wallJump;
-  late final SpriteAnimation appearing;
-  late final SpriteAnimation disappearing;
 
   double horizontalSpeed = 0;
   // Стартовая позиция игрока
@@ -64,11 +54,9 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
+    loadAllAnimations(gameRef);
     final bloc = gameRef.playerBloc;
-    debugMode = true;
-    PlayerAnimationsView(this)._loadAllAnimations();
     position = bloc.state.startingPosition;
-
     // Создание хитбокса
     add(
       RectangleHitbox(
@@ -125,6 +113,9 @@ class Player extends SpriteAnimationGroupComponent
       if (other is Enemy) {
         other.collidedWithPlayer();
       }
+      if (other is BlueBird) {
+        other.collidedWithPlayer();
+      }
     }
     super.onCollisionStart(intersectionPoints, other);
   }
@@ -134,7 +125,7 @@ class Player extends SpriteAnimationGroupComponent
     accumulatedTime += dt;
     while (accumulatedTime >= fixedDeltaTime) {
       if (!gotHit && !reachedCheckpoint) {
-        _upDatePlayerMovement();
+        _upDatePlayerAnimation();
         _updatePlayerDirection(fixedDeltaTime);
         _checkCollisionsOnX();
         _applyGravity(fixedDeltaTime);
@@ -142,13 +133,11 @@ class Player extends SpriteAnimationGroupComponent
       }
       accumulatedTime -= fixedDeltaTime;
     }
-
     super.update(dt);
   }
 
-  void _upDatePlayerMovement() {
+  void _upDatePlayerAnimation() {
     PlayerAnimationState playerState = PlayerAnimationState.idle;
-
     // Поворот персонажа осуществляется за счёт прослушивания параметра scale
     if (velocity.x < 0 && scale.x > 0) {
       flipHorizontallyAroundCenter();
@@ -320,7 +309,7 @@ class Player extends SpriteAnimationGroupComponent
     //
     velocity = Vector2.zero();
     position = bloc.state.startingPosition;
-    _upDatePlayerMovement();
+    _upDatePlayerAnimation();
     Future.delayed(const Duration(milliseconds: 400), () => gotHit = false);
   }
 

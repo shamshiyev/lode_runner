@@ -1,4 +1,6 @@
-part of 'player.dart';
+import 'package:flame/components.dart';
+import '../../../lode_runner.dart';
+import '../../../utilities/animations.dart';
 
 enum PlayerAnimationState {
   idle,
@@ -12,11 +14,23 @@ enum PlayerAnimationState {
   disappearing,
 }
 
-extension PlayerAnimationsView on Player {
+mixin PlayerAnimationsMixin on SpriteAnimationGroupComponent {
 // Скорость всех анимаций
   static const double stepTime = 0.05;
 
-  void _loadAllAnimations() {
+  late final SpriteAnimation doubleJump;
+  late final SpriteAnimation fall;
+  late final SpriteAnimation hit;
+  late final SpriteAnimation idle;
+  late final SpriteAnimation jump;
+  late final SpriteAnimation run;
+  late final SpriteAnimation wallJump;
+  late final SpriteAnimation appearing;
+  late final SpriteAnimation disappearing;
+
+  void loadAllAnimations(
+    LodeRunner gameRef,
+  ) {
     // Базовый метод
     SpriteAnimation spriteAnimation({
       required String src,

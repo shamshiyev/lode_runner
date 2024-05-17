@@ -26,12 +26,3 @@ final class PlayerKeyPressedEvent extends EventPlayerBloc {
   final Set<LogicalKeyboardKey> keysPressed;
   final KeyEvent keyEvent;
 }
-
-final class PlayerJumpEvent extends EventPlayerBloc {
-  const PlayerJumpEvent({
-    required this.deltaTime,
-  });
-  final double deltaTime;
-}
-
-final class PlayerChangeAnimationEvent extends EventPlayerBloc {}

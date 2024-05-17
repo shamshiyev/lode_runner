@@ -12,7 +12,9 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
   PlayerBloc()
       : super(
           PlayerInitialState(
-              player: Player(), startingPosition: Vector2.zero()),
+            player: Player(),
+            startingPosition: Vector2.zero(),
+          ),
         ) {
     on<PlayerInitialEvent>(
       (event, emit) {
@@ -32,19 +34,12 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
-    on<PlayerChangeAnimationEvent>(
-      (event, emit) {},
-    );
-    on<PlayerJumpEvent>(
-      (event, emit) {},
-    );
   }
 
   void _buttonPressed(
     PlayerKeyPressedEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    // Описываем инпуты для передвижения и остановки по горизонтали
     final keysPressed = event.keysPressed;
     final logicalKey = event.keyEvent.logicalKey;
     double horizontalSpeed = 0;
