@@ -27,9 +27,7 @@ class Player extends SpriteAnimationGroupComponent
         KeyboardHandler,
         CollisionCallbacks,
         FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
-  Player({
-    super.position,
-  });
+  Player();
 
   late final SpriteAnimation doubleJump;
   late final SpriteAnimation fall;
@@ -43,7 +41,6 @@ class Player extends SpriteAnimationGroupComponent
 
   double horizontalSpeed = 0;
   // Стартовая позиция игрока
-  Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
 
   bool isOnGround = true;
@@ -67,9 +64,11 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
+    final bloc = gameRef.playerBloc;
     debugMode = true;
     PlayerAnimationsView(this)._loadAllAnimations();
-    startingPosition = Vector2(position.x, position.y);
+    position = bloc.state.startingPosition;
+
     // Создание хитбокса
     add(
       RectangleHitbox(
@@ -306,7 +305,6 @@ class Player extends SpriteAnimationGroupComponent
     if (game.playSounds) {
       FlameAudio.play('hit.wav', volume: game.soundVolume);
     }
-    const canMoveDuration = Duration(milliseconds: 400);
     gotHit = true;
     current = PlayerAnimationState.hit;
     // Дожидаемся завершения анимаций
@@ -314,16 +312,16 @@ class Player extends SpriteAnimationGroupComponent
     animationTicker?.reset();
     //
     scale.x = 1;
-    position = startingPosition;
+    position = bloc.state.startingPosition;
     current = PlayerAnimationState.appearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();
     //
     velocity = Vector2.zero();
-    position = startingPosition;
+    position = bloc.state.startingPosition;
     _upDatePlayerMovement();
-    Future.delayed(canMoveDuration, () => gotHit = false);
+    Future.delayed(const Duration(milliseconds: 400), () => gotHit = false);
   }
 
   void _reachedCheckPoint() async {

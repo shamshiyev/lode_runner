@@ -56,20 +56,17 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
       for (final spawnPoint in spawnPointsLayer.objects) {
         switch (spawnPoint.type) {
           case 'player':
-            player = Player(
-              position: Vector2(
-                spawnPoint.x,
-                spawnPoint.y,
+            player = Player();
+            gameRef.playerBloc.add(
+              PlayerInitialEvent(
+                player: player,
+                startingPosition: Vector2(
+                  spawnPoint.x,
+                  spawnPoint.y,
+                ),
+                startingVelocity: Vector2.zero(),
               ),
             );
-            gameRef.playerBloc.add(PlayerInitialEvent(
-              player: player,
-              startingPosition: Vector2(
-                spawnPoint.x,
-                spawnPoint.y,
-              ),
-              startingVelocity: Vector2.zero(),
-            ));
             await add(
               FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
                 value: gameRef.playerBloc,
