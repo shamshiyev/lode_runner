@@ -8,13 +8,13 @@ import 'package:lode_runner/components/traps/chain.dart';
 import 'package:lode_runner/components/traps/spike.dart';
 
 import '../../utilities/background_tile.dart';
-import '../../utilities/collisions.dart';
+import '../../helpers/collisions.dart';
 import '../../lode_runner.dart';
-import '../actors/enemy.dart';
-import '../actors/player/player.dart';
-import '../checkpoint.dart';
-import '../collectable.dart';
-import '../traps/saw.dart';
+import '../../components/actors/enemy.dart';
+import '../../components/actors/player/player.dart';
+import '../../components/checkpoint.dart';
+import '../../components/collectable.dart';
+import '../../components/traps/saw.dart';
 
 class GameWorld extends World with HasGameRef<LodeRunner> {
   GameWorld({

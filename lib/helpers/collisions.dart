@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+
+// ignore: unused_import
 import 'package:flutter/material.dart';
 
 class CollisionBlock extends PositionComponent with CollisionCallbacks {
@@ -11,8 +13,8 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
     this.isPlatform = false,
   }) {
     // Дебагмод для отображения координат блоков
-    debugMode = true;
-    debugColor = Colors.amber;
+    // debugMode = true;
+    // debugColor = Colors.amber;
   }
   bool isPlatform;
 }
