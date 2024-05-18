@@ -6,7 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:lode_runner/components/actors/enemies/blue_bird.dart';
+import 'package:lode_runner/components/actors/enemies/enemy.dart';
 import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/helpers/constants.dart';
 import 'package:lode_runner/utilities/hitbox.dart';
@@ -17,7 +17,6 @@ import 'package:lode_runner/helpers/collisions.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 import '../../traps/spike.dart';
-import '../enemies/basic_enemy.dart';
 import 'animations_mixin.dart';
 
 class Player extends SpriteAnimationGroupComponent
@@ -111,9 +110,6 @@ class Player extends SpriteAnimationGroupComponent
         _reachedCheckPoint();
       }
       if (other is Enemy) {
-        other.collidedWithPlayer();
-      }
-      if (other is BlueBird) {
         other.collidedWithPlayer();
       }
     }

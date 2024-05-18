@@ -1,29 +1,25 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:lode_runner/lode_runner.dart';
+import 'package:lode_runner/components/actors/enemies/enemy.dart';
 import 'package:lode_runner/utilities/animations.dart';
 
-import '../player/player.dart';
+import '../../player/player.dart';
 
-enum BlueBirdState { flying, hit }
+enum BirdAnimationState { flying, hit }
 
-class BlueBird extends SpriteAnimationGroupComponent
-    with HasGameRef<LodeRunner>, CollisionCallbacks {
+class BlueBird extends Enemy {
   BlueBird({
     super.position,
     super.size,
-    this.offNeg = 0,
-    this.offPos = 0,
+    super.offNeg,
+    super.offPos,
   });
 
-  static const moveSpeed = 50;
-  static const double stepTime = 0.05;
-  static const tileSize = 16;
-  final textureSize = Vector2(32, 32);
+  @override
+  final double moveSpeed = 50;
 
-  final double offNeg;
-  final double offPos;
+  static final textureSize = Vector2(32, 32);
 
   double moveDirection = 1;
   double rangeNeg = 0;
@@ -45,10 +41,10 @@ class BlueBird extends SpriteAnimationGroupComponent
         size: Vector2(24, 28),
       ),
     );
-    _loadAllAnimations();
+    loadAllAnimations();
 
-    rangeNeg = position.x - offNeg * tileSize;
-    rangePos = position.x + offPos * tileSize;
+    rangeNeg = position.x - offNeg! * Enemy.tileSize;
+    rangePos = position.x + offPos! * Enemy.tileSize;
 
     return super.onLoad();
   }
@@ -56,22 +52,23 @@ class BlueBird extends SpriteAnimationGroupComponent
   @override
   void update(double dt) {
     if (!gotHit) {
-      _fly(dt);
+      move(dt);
     }
 
     super.update(dt);
   }
 
-  void _loadAllAnimations() {
+  @override
+  void loadAllAnimations() {
     birdFlying = _spriteAnimation(ActorAnimations.blueBirdFly, 9);
     birdHit = _spriteAnimation(ActorAnimations.blueBirdHit, 5)..loop = false;
 
     animations = {
-      BlueBirdState.flying: birdFlying,
-      BlueBirdState.hit: birdHit,
+      BirdAnimationState.flying: birdFlying,
+      BirdAnimationState.hit: birdHit,
     };
 
-    current = BlueBirdState.flying;
+    current = BirdAnimationState.flying;
   }
 
   SpriteAnimation _spriteAnimation(String src, int amount) {
@@ -81,13 +78,14 @@ class BlueBird extends SpriteAnimationGroupComponent
       ),
       SpriteAnimationData.sequenced(
         amount: amount,
-        stepTime: stepTime,
+        stepTime: Enemy.stepTime,
         textureSize: textureSize,
       ),
     );
   }
 
-  void _fly(double dt) {
+  @override
+  void move(double dt) {
     if (position.x >= rangePos) {
       moveDirection = -1;
       flipHorizontallyAroundCenter();
@@ -98,18 +96,24 @@ class BlueBird extends SpriteAnimationGroupComponent
     position.x += moveDirection * moveSpeed * dt;
   }
 
+  @override
   void collidedWithPlayer() async {
     if (player.velocity.y > 0 && player.y + player.height > position.y) {
       if (game.playSounds) {
         FlameAudio.play('bounce.wav', volume: game.soundVolume);
       }
       gotHit = true;
-      current = BlueBirdState.hit;
+      current = BirdAnimationState.hit;
       player.velocity = Vector2(0, -260);
       await animationTicker?.completed;
       removeFromParent();
     } else {
       player.collidedWithEnemy();
     }
+  }
+
+  @override
+  void updateAnimation() {
+    //  В будущем у всех будет анимация при смерти
   }
 }

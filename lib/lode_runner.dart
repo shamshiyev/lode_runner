@@ -39,7 +39,7 @@ class LodeRunner extends FlameGame
     'level_06',
   ];
 
-  int currentLevel = 2;
+  int currentLevel = 0;
 
   @override
   Future<void> onLoad() async {

@@ -48,21 +48,21 @@
     <property name="offPos" type="float" value="0"/>
    </properties>
   </object>
-  <object id="217" name="Bluebird" type="bluebird" x="80" y="144" width="32" height="32">
+  <object id="217" name="bluebird" type="enemy" x="80" y="144" width="32" height="32">
    <properties>
     <property name="isVertical" type="bool" value="false"/>
     <property name="offNeg" type="float" value="4"/>
     <property name="offPos" type="float" value="8"/>
    </properties>
   </object>
-  <object id="218" name="Bluebird" type="bluebird" x="320" y="240" width="32" height="32">
+  <object id="218" name="bluebird" type="enemy" x="320" y="240" width="32" height="32">
    <properties>
     <property name="isVertical" type="bool" value="false"/>
     <property name="offNeg" type="float" value="8"/>
     <property name="offPos" type="float" value="4"/>
    </properties>
   </object>
-  <object id="219" name="Bluebird" type="bluebird" x="416" y="80" width="32" height="32">
+  <object id="219" name="bluebird" type="enemy" x="416" y="80" width="32" height="32">
    <properties>
     <property name="isVertical" type="bool" value="false"/>
     <property name="offNeg" type="float" value="22"/>

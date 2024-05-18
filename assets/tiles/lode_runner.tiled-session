@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_03.tmx",
+    "activeFile": "level_01.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -51,8 +51,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 320.33333333333326,
-                "y": 184.33333333333331
+                "x": 315.6666666666667,
+                "y": 179.66666666666666
             }
         },
         "level_02.tmx": {
@@ -66,8 +66,8 @@
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 320.33333333333326,
-                "y": 184.33333333333331
+                "x": 320,
+                "y": 180
             }
         },
         "level_03.tmx": {
@@ -90,8 +90,8 @@
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 314.4827586206897,
-                "y": 176.84210526315786
+                "x": 320,
+                "y": 184.1016333938294
             }
         },
         "level_05.tmx": {
@@ -100,7 +100,7 @@
                 3
             ],
             "scale": 1.46953125,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 320.17012227538544,
                 "y": 152.08931419457738
@@ -122,8 +122,8 @@
             "scale": 1.46953125,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 320.17012227538544,
-                "y": 184.7527910685805
+                "x": 320.5103668261563,
+                "y": 184.41254651780966
             }
         },
         "lode_runner.tsx": {
@@ -142,20 +142,23 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
-        "level_04.tmx",
         "level_02.tmx",
         "level_01.tmx",
-        "level_03.tmx"
+        "level_04.tmx",
+        "level_03.tmx",
+        "level_05.tmx",
+        "level_06.tmx",
+        "level_07.tmx"
     ],
     "project": "lode_runner.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "level_05.tmx",
+        "level_02.tmx",
         "level_07.tmx",
         "level_06.tmx",
+        "level_05.tmx",
         "level_03.tmx",
         "level_04.tmx",
-        "level_02.tmx",
         "level_01.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
