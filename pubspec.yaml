@@ -31,7 +31,6 @@ flutter:
     - assets/images/Background/
     - assets/images/Main Characters/
     - assets/images/Main Characters/Virtual Guy/
-    - assets/images/Main Characters/Mask Dude/
     - assets/images/hud/
     - assets/images/Items/Collectables/
     - assets/images/Traps/Saw/
@@ -39,6 +38,7 @@ flutter:
     - assets/images/Items/Checkpoints/Checkpoint/
     - assets/audio/
     - assets/images/Traps/Spikes/
+    - assets/images/Enemies/AngryPig/
     - assets/images/Enemies/BlueBird/
     
   

@@ -1,31 +1,33 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
 import 'package:lode_runner/components/actors/player/player.dart';
+import 'package:lode_runner/helpers/constants.dart';
 
 import '../../../../utilities/animations.dart';
 
-enum EnemyAnimationState { idle, run, hit, aware }
+enum PigAnimationState { walk, run, hit, aware, idle }
 
 // Will be replaced with some specific type of enemy
-class BasicEnemy extends Enemy {
-  BasicEnemy({
+class Pig extends Enemy {
+  Pig({
     super.position,
     super.size,
     super.offNeg,
     super.offPos,
   });
 
-  final textureSize = Vector2(32, 32);
+  final textureSize = Vector2(36, 30);
 
   @override
-  final double moveSpeed = 180;
+  double moveSpeed = 30;
 
   Vector2 velocity = Vector2.zero();
-  double rangeNeg = 0;
-  double rangePos = 0;
+  late double rangeNeg;
+  late double rangePos;
 
   double moveDirection = 1;
   double targetDirection = -1;
@@ -33,13 +35,16 @@ class BasicEnemy extends Enemy {
   bool gotHit = false;
 
   late final Player player;
-  late final SpriteAnimation enemyIdle;
-  late final SpriteAnimation enemyRun;
-  late final SpriteAnimation enemyHit;
-  late final SpriteAnimation enemyAware;
+  late final SpriteAnimation pigIdle;
+  late final SpriteAnimation pigRun;
+  late final SpriteAnimation pigHit;
+  late final SpriteAnimation pigWalk;
 
   @override
   Future<void> onLoad() async {
+    log(position.x.toString());
+    log(offNeg.toString());
+    // debugMode = true;
     player = gameRef.playerBloc.state.player;
     add(
       RectangleHitbox(
@@ -48,7 +53,9 @@ class BasicEnemy extends Enemy {
       ),
     );
     loadAllAnimations();
-    _calculateRange();
+    rangeNeg = position.x - offNeg! * 16;
+    rangePos = position.x + offPos! * 16;
+    log(rangeNeg.toString());
     await super.onLoad();
   }
 
@@ -63,41 +70,56 @@ class BasicEnemy extends Enemy {
 
   @override
   void loadAllAnimations() {
-    enemyIdle = _spriteAnimation(ActorAnimations.idleEnemy, 11);
-    enemyRun = _spriteAnimation(ActorAnimations.runEnemy, 12);
-    enemyHit = _spriteAnimation(ActorAnimations.hitEnemy, 7)..loop = false;
-    enemyAware = _spriteAnimation(ActorAnimations.awareEnemy, 5)..loop = false;
+    pigIdle = _spriteAnimation(ActorAnimations.pigIdle, 9);
+    pigRun = _spriteAnimation(ActorAnimations.pigRun, 12);
+    pigWalk = _spriteAnimation(ActorAnimations.pigWalk, 16);
+    pigHit = _spriteAnimation(ActorAnimations.pigHit, 5)..loop = false;
 
     animations = {
-      EnemyAnimationState.idle: enemyIdle,
-      EnemyAnimationState.run: enemyRun,
-      EnemyAnimationState.hit: enemyHit,
-      EnemyAnimationState.aware: enemyAware,
+      PigAnimationState.idle: pigIdle,
+      PigAnimationState.walk: pigWalk,
+      PigAnimationState.run: pigRun,
+      PigAnimationState.hit: pigHit,
+      PigAnimationState.aware: pigWalk,
     };
 
-    current = EnemyAnimationState.idle;
+    current = PigAnimationState.walk;
   }
 
   @override
   void updateAnimation() {
-    current =
-        (velocity.x == 0) ? EnemyAnimationState.idle : EnemyAnimationState.run;
-    if (moveDirection > 0 && scale.x < 0 || moveDirection < 0 && scale.x > 0) {
+    if (velocity.x == 0) {
+      current = PigAnimationState.idle;
+    } else {
+      current = checkRange() ? PigAnimationState.run : PigAnimationState.walk;
+    }
+    if (moveDirection < 0 && scale.x < 0 || moveDirection > 0 && scale.x > 0) {
       flipHorizontallyAroundCenter();
     }
   }
 
   @override
   void move(double dt) {
-    velocity.x = 0;
-    double playerOffset = (player.scale.x > 0) ? 0 : -player.width;
+    // Шобы гулял туда-сюда
+    if (position.x < rangeNeg) {
+      targetDirection = 1;
+    } else if (position.x > rangePos) {
+      targetDirection = -1;
+    }
+
+    double playerOffset =
+        (player.scale.x > 0) ? player.hitbox.width : -player.hitbox.width;
     double enemyOffset = (scale.x > 0) ? 0 : -width;
-    final playerInRange = checkRange();
-    if (playerInRange) {
+
+    if (checkRange()) {
       targetDirection =
           (player.x + playerOffset > position.x + enemyOffset) ? 1 : -1;
-      velocity.x = targetDirection * moveSpeed;
+      moveSpeed = Constants.moveSpeed;
+      current = PigAnimationState.run;
+    } else {
+      moveSpeed = 30;
     }
+    velocity.x = targetDirection * moveSpeed;
     moveDirection = lerpDouble(moveDirection, targetDirection, 0.1) ?? 1;
     position.x += velocity.x * dt;
   }
@@ -109,7 +131,7 @@ class BasicEnemy extends Enemy {
         FlameAudio.play('bounce.wav', volume: game.soundVolume);
       }
       gotHit = true;
-      current = EnemyAnimationState.hit;
+      current = PigAnimationState.hit;
       player.velocity = Vector2(0, -260);
       await animationTicker?.completed;
       removeFromParent();
@@ -131,17 +153,14 @@ class BasicEnemy extends Enemy {
     );
   }
 
-  void _calculateRange() {
-    rangeNeg = position.x - offNeg! * Enemy.tileSize;
-    rangePos = position.x + offPos! * Enemy.tileSize;
-  }
-
+  // Проверяем, находится ли игрок в поле зрения врага
   bool checkRange() {
-    // Проверяем, находится ли игрок в поле зрения врага
-    double playerOffset = (player.scale.x > 0) ? 0 : -player.width;
-
-    return player.x + playerOffset >= rangeNeg &&
-        player.x + playerOffset <= rangePos &&
+    final playerX = player.position.x + player.hitbox.offsetX;
+    final fixedX = player.scale.x < 0
+        ? playerX - (player.hitbox.width / 2) - player.width
+        : playerX + player.hitbox.width;
+    return fixedX >= rangeNeg &&
+        fixedX <= rangePos &&
         player.y + player.height > position.y &&
         player.y < position.y + height;
   }

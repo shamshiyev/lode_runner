@@ -1,7 +1,7 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:lode_runner/components/actors/enemies/types/basic_enemy.dart';
+import 'package:lode_runner/components/actors/enemies/types/pig.dart';
 
 import '../../../lode_runner.dart';
 import '../player/bloc/player_bloc.dart';
@@ -42,8 +42,8 @@ class EnemyFactory {
     double? offPos,
   }) {
     switch (type) {
-      case 'basic':
-        return BasicEnemy(
+      case 'pig':
+        return Pig(
           position: position,
           size: size,
           offNeg: offNeg,

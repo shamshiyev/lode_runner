@@ -53,6 +53,7 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
+    debugMode = true;
     loadAllAnimations(gameRef);
     final bloc = gameRef.playerBloc;
     position = bloc.state.startingPosition;
@@ -250,12 +251,10 @@ class Player extends SpriteAnimationGroupComponent
       double overlapY = overlaps[1];
       if (overlapX != 0 && overlapY != 0) {
         if (overlapY > overlapX && isOnGround) {
-          // [log] Unexpected collision on X, overlapX: 2.3333333333332575, overlapY: 4.216666666666754, velocity.y: 269.2000000000003
-          dev.log(
-            'Unexpected collision on X, overlapX: $overlapX, overlapY: $overlapY, velocity.y: ${velocity.y}',
-          );
+          // dev.log(
+          //   'Unexpected collision on X, overlapX: $overlapX, overlapY: $overlapY',
+          // );
           return;
-
           // Когда overlapY < overlapX, значит коллизия происходит по оси Y
         } else {
           if (block.isPlatform) {

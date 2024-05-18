@@ -10,11 +10,11 @@ class ActorAnimations {
       'Main Characters/Virtual Guy/Wall Jump (32x32).png';
   static const appearing = 'Main Characters/Appearing (32x32).png';
   static const disappearing = 'Main Characters/Disappearing (32x32).png';
-  static const String idleEnemy = 'Main Characters/Mask Dude/Idle (32x32).png';
-  static const String runEnemy = 'Main Characters/Mask Dude/Run (32x32).png';
-  static const String hitEnemy = 'Main Characters/Mask Dude/Hit (32x32).png';
-  static const String awareEnemy =
-      'Main Characters/Mask Dude/Wall Jump (32x32).png';
+  static const String pigIdle = 'Enemies/AngryPig/Idle (36x30).png';
+  static const String pigRun = 'Enemies/AngryPig/Run (36x30).png';
+  static const String pigWalk = 'Enemies/AngryPig/Walk (36x30).png';
+  static const String pigHit = 'Enemies/AngryPig/Hit 2 (36x30).png';
+
   static const String blueBirdFly = 'Enemies/BlueBird/Flying (32x32).png';
   static const String blueBirdHit = 'Enemies/BlueBird/Hit (32x32).png';
 }
