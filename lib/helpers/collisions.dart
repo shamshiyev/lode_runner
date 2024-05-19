@@ -1,10 +1,6 @@
 import 'dart:math';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-
-// ignore: unused_import
-import 'package:flutter/material.dart';
 
 class CollisionBlock extends PositionComponent with CollisionCallbacks {
   CollisionBlock({
@@ -14,7 +10,6 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
   }) {
     // Дебагмод для отображения координат блоков
     // debugMode = true;
-    // debugColor = Colors.amber;
   }
   bool isPlatform;
 }
@@ -37,13 +32,24 @@ List<double> checkCollisions(player, block) {
   // final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
 
   double overlapX = max(
-      0,
-      min<double>(fixedX + playerWidth, blockX + blockWidth) -
-          max(fixedX, blockX));
+    0,
+    min<double>(fixedX + playerWidth, blockX + blockWidth) -
+        max(
+          fixedX,
+          blockX,
+        ),
+  );
   double overlapY = max(
-      0,
-      min<double>(playerY + playerHeight, blockY + blockHeight) -
-          max(playerY, blockY));
+    0,
+    min<double>(playerY + playerHeight, blockY + blockHeight) -
+        max(
+          playerY,
+          blockY,
+        ),
+  );
 
-  return [overlapX, overlapY];
+  return [
+    overlapX,
+    overlapY,
+  ];
 }

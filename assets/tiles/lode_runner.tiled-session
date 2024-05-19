@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_05.tmx",
+    "activeFile": "level_01.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -51,8 +51,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 320,
-                "y": 184
+                "x": 311,
+                "y": 175
             }
         },
         "level_02.tmx": {
@@ -60,8 +60,8 @@
                 6
             ],
             "expandedObjectLayers": [
-                2,
-                3
+                3,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 2,
@@ -154,12 +154,12 @@
     "property.type": "string",
     "recentFiles": [
         "level_02.tmx",
-        "level_01.tmx",
-        "level_04.tmx",
-        "level_03.tmx",
         "level_07.tmx",
         "level_06.tmx",
         "level_05.tmx",
+        "level_03.tmx",
+        "level_04.tmx",
+        "level_01.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",

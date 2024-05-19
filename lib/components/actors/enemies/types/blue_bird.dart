@@ -53,6 +53,8 @@ class BlueBird extends Enemy {
   void update(double dt) {
     if (!gotHit) {
       move(dt);
+    } else {
+      removeOffScreen();
     }
 
     super.update(dt);
@@ -103,10 +105,7 @@ class BlueBird extends Enemy {
         FlameAudio.play('bounce.wav', volume: game.soundVolume);
       }
       gotHit = true;
-      current = BirdAnimationState.hit;
       player.velocity = Vector2(0, -260);
-      await animationTicker?.completed;
-      removeFromParent();
     } else {
       player.collidedWithEnemy();
     }
@@ -115,5 +114,16 @@ class BlueBird extends Enemy {
   @override
   void updateAnimation() {
     //  В будущем у всех будет анимация при смерти
+  }
+
+  @override
+  void removeOffScreen() {
+    current = BirdAnimationState.hit;
+    angle += 0.04;
+    position.y += 4;
+    position.x -= moveDirection * 2;
+    if (position.y > gameRef.size.y + 10) {
+      removeFromParent();
+    }
   }
 }

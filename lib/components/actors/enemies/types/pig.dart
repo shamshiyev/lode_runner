@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -42,8 +41,6 @@ class Pig extends Enemy {
 
   @override
   Future<void> onLoad() async {
-    log(position.x.toString());
-    log(offNeg.toString());
     // debugMode = true;
     player = gameRef.playerBloc.state.player;
     add(
@@ -55,7 +52,6 @@ class Pig extends Enemy {
     loadAllAnimations();
     rangeNeg = position.x - offNeg! * 16;
     rangePos = position.x + offPos! * 16;
-    log(rangeNeg.toString());
     await super.onLoad();
   }
 
@@ -64,6 +60,8 @@ class Pig extends Enemy {
     if (!gotHit) {
       updateAnimation();
       move(dt);
+    } else {
+      removeOffScreen();
     }
     super.update(dt);
   }
@@ -131,12 +129,22 @@ class Pig extends Enemy {
         FlameAudio.play('bounce.wav', volume: game.soundVolume);
       }
       gotHit = true;
-      current = PigAnimationState.hit;
       player.velocity = Vector2(0, -260);
-      await animationTicker?.completed;
-      removeFromParent();
     } else {
-      player.collidedWithEnemy();
+      if (!gotHit) {
+        player.collidedWithEnemy();
+      }
+    }
+  }
+
+  @override
+  void removeOffScreen() {
+    current = PigAnimationState.hit;
+    angle += 0.04;
+    position.y += 4;
+    position.x -= moveDirection * 2;
+    if (position.y > gameRef.size.y + 10) {
+      removeFromParent();
     }
   }
 

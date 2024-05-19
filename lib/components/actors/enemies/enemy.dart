@@ -31,6 +31,7 @@ abstract class Enemy extends SpriteAnimationGroupComponent
   void updateAnimation();
   void collidedWithPlayer();
   void move(double dt);
+  void removeOffScreen();
 }
 
 class EnemyFactory {
