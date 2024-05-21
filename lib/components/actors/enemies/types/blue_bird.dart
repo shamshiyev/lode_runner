@@ -4,8 +4,6 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
 import 'package:lode_runner/utilities/animations.dart';
 
-import '../../player/player.dart';
-
 enum BirdAnimationState { flying, hit }
 
 class BlueBird extends Enemy {
@@ -18,8 +16,8 @@ class BlueBird extends Enemy {
 
   @override
   final double moveSpeed = 50;
-
-  static final textureSize = Vector2(32, 32);
+  @override
+  final textureSize = Vector2(32, 32);
 
   double moveDirection = 1;
   double rangeNeg = 0;
@@ -27,7 +25,6 @@ class BlueBird extends Enemy {
 
   bool gotHit = false;
 
-  late final Player player;
   late final SpriteAnimation birdHit;
   late final SpriteAnimation birdFlying;
 

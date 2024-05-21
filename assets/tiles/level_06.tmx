@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="219">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="224">
  <tileset firstgid="1" source="chain.tsx"/>
  <tileset firstgid="2" source="lode_runner.tsx"/>
  <layer id="2" name="background" width="40" height="23">
@@ -35,18 +35,33 @@
  <objectgroup id="3" name="spawnpoints">
   <object id="164" name="Player" type="player" x="544" y="304" width="31.8076" height="32.4437"/>
   <object id="184" name="Checkpoint" type="checkpoint" x="160" y="96" width="64" height="64"/>
-  <object id="185" name="Coin" type="collectable" x="48" y="96" width="16" height="16"/>
-  <object id="186" name="Coin" type="collectable" x="80" y="80" width="16" height="16"/>
-  <object id="187" name="Coin" type="collectable" x="48" y="64" width="16" height="16"/>
-  <object id="188" name="Coin" type="collectable" x="80" y="32" width="16" height="16"/>
-  <object id="189" name="Coin" type="collectable" x="112" y="96" width="16" height="16"/>
-  <object id="190" name="Coin" type="collectable" x="112" y="64" width="16" height="16"/>
+  <object id="185" name="Coin" type="collectable" x="80" y="96" width="16" height="16"/>
+  <object id="186" name="Coin" type="collectable" x="112" y="80" width="16" height="16"/>
+  <object id="187" name="Coin" type="collectable" x="80" y="64" width="16" height="16"/>
+  <object id="188" name="Coin" type="collectable" x="112" y="32" width="16" height="16"/>
+  <object id="189" name="Coin" type="collectable" x="144" y="96" width="16" height="16"/>
+  <object id="190" name="Coin" type="collectable" x="144" y="64" width="16" height="16"/>
   <object id="193" name="Strawberry" type="collectable" x="176" y="272" width="32" height="32"/>
   <object id="195" name="Orange" type="collectable" x="416" y="224" width="32" height="32"/>
   <object id="196" name="Kiwi" type="collectable" x="352" y="112" width="32" height="32"/>
-  <object id="215" name="Coin" type="collectable" x="80" y="128" width="16" height="16"/>
+  <object id="215" name="Coin" type="collectable" x="112" y="128" width="16" height="16"/>
   <object id="217" name="Pineapple" type="collectable" x="512" y="160" width="32" height="32"/>
   <object id="218" name="Strawberry" type="collectable" x="96" y="272" width="32" height="32"/>
+  <object id="219" name="plant" type="enemy" x="36" y="116" width="44" height="42">
+   <properties>
+    <property name="reversed" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="222" name="plant" type="enemy" x="40" y="292" width="44" height="42">
+   <properties>
+    <property name="reversed" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="223" name="plant" type="enemy" x="576" y="164" width="44" height="42">
+   <properties>
+    <property name="reversed" type="bool" value="false"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="collisions">
   <object id="201" x="496" y="208" width="128" height="48"/>

@@ -53,7 +53,7 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
-    debugMode = true;
+    // debugMode = true;
     loadAllAnimations(gameRef);
     final bloc = gameRef.playerBloc;
     position = bloc.state.startingPosition;

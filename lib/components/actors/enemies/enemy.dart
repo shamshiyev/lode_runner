@@ -5,7 +5,9 @@ import 'package:lode_runner/components/actors/enemies/types/pig.dart';
 
 import '../../../lode_runner.dart';
 import '../player/bloc/player_bloc.dart';
+import '../player/player.dart';
 import 'types/blue_bird.dart';
+import 'types/plant.dart';
 
 abstract class Enemy extends SpriteAnimationGroupComponent
     with
@@ -22,7 +24,22 @@ abstract class Enemy extends SpriteAnimationGroupComponent
   final double? offNeg;
   final double? offPos;
 
+  Vector2 get textureSize;
   double get moveSpeed;
+  late final Player player;
+
+  SpriteAnimation spriteAnimation(String src, int amount) {
+    return SpriteAnimation.fromFrameData(
+      game.images.fromCache(
+        src,
+      ),
+      SpriteAnimationData.sequenced(
+        amount: amount,
+        stepTime: Enemy.stepTime,
+        textureSize: textureSize,
+      ),
+    );
+  }
 
   static const double stepTime = 0.05;
   static const tileSize = 16;
@@ -56,6 +73,11 @@ class EnemyFactory {
           size: size,
           offNeg: offNeg,
           offPos: offPos,
+        );
+      case 'plant':
+        return Plant(
+          position: position,
+          size: size,
         );
       // case 'RedEnemy':
       //   return RedEnemy(position: position, size: size);

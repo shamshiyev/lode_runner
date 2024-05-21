@@ -3,7 +3,6 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
-import 'package:lode_runner/components/actors/player/player.dart';
 import 'package:lode_runner/helpers/constants.dart';
 
 import '../../../../utilities/animations.dart';
@@ -18,7 +17,7 @@ class Pig extends Enemy {
     super.offNeg,
     super.offPos,
   });
-
+  @override
   final textureSize = Vector2(36, 30);
 
   @override
@@ -33,14 +32,13 @@ class Pig extends Enemy {
 
   bool gotHit = false;
 
-  late final Player player;
   late final SpriteAnimation pigIdle;
   late final SpriteAnimation pigRun;
   late final SpriteAnimation pigHit;
   late final SpriteAnimation pigWalk;
 
   @override
-  Future<void> onLoad() async {
+  void onLoad() async {
     // debugMode = true;
     player = gameRef.playerBloc.state.player;
     add(
@@ -52,7 +50,7 @@ class Pig extends Enemy {
     loadAllAnimations();
     rangeNeg = position.x - offNeg! * 16;
     rangePos = position.x + offPos! * 16;
-    await super.onLoad();
+    return super.onLoad();
   }
 
   @override
@@ -68,10 +66,10 @@ class Pig extends Enemy {
 
   @override
   void loadAllAnimations() {
-    pigIdle = _spriteAnimation(ActorAnimations.pigIdle, 9);
-    pigRun = _spriteAnimation(ActorAnimations.pigRun, 12);
-    pigWalk = _spriteAnimation(ActorAnimations.pigWalk, 16);
-    pigHit = _spriteAnimation(ActorAnimations.pigHit, 5)..loop = false;
+    pigIdle = spriteAnimation(ActorAnimations.pigIdle, 9);
+    pigRun = spriteAnimation(ActorAnimations.pigRun, 12);
+    pigWalk = spriteAnimation(ActorAnimations.pigWalk, 16);
+    pigHit = spriteAnimation(ActorAnimations.pigHit, 5)..loop = false;
 
     animations = {
       PigAnimationState.idle: pigIdle,
@@ -146,19 +144,6 @@ class Pig extends Enemy {
     if (position.y > gameRef.size.y + 10) {
       removeFromParent();
     }
-  }
-
-  SpriteAnimation _spriteAnimation(String src, int amount) {
-    return SpriteAnimation.fromFrameData(
-      game.images.fromCache(
-        src,
-      ),
-      SpriteAnimationData.sequenced(
-        amount: amount,
-        stepTime: Enemy.stepTime,
-        textureSize: textureSize,
-      ),
-    );
   }
 
   // Проверяем, находится ли игрок в поле зрения врага
