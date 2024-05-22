@@ -51,3 +51,10 @@ final class PlayerKeyPressedState extends StatePlayerBloc {
         hasJumped,
       ];
 }
+
+final class PlayerGotHitState extends StatePlayerBloc {
+  const PlayerGotHitState({
+    required super.player,
+    required super.startingPosition,
+  });
+}

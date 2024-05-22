@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/utilities/animations.dart';
 
 enum BirdAnimationState { flying, hit }
@@ -39,21 +40,19 @@ class BlueBird extends Enemy {
       ),
     );
     loadAllAnimations();
-
     rangeNeg = position.x - offNeg! * Enemy.tileSize;
     rangePos = position.x + offPos! * Enemy.tileSize;
-
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
+    updateAnimation();
     if (!gotHit) {
-      move(dt);
+      updateEnemyState(dt);
     } else {
       removeOffScreen();
     }
-
     super.update(dt);
   }
 
@@ -61,12 +60,10 @@ class BlueBird extends Enemy {
   void loadAllAnimations() {
     birdFlying = _spriteAnimation(ActorAnimations.blueBirdFly, 9);
     birdHit = _spriteAnimation(ActorAnimations.blueBirdHit, 5)..loop = false;
-
     animations = {
       BirdAnimationState.flying: birdFlying,
       BirdAnimationState.hit: birdHit,
     };
-
     current = BirdAnimationState.flying;
   }
 
@@ -84,7 +81,7 @@ class BlueBird extends Enemy {
   }
 
   @override
-  void move(double dt) {
+  void updateEnemyState(double dt) {
     if (position.x >= rangePos) {
       moveDirection = -1;
       flipHorizontallyAroundCenter();
@@ -104,18 +101,21 @@ class BlueBird extends Enemy {
       gotHit = true;
       player.velocity = Vector2(0, -260);
     } else {
-      player.collidedWithEnemy();
+      player.bloc.add(const PlayerHitEvent());
     }
   }
 
   @override
   void updateAnimation() {
-    //  В будущем у всех будет анимация при смерти
+    if (gotHit) {
+      current = BirdAnimationState.hit;
+    } else {
+      current = BirdAnimationState.flying;
+    }
   }
 
   @override
   void removeOffScreen() {
-    current = BirdAnimationState.hit;
     angle += 0.04;
     position.y += 4;
     position.x -= moveDirection * 2;

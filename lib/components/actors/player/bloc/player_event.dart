@@ -26,3 +26,11 @@ final class PlayerKeyPressedEvent extends EventPlayerBloc {
   final Set<LogicalKeyboardKey> keysPressed;
   final KeyEvent keyEvent;
 }
+
+final class PlayerHitEvent extends EventPlayerBloc {
+  const PlayerHitEvent();
+}
+
+final class PlayerReachedCheckpointEvent extends EventPlayerBloc {
+  const PlayerReachedCheckpointEvent();
+}

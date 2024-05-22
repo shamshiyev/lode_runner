@@ -1,19 +1,13 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame_bloc/flame_bloc.dart';
 import 'package:lode_runner/components/actors/enemies/types/pig.dart';
-
 import '../../../lode_runner.dart';
-import '../player/bloc/player_bloc.dart';
 import '../player/player.dart';
 import 'types/blue_bird.dart';
 import 'types/plant.dart';
 
 abstract class Enemy extends SpriteAnimationGroupComponent
-    with
-        HasGameRef<LodeRunner>,
-        CollisionCallbacks,
-        FlameBlocListenable<PlayerBloc, StatePlayerBloc> {
+    with HasGameRef<LodeRunner>, CollisionCallbacks {
   Enemy({
     required super.position,
     required super.size,
@@ -47,7 +41,7 @@ abstract class Enemy extends SpriteAnimationGroupComponent
   void loadAllAnimations();
   void updateAnimation();
   void collidedWithPlayer();
-  void move(double dt);
+  void updateEnemyState(double dt);
   void removeOffScreen();
 }
 
@@ -58,6 +52,7 @@ class EnemyFactory {
     required Vector2 size,
     double? offNeg,
     double? offPos,
+    bool? reversed,
   }) {
     switch (type) {
       case 'pig':
@@ -78,6 +73,7 @@ class EnemyFactory {
         return Plant(
           position: position,
           size: size,
+          reversed: reversed ?? false,
         );
       // case 'RedEnemy':
       //   return RedEnemy(position: position, size: size);

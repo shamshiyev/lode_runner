@@ -36,7 +36,6 @@ class Player extends SpriteAnimationGroupComponent
   bool hasJumped = false;
   bool isSliding = false;
   bool hasDoubleJumped = false;
-  bool gotHit = false;
   bool reachedCheckpoint = false;
 
   List<CollisionBlock> collisionBlocks = [];
@@ -74,11 +73,17 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   @override
-  void onNewState(StatePlayerBloc state) {
-    if (state is PlayerKeyPressedState) {
+  void onNewState(
+    StatePlayerBloc state,
+  ) {
+    if (state is PlayerGotHitState) {
+      _respawn();
+      // TODO: Maybe i dont need else if
+    } else if (state is PlayerKeyPressedState) {
       horizontalSpeed = state.horizontalSpeed;
       hasJumped = state.hasJumped;
     }
+
     super.onNewState(state);
   }
 
@@ -99,13 +104,15 @@ class Player extends SpriteAnimationGroupComponent
   // Коллизия с подбираемыми объектами
   @override
   void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
     if (!reachedCheckpoint) {
       if (other is Collectable) {
         other.collidingWithPlayer();
       }
       if (other is Saw || other is Spike) {
-        _respawn();
+        bloc.add(const PlayerHitEvent());
       }
       if (other is Checkpoint) {
         _reachedCheckPoint();
@@ -121,7 +128,7 @@ class Player extends SpriteAnimationGroupComponent
   void update(double dt) {
     accumulatedTime += dt;
     while (accumulatedTime >= fixedDeltaTime) {
-      if (!gotHit && !reachedCheckpoint) {
+      if (bloc.state is! PlayerGotHitState) {
         _upDatePlayerAnimation();
         _updatePlayerDirection(fixedDeltaTime);
         _checkCollisionsOnX();
@@ -289,7 +296,6 @@ class Player extends SpriteAnimationGroupComponent
     if (game.playSounds) {
       FlameAudio.play('hit.wav', volume: game.soundVolume);
     }
-    gotHit = true;
     current = PlayerAnimationState.hit;
     // Дожидаемся завершения анимаций
     await animationTicker?.completed;
@@ -297,15 +303,12 @@ class Player extends SpriteAnimationGroupComponent
     //
     scale.x = 1;
     position = bloc.state.startingPosition;
+    horizontalSpeed = 0;
+    velocity = Vector2.zero();
     current = PlayerAnimationState.appearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();
-    //
-    velocity = Vector2.zero();
-    position = bloc.state.startingPosition;
-    _upDatePlayerAnimation();
-    Future.delayed(const Duration(milliseconds: 400), () => gotHit = false);
   }
 
   void _reachedCheckPoint() async {
@@ -322,9 +325,5 @@ class Player extends SpriteAnimationGroupComponent
     reachedCheckpoint = false;
     removeFromParent();
     Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
-  }
-
-  void collidedWithEnemy() async {
-    _respawn();
   }
 }

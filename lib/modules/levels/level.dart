@@ -124,6 +124,7 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
           case 'enemy':
             final offNeg = spawnPoint.properties.getValue('offNeg');
             final offPos = spawnPoint.properties.getValue('offPos');
+            final reversed = spawnPoint.properties.getValue('reversed');
             final enemyType = spawnPoint.name;
             final Enemy enemy = EnemyFactory.createEnemy(
               enemyType,
@@ -137,17 +138,10 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
               ),
               offNeg: offNeg,
               offPos: offPos,
+              reversed: reversed,
             );
-            await add(
-              FlameBlocProvider<PlayerBloc, StatePlayerBloc>.value(
-                value: gameRef.playerBloc,
-                children: [
-                  enemy,
-                ],
-              ),
-            );
+            add(enemy);
             break;
-
           case 'sprite':
             final sprite = Chain(
               position: Vector2(

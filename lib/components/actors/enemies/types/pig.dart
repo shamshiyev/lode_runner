@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
+import 'package:lode_runner/components/actors/player/bloc/player_bloc.dart';
 import 'package:lode_runner/helpers/constants.dart';
 
 import '../../../../utilities/animations.dart';
@@ -55,9 +56,10 @@ class Pig extends Enemy {
 
   @override
   void update(double dt) {
+    updateAnimation();
+
     if (!gotHit) {
-      updateAnimation();
-      move(dt);
+      updateEnemyState(dt);
     } else {
       removeOffScreen();
     }
@@ -84,7 +86,9 @@ class Pig extends Enemy {
 
   @override
   void updateAnimation() {
-    if (velocity.x == 0) {
+    if (gotHit) {
+      current = PigAnimationState.hit;
+    } else if (velocity.x == 0) {
       current = PigAnimationState.idle;
     } else {
       current = checkRange() ? PigAnimationState.run : PigAnimationState.walk;
@@ -95,7 +99,7 @@ class Pig extends Enemy {
   }
 
   @override
-  void move(double dt) {
+  void updateEnemyState(double dt) {
     // Шобы гулял туда-сюда
     if (position.x < rangeNeg) {
       targetDirection = 1;
@@ -111,7 +115,6 @@ class Pig extends Enemy {
       targetDirection =
           (player.x + playerOffset > position.x + enemyOffset) ? 1 : -1;
       moveSpeed = Constants.moveSpeed;
-      current = PigAnimationState.run;
     } else {
       moveSpeed = 30;
     }
@@ -130,14 +133,13 @@ class Pig extends Enemy {
       player.velocity = Vector2(0, -260);
     } else {
       if (!gotHit) {
-        player.collidedWithEnemy();
+        player.bloc.add(const PlayerHitEvent());
       }
     }
   }
 
   @override
   void removeOffScreen() {
-    current = PigAnimationState.hit;
     angle += 0.04;
     position.y += 4;
     position.x -= moveDirection * 2;

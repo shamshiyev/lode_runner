@@ -80,7 +80,7 @@ mixin PlayerAnimationsMixin on SpriteAnimationGroupComponent {
     appearing = spriteAnimation(
       src: ActorAnimations.appearing,
       frameAmount: 7,
-    )..loop = false;
+    );
     disappearing = spriteAnimation(
       src: ActorAnimations.disappearing,
       frameAmount: 7,

@@ -185,7 +185,7 @@
   <object id="77" x="0" y="320" width="624" height="16"/>
   <object id="78" x="608" y="144" width="16" height="176"/>
   <object id="79" x="304" y="64" width="112" height="16"/>
-  <object id="80" type="platform" x="160" y="176" width="96" height="16"/>
+  <object id="80" x="160" y="176" width="96" height="16"/>
   <object id="81" x="32" y="176" width="80" height="16"/>
   <object id="82" type="platform" x="416" y="224" width="32" height="4"/>
   <object id="83" x="208" y="16" width="112" height="16"/>

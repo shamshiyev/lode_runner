@@ -34,12 +34,37 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
+    on<PlayerHitEvent>(
+      (
+        event,
+        emit,
+      ) async {
+        emit(
+          PlayerGotHitState(
+            player: state.player,
+            startingPosition: state.startingPosition,
+          ),
+        );
+        await Future.delayed(
+          const Duration(milliseconds: 900),
+        );
+        emit(
+          PlayerInitialState(
+            player: state.player,
+            startingPosition: state.startingPosition,
+          ),
+        );
+      },
+    );
   }
 
   void _buttonPressed(
     PlayerKeyPressedEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
+    if (state is PlayerGotHitState) {
+      return;
+    }
     final keysPressed = event.keysPressed;
     final logicalKey = event.keyEvent.logicalKey;
     double horizontalSpeed = 0;
