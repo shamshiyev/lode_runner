@@ -20,6 +20,8 @@ class Pig extends Enemy {
   });
   @override
   final textureSize = Vector2(36, 30);
+  @override
+  final double stepTime = 0.05;
 
   @override
   double moveSpeed = 30;

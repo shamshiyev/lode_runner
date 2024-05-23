@@ -64,8 +64,8 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
         game.images.fromCache('Items/Collectables/Collected.png'),
         SpriteAnimationData.sequenced(
           amount: 6,
-          stepTime: 0.1,
-          textureSize: Vector2.all(64),
+          stepTime: 0.05,
+          textureSize: Vector2.all(32),
           loop: false,
         ),
       );

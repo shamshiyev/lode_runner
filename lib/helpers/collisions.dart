@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -7,11 +8,16 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
     super.position,
     super.size,
     this.isPlatform = false,
-  }) {
-    // Дебагмод для отображения координат блоков
-    // debugMode = true;
-  }
+  });
   bool isPlatform;
+
+  @override
+  FutureOr<void> onLoad() {
+    add(
+      RectangleHitbox(),
+    );
+    return super.onLoad();
+  }
 }
 
 List<double> checkCollisions(player, block) {

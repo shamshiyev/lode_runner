@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:lode_runner/components/actors/enemies/enemy.dart';
+import 'package:lode_runner/components/actors/enemies/types/bullet.dart';
 import 'package:lode_runner/utilities/animations.dart';
 
 import '../../player/bloc/player_bloc.dart';
@@ -22,16 +22,20 @@ class Plant extends Enemy {
   @override
   final textureSize = Vector2(44, 42);
   @override
-  final double moveSpeed = 140;
+  final double moveSpeed = 180;
+  @override
+  final stepTime = 0.08;
 
   bool gotHit = false;
 
   late final SpriteAnimation plantIdle;
   late final SpriteAnimation plantHit;
   late final SpriteAnimation plantShoot;
+  late final Sprite bulletSprite;
 
   @override
-  FutureOr<void> onLoad() {
+  FutureOr<void> onLoad() async {
+    bulletSprite = await Sprite.load('Enemies/Plant/Bullet.png');
     if (reversed) {
       flipHorizontallyAroundCenter();
     }
@@ -50,6 +54,7 @@ class Plant extends Enemy {
   void update(double dt) {
     if (!gotHit) {
       updateAnimation();
+      updateEnemyState(dt);
     } else {
       removeOffScreen();
     }
@@ -85,12 +90,27 @@ class Plant extends Enemy {
   @override
   void updateEnemyState(double dt) {
     if (checkRange()) {
-      // TODO: Implement shooting
+      animationTicker!.onFrame = (spriteIndex) {
+        if (spriteIndex == 3) {
+          parent?.add(
+            Bullet(
+              speed: moveSpeed,
+              bulletSprite: bulletSprite,
+              position: Vector2(
+                reversed ? position.x - 20 : position.x + 5,
+                position.y + 10,
+              ),
+              directionRight: reversed,
+              playerBloc: player.bloc,
+            ),
+          );
+        }
+      };
     }
   }
 
   @override
-  void updateAnimation() {
+  void updateAnimation() async {
     current =
         checkRange() ? PlantAnimationState.shoot : PlantAnimationState.idle;
   }

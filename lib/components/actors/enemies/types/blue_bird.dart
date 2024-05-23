@@ -20,6 +20,9 @@ class BlueBird extends Enemy {
   @override
   final textureSize = Vector2(32, 32);
 
+  @override
+  final double stepTime = 0.05;
+
   double moveDirection = 1;
   double rangeNeg = 0;
   double rangePos = 0;
@@ -74,7 +77,7 @@ class BlueBird extends Enemy {
       ),
       SpriteAnimationData.sequenced(
         amount: amount,
-        stepTime: Enemy.stepTime,
+        stepTime: stepTime,
         textureSize: textureSize,
       ),
     );

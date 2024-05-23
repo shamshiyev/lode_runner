@@ -21,6 +21,7 @@ abstract class Enemy extends SpriteAnimationGroupComponent
   Vector2 get textureSize;
   double get moveSpeed;
   late final Player player;
+  double get stepTime;
 
   SpriteAnimation spriteAnimation(String src, int amount) {
     return SpriteAnimation.fromFrameData(
@@ -29,13 +30,12 @@ abstract class Enemy extends SpriteAnimationGroupComponent
       ),
       SpriteAnimationData.sequenced(
         amount: amount,
-        stepTime: Enemy.stepTime,
+        stepTime: stepTime,
         textureSize: textureSize,
       ),
     );
   }
 
-  static const double stepTime = 0.05;
   static const tileSize = 16;
 
   void loadAllAnimations();

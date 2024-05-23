@@ -47,17 +47,17 @@
   <object id="215" name="Coin" type="collectable" x="112" y="128" width="16" height="16"/>
   <object id="217" name="Pineapple" type="collectable" x="512" y="160" width="32" height="32"/>
   <object id="218" name="Strawberry" type="collectable" x="96" y="272" width="32" height="32"/>
-  <object id="219" name="plant" type="enemy" x="36" y="116" width="44" height="42">
+  <object id="219" name="plant" type="enemy" x="40" y="117" width="44" height="42">
    <properties>
     <property name="reversed" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="222" name="plant" type="enemy" x="40" y="292" width="44" height="42">
+  <object id="222" name="plant" type="enemy" x="40" y="293" width="44" height="42">
    <properties>
     <property name="reversed" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="223" name="plant" type="enemy" x="576" y="164" width="44" height="42">
+  <object id="223" name="plant" type="enemy" x="568" y="165" width="44" height="42">
    <properties>
     <property name="reversed" type="bool" value="false"/>
    </properties>
