@@ -11,17 +11,4 @@ void main() async {
       home: HomePage(),
     ),
   );
-  // runApp(
-  //   GameWidget(
-  //     overlayBuilderMap: {
-  //       'PauseMenu': (context, game) {
-  //         return Container(
-  //           color: const Color(0xFF000000),
-  //           child: const Text('Demo Build'),
-  //         );
-  //       },
-  //     },
-  //     game: LodeRunner(),
-  //   ),
-  // );
 }

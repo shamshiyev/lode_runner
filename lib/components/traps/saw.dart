@@ -16,10 +16,9 @@ class Saw extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
   static const tileSize = 16;
 
   final bool isVertical;
+  double moveDirection = 1;
   final double offNeg;
   final double offPos;
-
-  double moveDirection = 1;
   double rangeNeg = 0;
   double rangePos = 0;
 

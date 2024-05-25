@@ -9,6 +9,7 @@ class CollisionBlock extends PositionComponent with CollisionCallbacks {
     super.size,
     this.isPlatform = false,
   });
+
   bool isPlatform;
 
   @override

@@ -18,6 +18,8 @@ mixin PlayerAnimationsMixin on SpriteAnimationGroupComponent {
 // Скорость всех анимаций
   static const double stepTime = 0.05;
 
+  late final SpriteAnimation appearing;
+  late final SpriteAnimation disappearing;
   late final SpriteAnimation doubleJump;
   late final SpriteAnimation fall;
   late final SpriteAnimation hit;
@@ -25,8 +27,6 @@ mixin PlayerAnimationsMixin on SpriteAnimationGroupComponent {
   late final SpriteAnimation jump;
   late final SpriteAnimation run;
   late final SpriteAnimation wallJump;
-  late final SpriteAnimation appearing;
-  late final SpriteAnimation disappearing;
 
   void loadAllAnimations(
     LodeRunner gameRef,

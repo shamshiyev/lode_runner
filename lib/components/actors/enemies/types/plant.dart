@@ -17,49 +17,21 @@ class Plant extends Enemy {
     this.reversed = false,
   });
 
+  late final Sprite bulletSprite;
+  bool gotHit = false;
+  late final SpriteAnimation plantHit;
+  late final SpriteAnimation plantIdle;
+  late final SpriteAnimation plantShoot;
   final bool reversed;
 
   @override
-  final textureSize = Vector2(44, 42);
-  @override
   final double moveSpeed = 180;
+
   @override
   final stepTime = 0.08;
 
-  bool gotHit = false;
-
-  late final SpriteAnimation plantIdle;
-  late final SpriteAnimation plantHit;
-  late final SpriteAnimation plantShoot;
-  late final Sprite bulletSprite;
-
   @override
-  FutureOr<void> onLoad() async {
-    bulletSprite = await Sprite.load('Enemies/Plant/Bullet.png');
-    if (reversed) {
-      flipHorizontallyAroundCenter();
-    }
-    player = gameRef.playerBloc.state.player;
-    add(
-      RectangleHitbox(
-        position: Vector2.all(6),
-        size: Vector2.all(36),
-      ),
-    );
-    loadAllAnimations();
-    return super.onLoad();
-  }
-
-  @override
-  void update(double dt) {
-    if (!gotHit) {
-      updateAnimation();
-      updateEnemyState(dt);
-    } else {
-      removeOffScreen();
-    }
-    super.update(dt);
-  }
+  final textureSize = Vector2(44, 42);
 
   @override
   void collidedWithPlayer() {
@@ -88,6 +60,51 @@ class Plant extends Enemy {
   }
 
   @override
+  FutureOr<void> onLoad() async {
+    bulletSprite = await Sprite.load('Enemies/Plant/Bullet.png');
+    if (reversed) {
+      flipHorizontallyAroundCenter();
+    }
+    player = gameRef.playerBloc.state.player;
+    add(
+      RectangleHitbox(
+        position: Vector2.all(6),
+        size: Vector2.all(36),
+      ),
+    );
+    loadAllAnimations();
+    return super.onLoad();
+  }
+
+  @override
+  void removeOffScreen() {
+    current = PlantAnimationState.hit;
+    angle += 0.04;
+    position.y += 6;
+    position.x += 2;
+    if (position.y > gameRef.size.y + 10) {
+      removeFromParent();
+    }
+  }
+
+  @override
+  void update(double dt) {
+    if (!gotHit) {
+      updateAnimation();
+      updateEnemyState(dt);
+    } else {
+      removeOffScreen();
+    }
+    super.update(dt);
+  }
+
+  @override
+  void updateAnimation() async {
+    current =
+        checkRange() ? PlantAnimationState.shoot : PlantAnimationState.idle;
+  }
+
+  @override
   void updateEnemyState(double dt) {
     if (checkRange()) {
       animationTicker!.onFrame = (spriteIndex) {
@@ -106,23 +123,6 @@ class Plant extends Enemy {
           );
         }
       };
-    }
-  }
-
-  @override
-  void updateAnimation() async {
-    current =
-        checkRange() ? PlantAnimationState.shoot : PlantAnimationState.idle;
-  }
-
-  @override
-  void removeOffScreen() {
-    current = PlantAnimationState.hit;
-    angle += 0.04;
-    position.y += 6;
-    position.x += 2;
-    if (position.y > gameRef.size.y + 10) {
-      removeFromParent();
     }
   }
 

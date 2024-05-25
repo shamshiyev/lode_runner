@@ -11,6 +11,18 @@ class Checkpoint extends SpriteAnimationComponent
   });
 
   @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is Player) {
+      _reachedCheckPoint();
+      super.onCollision(intersectionPoints, other);
+    }
+    super.onCollisionStart(intersectionPoints, other);
+  }
+
+  @override
   Future<void> onLoad() async {
     add(
       RectangleHitbox(
@@ -29,18 +41,6 @@ class Checkpoint extends SpriteAnimationComponent
       ),
     );
     return super.onLoad();
-  }
-
-  @override
-  void onCollisionStart(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
-    if (other is Player) {
-      _reachedCheckPoint();
-      super.onCollision(intersectionPoints, other);
-    }
-    super.onCollisionStart(intersectionPoints, other);
   }
 
   void _reachedCheckPoint() async {

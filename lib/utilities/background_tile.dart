@@ -3,12 +3,12 @@ import 'package:flame/parallax.dart';
 import 'package:flutter/painting.dart';
 
 class BackGroundTile extends ParallaxComponent {
-  final String color;
   BackGroundTile({
     super.position,
     this.color = 'Gray',
   });
 
+  final String color;
   final double scrollSpeed = 40;
 
   @override

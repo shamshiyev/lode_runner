@@ -18,54 +18,40 @@ class Pig extends Enemy {
     super.offNeg,
     super.offPos,
   });
-  @override
-  final textureSize = Vector2(36, 30);
-  @override
-  final double stepTime = 0.05;
+
+  bool gotHit = false;
+  double moveDirection = 1;
+  late final SpriteAnimation pigHit;
+  late final SpriteAnimation pigIdle;
+  late final SpriteAnimation pigRun;
+  late final SpriteAnimation pigWalk;
+  late double rangeNeg;
+  late double rangePos;
+  double targetDirection = -1;
+  Vector2 velocity = Vector2.zero();
 
   @override
   double moveSpeed = 30;
 
-  Vector2 velocity = Vector2.zero();
-  late double rangeNeg;
-  late double rangePos;
-
-  double moveDirection = 1;
-  double targetDirection = -1;
-
-  bool gotHit = false;
-
-  late final SpriteAnimation pigIdle;
-  late final SpriteAnimation pigRun;
-  late final SpriteAnimation pigHit;
-  late final SpriteAnimation pigWalk;
+  @override
+  final double stepTime = 0.05;
 
   @override
-  void onLoad() async {
-    // debugMode = true;
-    player = gameRef.playerBloc.state.player;
-    add(
-      RectangleHitbox(
-        position: Vector2.all(4),
-        size: Vector2(24, 28),
-      ),
-    );
-    loadAllAnimations();
-    rangeNeg = position.x - offNeg! * 16;
-    rangePos = position.x + offPos! * 16;
-    return super.onLoad();
-  }
+  final textureSize = Vector2(36, 30);
 
   @override
-  void update(double dt) {
-    updateAnimation();
-
-    if (!gotHit) {
-      updateEnemyState(dt);
+  void collidedWithPlayer() async {
+    if (player.velocity.y > 0 && player.y + player.height > position.y) {
+      if (game.playSounds) {
+        FlameAudio.play('bounce.wav', volume: game.soundVolume);
+      }
+      gotHit = true;
+      player.velocity = Vector2(0, -260);
     } else {
-      removeOffScreen();
+      if (!gotHit) {
+        player.bloc.add(const PlayerHitEvent());
+      }
     }
-    super.update(dt);
   }
 
   @override
@@ -84,6 +70,44 @@ class Pig extends Enemy {
     };
 
     current = PigAnimationState.walk;
+  }
+
+  @override
+  void onLoad() async {
+    // debugMode = true;
+    player = gameRef.playerBloc.state.player;
+    add(
+      RectangleHitbox(
+        position: Vector2.all(4),
+        size: Vector2(24, 28),
+      ),
+    );
+    loadAllAnimations();
+    rangeNeg = position.x - offNeg! * 16;
+    rangePos = position.x + offPos! * 16;
+    return super.onLoad();
+  }
+
+  @override
+  void removeOffScreen() {
+    angle += 0.04;
+    position.y += 4;
+    position.x -= moveDirection * 2;
+    if (position.y > gameRef.size.y + 10) {
+      removeFromParent();
+    }
+  }
+
+  @override
+  void update(double dt) {
+    updateAnimation();
+
+    if (!gotHit) {
+      updateEnemyState(dt);
+    } else {
+      removeOffScreen();
+    }
+    super.update(dt);
   }
 
   @override
@@ -123,31 +147,6 @@ class Pig extends Enemy {
     velocity.x = targetDirection * moveSpeed;
     moveDirection = lerpDouble(moveDirection, targetDirection, 0.1) ?? 1;
     position.x += velocity.x * dt;
-  }
-
-  @override
-  void collidedWithPlayer() async {
-    if (player.velocity.y > 0 && player.y + player.height > position.y) {
-      if (game.playSounds) {
-        FlameAudio.play('bounce.wav', volume: game.soundVolume);
-      }
-      gotHit = true;
-      player.velocity = Vector2(0, -260);
-    } else {
-      if (!gotHit) {
-        player.bloc.add(const PlayerHitEvent());
-      }
-    }
-  }
-
-  @override
-  void removeOffScreen() {
-    angle += 0.04;
-    position.y += 4;
-    position.x -= moveDirection * 2;
-    if (position.y > gameRef.size.y + 10) {
-      removeFromParent();
-    }
   }
 
   // Проверяем, находится ли игрок в поле зрения врага

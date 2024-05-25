@@ -15,12 +15,16 @@ abstract class Enemy extends SpriteAnimationGroupComponent
     this.offPos,
   });
 
+  static const tileSize = 16;
+
   final double? offNeg;
   final double? offPos;
+  late final Player player;
 
   Vector2 get textureSize;
+
   double get moveSpeed;
-  late final Player player;
+
   double get stepTime;
 
   SpriteAnimation spriteAnimation(String src, int amount) {
@@ -36,12 +40,14 @@ abstract class Enemy extends SpriteAnimationGroupComponent
     );
   }
 
-  static const tileSize = 16;
-
   void loadAllAnimations();
+
   void updateAnimation();
+
   void collidedWithPlayer();
+
   void updateEnemyState(double dt);
+
   void removeOffScreen();
 }
 
@@ -75,8 +81,6 @@ class EnemyFactory {
           size: size,
           reversed: reversed ?? false,
         );
-      // case 'RedEnemy':
-      //   return RedEnemy(position: position, size: size);
       default:
         throw Exception('Invalid enemy type: $type');
     }

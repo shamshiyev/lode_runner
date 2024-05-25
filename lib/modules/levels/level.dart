@@ -20,11 +20,12 @@ class GameWorld extends World with HasGameRef<LodeRunner> {
   GameWorld({
     required this.levelName,
   });
+
+  late final Checkpoint checkPoint;
+  List<CollisionBlock> collisionBlocks = [];
   late TiledComponent level;
   final String levelName;
   late final Player player;
-  List<CollisionBlock> collisionBlocks = [];
-  late final Checkpoint checkPoint;
 
   @override
   FutureOr<void> onLoad() async {

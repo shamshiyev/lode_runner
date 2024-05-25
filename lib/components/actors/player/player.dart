@@ -28,17 +28,11 @@ class Player extends SpriteAnimationGroupComponent
         PlayerAnimationsMixin {
   Player();
 
-  double horizontalSpeed = 0;
-  // Стартовая позиция игрока
-  Vector2 velocity = Vector2.zero();
-
-  bool isOnGround = true;
-  bool hasJumped = false;
-  bool isSliding = false;
-  bool hasDoubleJumped = false;
-  bool reachedCheckpoint = false;
-
+  double accumulatedTime = 0;
   List<CollisionBlock> collisionBlocks = [];
+  double fixedDeltaTime = 1 / 60;
+  bool hasDoubleJumped = false;
+  bool hasJumped = false;
   // Хитбокс игрока
   CustomHitbox hitbox = CustomHitbox(
     offsetX: 10,
@@ -47,8 +41,48 @@ class Player extends SpriteAnimationGroupComponent
     height: 28,
   );
 
-  double fixedDeltaTime = 1 / 60;
-  double accumulatedTime = 0;
+  double horizontalSpeed = 0;
+  bool isOnGround = true;
+  bool isSliding = false;
+  // Стартовая позиция игрока
+  Vector2 velocity = Vector2.zero();
+
+  // Коллизия с подбираемыми объектами
+  @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is Checkpoint) {
+      bloc.add(const PlayerCheckpointEvent());
+    }
+    if (bloc.state is! PlayerReachedCheckpointState) {
+      if (other is Collectable) {
+        other.collidingWithPlayer();
+      }
+      if (other is Saw || other is Spike) {
+        bloc.add(const PlayerHitEvent());
+      }
+      if (other is Enemy) {
+        other.collidedWithPlayer();
+      }
+    }
+    super.onCollisionStart(intersectionPoints, other);
+  }
+
+  @override
+  bool onKeyEvent(
+    KeyEvent event,
+    Set<LogicalKeyboardKey> keysPressed,
+  ) {
+    bloc.add(
+      PlayerKeyPressedEvent(
+        keysPressed: keysPressed,
+        keyEvent: event,
+      ),
+    );
+    return false;
+  }
 
   @override
   Future<void> onLoad() async {
@@ -76,9 +110,11 @@ class Player extends SpriteAnimationGroupComponent
   void onNewState(
     StatePlayerBloc state,
   ) {
+    if (state is PlayerReachedCheckpointState) {
+      _reachedCheckPoint();
+    }
     if (state is PlayerGotHitState) {
       _respawn();
-      // TODO: Maybe i dont need else if
     } else if (state is PlayerKeyPressedState) {
       horizontalSpeed = state.horizontalSpeed;
       hasJumped = state.hasJumped;
@@ -88,47 +124,11 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   @override
-  bool onKeyEvent(
-    KeyEvent event,
-    Set<LogicalKeyboardKey> keysPressed,
-  ) {
-    bloc.add(
-      PlayerKeyPressedEvent(
-        keysPressed: keysPressed,
-        keyEvent: event,
-      ),
-    );
-    return false;
-  }
-
-  // Коллизия с подбираемыми объектами
-  @override
-  void onCollisionStart(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
-    if (!reachedCheckpoint) {
-      if (other is Collectable) {
-        other.collidingWithPlayer();
-      }
-      if (other is Saw || other is Spike) {
-        bloc.add(const PlayerHitEvent());
-      }
-      if (other is Checkpoint) {
-        _reachedCheckPoint();
-      }
-      if (other is Enemy) {
-        other.collidedWithPlayer();
-      }
-    }
-    super.onCollisionStart(intersectionPoints, other);
-  }
-
-  @override
   void update(double dt) {
     accumulatedTime += dt;
     while (accumulatedTime >= fixedDeltaTime) {
-      if (bloc.state is! PlayerGotHitState) {
+      if (bloc.state is! PlayerGotHitState &&
+          bloc.state is! PlayerReachedCheckpointState) {
         _upDatePlayerAnimation();
         _updatePlayerDirection(fixedDeltaTime);
         _checkCollisionsOnX();
@@ -312,17 +312,15 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _reachedCheckPoint() async {
-    reachedCheckpoint = true;
+    dev.log('message');
     if (game.playSounds) {
       FlameAudio.play('disappear.wav', volume: game.soundVolume);
     }
-
     current = PlayerAnimationState.disappearing;
     //
     await animationTicker?.completed;
     animationTicker?.reset();
     //
-    reachedCheckpoint = false;
     removeFromParent();
     Future.delayed(const Duration(seconds: 3), () => game.nextLevel());
   }

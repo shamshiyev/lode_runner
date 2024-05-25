@@ -58,3 +58,10 @@ final class PlayerGotHitState extends StatePlayerBloc {
     required super.startingPosition,
   });
 }
+
+final class PlayerReachedCheckpointState extends StatePlayerBloc {
+  const PlayerReachedCheckpointState({
+    required super.player,
+    required super.startingPosition,
+  });
+}

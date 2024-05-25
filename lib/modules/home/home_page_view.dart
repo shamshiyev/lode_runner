@@ -56,27 +56,6 @@ class HomePageView extends StatelessWidget {
                       },
                       child: const Text('Start Game'),
                     ),
-                    const SizedBox(
-                      width: 50,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => GameWidget(
-                        //       overlayBuilderMap: {
-                        //         'PauseMenu': (context, game) {
-                        //           return const Text('Demo Build');
-                        //         },
-                        //       },
-                        //       game: LodeRunner(),
-                        //     ),
-                        //   ),
-                        // );
-                      },
-                      child: const Text('Select Level'),
-                    ),
                   ],
                 ),
               ),

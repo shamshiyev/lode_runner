@@ -15,21 +15,13 @@ class LodeRunner extends FlameGame
         HasCollisionDetection,
         HasGameRef<LodeRunner>,
         TapCallbacks {
-  final PlayerBloc playerBloc;
-
   LodeRunner({
     required this.playerBloc,
   });
 
-  @override
-  Color backgroundColor() => const Color(0xFF211F30);
-
   late CameraComponent cam;
-
+  int currentLevel = 6;
   late JoystickComponent joystick;
-  bool playSounds = false;
-  double soundVolume = 0.5;
-
   List<String> levelsList = [
     'level_01',
     'level_02',
@@ -37,9 +29,15 @@ class LodeRunner extends FlameGame
     'level_04',
     'level_05',
     'level_06',
+    'level_07',
   ];
 
-  int currentLevel = 5;
+  bool playSounds = false;
+  final PlayerBloc playerBloc;
+  double soundVolume = 0.5;
+
+  @override
+  Color backgroundColor() => const Color(0xFF211F30);
 
   @override
   Future<void> onLoad() async {

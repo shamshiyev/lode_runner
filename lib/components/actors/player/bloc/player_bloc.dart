@@ -35,10 +35,7 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
       },
     );
     on<PlayerHitEvent>(
-      (
-        event,
-        emit,
-      ) async {
+      (event, emit) async {
         emit(
           PlayerGotHitState(
             player: state.player,
@@ -56,13 +53,23 @@ class PlayerBloc extends Bloc<EventPlayerBloc, StatePlayerBloc> {
         );
       },
     );
+    on<PlayerCheckpointEvent>(
+      (event, emit) {
+        emit(
+          PlayerReachedCheckpointState(
+            player: state.player,
+            startingPosition: state.startingPosition,
+          ),
+        );
+      },
+    );
   }
 
   void _buttonPressed(
     PlayerKeyPressedEvent event,
     Emitter<StatePlayerBloc> emit,
   ) {
-    if (state is PlayerGotHitState) {
+    if (state is PlayerGotHitState || state is PlayerReachedCheckpointState) {
       return;
     }
     final keysPressed = event.keysPressed;

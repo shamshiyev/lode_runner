@@ -31,6 +31,6 @@ final class PlayerHitEvent extends EventPlayerBloc {
   const PlayerHitEvent();
 }
 
-final class PlayerReachedCheckpointEvent extends EventPlayerBloc {
-  const PlayerReachedCheckpointEvent();
+final class PlayerCheckpointEvent extends EventPlayerBloc {
+  const PlayerCheckpointEvent();
 }

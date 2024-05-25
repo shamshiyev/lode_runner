@@ -5,13 +5,15 @@ import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
-  final String? type;
   Collectable({
     this.type,
     super.position,
     super.size,
   });
 
+  static int collectableCount = 0;
+
+  bool collected = false;
   final hitBox = CustomHitbox(
     offsetX: 10,
     offsetY: 10,
@@ -19,8 +21,7 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
     height: 12,
   );
 
-  static int collectableCount = 0;
-  bool collected = false;
+  final String? type;
 
   @override
   Future<void> onLoad() async {

@@ -16,22 +16,10 @@ class Bullet extends SpriteComponent with CollisionCallbacks {
     this.directionRight = false,
   });
 
-  final double speed;
   final Sprite bulletSprite;
   final bool directionRight;
   final PlayerBloc playerBloc;
-
-  @override
-  FutureOr<void> onLoad() {
-    add(
-      CircleHitbox(
-        position: Vector2.all(4),
-        radius: 4,
-      ),
-    );
-    sprite = bulletSprite;
-    return super.onLoad();
-  }
+  final double speed;
 
   @override
   void onCollision(
@@ -47,6 +35,18 @@ class Bullet extends SpriteComponent with CollisionCallbacks {
       removeFromParent();
     }
     super.onCollision(intersectionPoints, other);
+  }
+
+  @override
+  FutureOr<void> onLoad() {
+    add(
+      CircleHitbox(
+        position: Vector2.all(4),
+        radius: 4,
+      ),
+    );
+    sprite = bulletSprite;
+    return super.onLoad();
   }
 
   @override
