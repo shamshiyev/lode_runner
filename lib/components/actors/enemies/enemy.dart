@@ -1,10 +1,11 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:lode_runner/components/actors/enemies/types/pig.dart';
 import '../../../lode_runner.dart';
 import '../player/player.dart';
 import 'types/blue_bird.dart';
+import 'types/pig.dart';
 import 'types/plant.dart';
+import 'types/turtle.dart';
 
 abstract class Enemy extends SpriteAnimationGroupComponent
     with HasGameRef<LodeRunner>, CollisionCallbacks {
@@ -80,6 +81,11 @@ class EnemyFactory {
           position: position,
           size: size,
           reversed: reversed ?? false,
+        );
+      case 'turtle':
+        return Turtle(
+          position: position,
+          size: size,
         );
       default:
         throw Exception('Invalid enemy type: $type');

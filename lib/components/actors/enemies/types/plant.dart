@@ -8,7 +8,11 @@ import 'package:lode_runner/utilities/animations.dart';
 
 import '../../player/bloc/player_bloc.dart';
 
-enum PlantAnimationState { shoot, hit, idle }
+enum PlantAnimationState {
+  shoot,
+  hit,
+  idle,
+}
 
 class Plant extends Enemy {
   Plant({
@@ -28,7 +32,7 @@ class Plant extends Enemy {
   final double moveSpeed = 180;
 
   @override
-  final stepTime = 0.08;
+  double get stepTime => 0.08;
 
   @override
   final textureSize = Vector2(44, 42);
@@ -78,10 +82,9 @@ class Plant extends Enemy {
 
   @override
   void removeOffScreen() {
-    current = PlantAnimationState.hit;
     angle += 0.04;
     position.y += 6;
-    position.x += 2;
+    position.x = reversed ? position.x - 1 : position.x + 1;
     if (position.y > gameRef.size.y + 10) {
       removeFromParent();
     }
@@ -89,8 +92,8 @@ class Plant extends Enemy {
 
   @override
   void update(double dt) {
+    updateAnimation();
     if (!gotHit) {
-      updateAnimation();
       updateEnemyState(dt);
     } else {
       removeOffScreen();
@@ -100,8 +103,13 @@ class Plant extends Enemy {
 
   @override
   void updateAnimation() async {
-    current =
-        checkRange() ? PlantAnimationState.shoot : PlantAnimationState.idle;
+    if (gotHit) {
+      current = PlantAnimationState.hit;
+      return;
+    } else {
+      current =
+          checkRange() ? PlantAnimationState.shoot : PlantAnimationState.idle;
+    }
   }
 
   @override

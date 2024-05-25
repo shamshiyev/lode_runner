@@ -8,9 +8,14 @@ import 'package:lode_runner/helpers/constants.dart';
 
 import '../../../../utilities/animations.dart';
 
-enum PigAnimationState { walk, run, hit, aware, idle }
+enum PigAnimationState {
+  walk,
+  run,
+  hit,
+  aware,
+  idle,
+}
 
-// Will be replaced with some specific type of enemy
 class Pig extends Enemy {
   Pig({
     super.position,
@@ -34,10 +39,10 @@ class Pig extends Enemy {
   double moveSpeed = 30;
 
   @override
-  final double stepTime = 0.05;
+  double get stepTime => 0.05;
 
   @override
-  final textureSize = Vector2(36, 30);
+  Vector2 get textureSize => Vector2(36, 30);
 
   @override
   void collidedWithPlayer() async {

@@ -20,4 +20,9 @@ class ActorAnimations {
   static const String run = 'Main Characters/Virtual Guy/Run (32x32).png';
   static const String wallJump =
       'Main Characters/Virtual Guy/Wall Jump (32x32).png';
+  static const String turtleIdle2 = 'Enemies/Turtle/Idle 2 (44x26).png';
+  static const String turtleIdle1 = 'Enemies/Turtle/Idle 1 (44x26).png';
+  static const String turtleHit = 'Enemies/Turtle/Hit (44x26).png';
+  static const String turtleSpikesOut = 'Enemies/Turtle/Spikes out (44x26).png';
+  static const String turtleSpikesIn = 'Enemies/Turtle/Spikes in (44x26).png';
 }

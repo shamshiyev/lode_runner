@@ -23,13 +23,13 @@ class BlueBird extends Enemy {
   double rangePos = 0;
 
   @override
-  final double moveSpeed = 50;
+  double get moveSpeed => 50;
 
   @override
-  final double stepTime = 0.05;
+  double get stepTime => 0.05;
 
   @override
-  final textureSize = Vector2(32, 32);
+  Vector2 get textureSize => Vector2(32, 32);
 
   @override
   void collidedWithPlayer() async {

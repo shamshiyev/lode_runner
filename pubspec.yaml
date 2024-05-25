@@ -15,7 +15,6 @@ dependencies:
   flutter_bloc: ^8.1.5
   flutter:
     sdk: flutter
-  bloc_concurrency: ^0.2.5
 
 dev_dependencies:
   flutter_test:
@@ -41,5 +40,6 @@ flutter:
     - assets/images/Enemies/AngryPig/
     - assets/images/Enemies/BlueBird/
     - assets/images/Enemies/Plant/
+    - assets/images/Enemies/Turtle/
     
   
