@@ -44,10 +44,9 @@ class Player extends SpriteAnimationGroupComponent
   double horizontalSpeed = 0;
   bool isOnGround = true;
   bool isSliding = false;
-  // Стартовая позиция игрока
   Vector2 velocity = Vector2.zero();
 
-  // Коллизия с подбираемыми объектами
+  // Коллизии с игровыми объектами
   @override
   void onCollisionStart(
     Set<Vector2> intersectionPoints,
@@ -86,7 +85,6 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   Future<void> onLoad() async {
-    // debugMode = true;
     loadAllAnimations(gameRef);
     final bloc = gameRef.playerBloc;
     position = bloc.state.startingPosition;

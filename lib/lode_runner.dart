@@ -20,7 +20,7 @@ class LodeRunner extends FlameGame
   });
 
   late CameraComponent cam;
-  int currentLevel = 6;
+  int currentLevel = 0;
   late JoystickComponent joystick;
   List<String> levelsList = [
     'level_01',
@@ -32,7 +32,7 @@ class LodeRunner extends FlameGame
     'level_07',
   ];
 
-  bool playSounds = false;
+  bool playSounds = true;
   final PlayerBloc playerBloc;
   double soundVolume = 0.5;
 
@@ -104,7 +104,6 @@ class LodeRunner extends FlameGame
   void nextLevel() {
     currentLevel++;
     if (currentLevel >= levelsList.length) {
-      // TODO: Show game over screen
       currentLevel = 0;
     }
     _loadLevel();

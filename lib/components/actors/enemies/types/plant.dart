@@ -41,7 +41,10 @@ class Plant extends Enemy {
   void collidedWithPlayer() {
     if (player.velocity.y > 0 && player.y + player.height > position.y) {
       if (game.playSounds) {
-        FlameAudio.play('bounce.wav', volume: game.soundVolume);
+        FlameAudio.play(
+          'bounce.wav',
+          volume: game.soundVolume,
+        );
       }
       gotHit = true;
       player.velocity = Vector2(0, -260);
@@ -117,6 +120,12 @@ class Plant extends Enemy {
     if (checkRange()) {
       animationTicker!.onFrame = (spriteIndex) {
         if (spriteIndex == 3) {
+          if (game.playSounds) {
+            FlameAudio.play(
+              'shoot.wav',
+              volume: game.soundVolume,
+            );
+          }
           parent?.add(
             Bullet(
               speed: moveSpeed,

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level_06.tmx",
+    "activeFile": "level_07.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -151,19 +151,18 @@
         "level_04.tmx",
         "level_03.tmx",
         "level_05.tmx",
-        "level_06.tmx",
         "level_07.tmx"
     ],
     "project": "lode_runner.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "level_06.tmx",
         "level_02.tmx",
         "level_01.tmx",
         "level_04.tmx",
         "level_03.tmx",
         "level_05.tmx",
         "level_07.tmx",
+        "level_06.tmx",
         "chain.tsx",
         "level_01 copy.tmx",
         "level_001.tmx",
