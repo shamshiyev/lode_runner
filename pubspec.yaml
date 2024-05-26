@@ -1,15 +1,18 @@
 name: lode_runner
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.1
 
 environment:
   sdk: '>=3.2.5 <4.0.0'
 
 dependencies:
+  equatable: ^2.0.5
   flame: ^1.17.0
   flame_audio: ^2.10.1
+  flame_bloc: ^1.11.1
   flame_tiled: ^1.20.1
+  flutter_bloc: ^8.1.5
   flutter:
     sdk: flutter
 
@@ -21,18 +24,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/tiles/
     - assets/images/Terrain/
     - assets/images/Background/
     - assets/images/Main Characters/
     - assets/images/Main Characters/Virtual Guy/
-    - assets/images/Main Characters/Mask Dude/
-    - assets/images/Main Characters/Ninja Frog/
-    - assets/images/Main Characters/Pink Man/
     - assets/images/hud/
     - assets/images/Items/Collectables/
     - assets/images/Traps/Saw/
+    - assets/images/Traps/Spiked Ball/
     - assets/images/Items/Checkpoints/Checkpoint/
     - assets/audio/
+    - assets/images/Traps/Spikes/
+    - assets/images/Enemies/AngryPig/
+    - assets/images/Enemies/BlueBird/
+    - assets/images/Enemies/Plant/
+    - assets/images/Enemies/Turtle/
     
   

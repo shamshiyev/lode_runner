@@ -1,68 +1,62 @@
-// import 'dart:ui';
-
+import 'dart:async';
+import 'dart:math';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-class CollisionBlock extends PositionComponent {
+class CollisionBlock extends PositionComponent with CollisionCallbacks {
   CollisionBlock({
     super.position,
     super.size,
     this.isPlatform = false,
-  }) {
-    // Дебагмод для отображения координат блоков
-    // debugMode = true;
-  }
+  });
+
   bool isPlatform;
+
+  @override
+  FutureOr<void> onLoad() {
+    add(
+      RectangleHitbox(),
+    );
+    return super.onLoad();
+  }
 }
 
-bool checkCollisions(player, block
-    // Vector2 position,
-    // Vector2 size,
-    // List<Rect> collisions,
-    ) {
-  // final playerRect = Rect.fromLTWH(
-  //   player.position.x,
-  //   player.position.y,
-  //   player.size.x,
-  //   player.size.y,
-  // );
-  // final blockRect = Rect.fromLTWH(
-  //   block.position.x,
-  //   block.position.y,
-  //   block.size.x,
-  //   block.size.y,
-  // );
-  // return (playerRect.overlaps(
-  //   blockRect,
-  // ));
-
+List<double> checkCollisions(player, block) {
   final hitbox = player.hitbox;
-  // Позиция персонажа по оси X
   final playerX = player.position.x + hitbox.offsetX;
-  // Верхняя точка игрока
   final playerY = player.position.y + hitbox.offsetY;
   final playerWidth = hitbox.width;
   final playerHeight = hitbox.height;
 
-  // Позиция блока по оси X
   final blockX = block.x;
-  // Верхняя точка блока
   final blockY = block.y;
   final blockWidth = block.width;
   final blockHeight = block.height;
 
-  // Проверяем развернута ли модель влево
   final fixedX = player.scale.x < 0
       ? playerX - (hitbox.offsetX * 2) - playerWidth
       : playerX;
+  // final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
 
-  // Коллизия с платформой при учёте высоты модели
-  final fixedY = block.isPlatform ? playerY + playerHeight : playerY;
+  double overlapX = max(
+    0,
+    min<double>(fixedX + playerWidth, blockX + blockWidth) -
+        max(
+          fixedX,
+          blockX,
+        ),
+  );
+  double overlapY = max(
+    0,
+    min<double>(playerY + playerHeight, blockY + blockHeight) -
+        max(
+          playerY,
+          blockY,
+        ),
+  );
 
-  return (
-      // Коллизия по оси Y (верхняя и нижняя точка игрока и блока пересекаются)
-      fixedY < blockY + blockHeight &&
-          playerY + playerHeight > blockY &&
-          // Коллизия по оси X
-          fixedX < blockX + blockWidth &&
-          fixedX + playerWidth > blockX);
+  return [
+    overlapX,
+    overlapY,
+  ];
 }

@@ -1,6 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:lode_runner/components/actors/player.dart';
+import 'package:lode_runner/components/actors/player/player.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Checkpoint extends SpriteAnimationComponent
@@ -9,6 +9,18 @@ class Checkpoint extends SpriteAnimationComponent
     required super.position,
     required super.size,
   });
+
+  @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    if (other is Player) {
+      _reachedCheckPoint();
+      super.onCollision(intersectionPoints, other);
+    }
+    super.onCollisionStart(intersectionPoints, other);
+  }
 
   @override
   Future<void> onLoad() async {
@@ -29,18 +41,6 @@ class Checkpoint extends SpriteAnimationComponent
       ),
     );
     return super.onLoad();
-  }
-
-  @override
-  void onCollisionStart(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
-    if (other is Player) {
-      _reachedCheckPoint();
-      super.onCollision(intersectionPoints, other);
-    }
-    super.onCollisionStart(intersectionPoints, other);
   }
 
   void _reachedCheckPoint() async {

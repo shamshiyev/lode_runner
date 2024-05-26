@@ -1,17 +1,19 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:lode_runner/components/actors/hitbox.dart';
+import 'package:lode_runner/utilities/hitbox.dart';
 import 'package:lode_runner/lode_runner.dart';
 
 class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
-  final String? type;
   Collectable({
     this.type,
     super.position,
     super.size,
   });
 
+  static int collectableCount = 0;
+
+  bool collected = false;
   final hitBox = CustomHitbox(
     offsetX: 10,
     offsetY: 10,
@@ -19,8 +21,7 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
     height: 12,
   );
 
-  static int collectableCount = 0;
-  bool collected = false;
+  final String? type;
 
   @override
   Future<void> onLoad() async {
@@ -64,8 +65,8 @@ class Collectable extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
         game.images.fromCache('Items/Collectables/Collected.png'),
         SpriteAnimationData.sequenced(
           amount: 6,
-          stepTime: 0.1,
-          textureSize: Vector2.all(64),
+          stepTime: 0.05,
+          textureSize: Vector2.all(32),
           loop: false,
         ),
       );

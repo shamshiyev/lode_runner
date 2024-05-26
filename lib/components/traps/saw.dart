@@ -11,22 +11,21 @@ class Saw extends SpriteAnimationComponent with HasGameRef<LodeRunner> {
     this.offPos = 0,
   });
 
-  static const moveSpeed = 50;
+  static const moveSpeed = 80;
   static const double stepTime = 0.02;
   static const tileSize = 16;
 
   final bool isVertical;
+  double moveDirection = 1;
   final double offNeg;
   final double offPos;
-
-  double moveDirection = 1;
   double rangeNeg = 0;
   double rangePos = 0;
 
   @override
   Future<void> onLoad() async {
     priority = -1;
-
+    // debugMode = true;
     add(
       CircleHitbox(),
     );
