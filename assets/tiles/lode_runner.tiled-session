@@ -60,8 +60,8 @@
                 6
             ],
             "expandedObjectLayers": [
-                2,
-                3
+                3,
+                2
             ],
             "scale": 1.5,
             "selectedLayer": 2,
@@ -72,20 +72,20 @@
         },
         "level_03.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 320,
-                "y": 184.39201451905626
+                "x": 319.7096188747731,
+                "y": 184.10163339382945
             }
         },
         "level_04.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.7218749999999998,
             "selectedLayer": 0,
@@ -96,14 +96,14 @@
         },
         "level_05.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.46953125,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 233.40776182881444,
-                "y": 184.7527910685805
+                "x": 319.48963317384374,
+                "y": 184.41254651780966
             }
         },
         "level_06.tmx": {
@@ -120,14 +120,14 @@
         },
         "level_07.tmx": {
             "expandedObjectLayers": [
-                4,
-                3
+                3,
+                4
             ],
             "scale": 1.46953125,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 266.07123870281765,
-                "y": 184.7527910685805
+                "x": 261.3078149920255,
+                "y": 179.98936735778847
             }
         },
         "lode_runner.tsx": {

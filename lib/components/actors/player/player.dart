@@ -310,7 +310,6 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _reachedCheckPoint() async {
-    dev.log('message');
     if (game.playSounds) {
       FlameAudio.play('disappear.wav', volume: game.soundVolume);
     }
