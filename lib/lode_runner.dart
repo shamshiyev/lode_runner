@@ -45,16 +45,16 @@ class LodeRunner extends FlameGame
     await images.loadAllImages();
     _loadLevel();
     game.overlays.add('PauseMenu');
+
     return super.onLoad();
   }
 
-  // @override
-  // void update(double dt) {
-  //   if (Platform.isAndroid || Platform.isIOS) {
-  //     updateJoystick();
-  //   }
-  //   super.update(dt);
-  // }
+  @override
+  void update(double dt) {
+    updateJoystick();
+
+    super.update(dt);
+  }
 
   JoystickComponent addjoystick() {
     joystick = JoystickComponent(
@@ -74,31 +74,31 @@ class LodeRunner extends FlameGame
           ),
         ),
       ),
-      margin: const EdgeInsets.only(
-        left: 2,
-        bottom: 8,
+      position: Vector2(
+        game.size.x - game.size.x + 80,
+        game.size.y - 40,
       ),
     );
     return joystick;
   }
 
-  // void updateJoystick() {
-  //   switch (joystick.direction) {
-  //     case JoystickDirection.left:
-  //     case JoystickDirection.upLeft:
-  //     case JoystickDirection.downLeft:
-  //       player.horizontalSpeed = -1;
-  //       break;
-  //     case JoystickDirection.right:
-  //     case JoystickDirection.upRight:
-  //     case JoystickDirection.downRight:
-  //       player.horizontalSpeed = 1;
-  //       break;
-  //     default:
-  //       player.horizontalSpeed = 0;
-  //       break;
-  //   }
-  // }
+  void updateJoystick() {
+    switch (joystick.direction) {
+      case JoystickDirection.left:
+      case JoystickDirection.upLeft:
+      case JoystickDirection.downLeft:
+        gameRef.playerBloc.state.player.horizontalSpeed = -1;
+        break;
+      case JoystickDirection.right:
+      case JoystickDirection.upRight:
+      case JoystickDirection.downRight:
+        gameRef.playerBloc.state.player.horizontalSpeed = 1;
+        break;
+      default:
+        gameRef.playerBloc.state.player.horizontalSpeed = 0;
+        break;
+    }
+  }
 
   // Загрузка следующего уровня
   void nextLevel() {
@@ -124,11 +124,15 @@ class LodeRunner extends FlameGame
       height: 360,
     );
     cam.viewfinder.anchor = Anchor.topLeft;
-    // Создание джойстика
     if (Platform.isAndroid || Platform.isIOS) {
+      // Создание джойстика
       joystick = addjoystick();
-      add(JumpButton());
-      add(joystick);
+      cam.viewport.addAll(
+        [
+          joystick,
+          JumpButton(),
+        ],
+      );
     }
     addAll(
       [

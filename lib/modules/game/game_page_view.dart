@@ -29,6 +29,7 @@ class _GamePageViewState extends State<GamePageView> {
                     );
                   },
                 },
+                // TODO: Передавать размеры экрана
                 game: LodeRunner(
                   playerBloc: context.read<PlayerBloc>(),
                 ),

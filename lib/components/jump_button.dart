@@ -12,22 +12,24 @@ class JumpButton extends SpriteComponent
   FutureOr<void> onLoad() {
     priority = 2;
     sprite = Sprite(game.images.fromCache('hud/jump_button.png'));
+    anchor = Anchor.bottomRight;
+
     position = Vector2(
-      game.size.x - 66,
-      game.size.y - 72,
+      game.size.x - 80,
+      game.size.y - 40,
     );
     return super.onLoad();
   }
 
-  // @override
-  // void onTapDown(TapDownEvent event) {
-  //   game.player.hasJumped = true;
-  //   super.onTapDown(event);
-  // }
+  @override
+  void onTapDown(TapDownEvent event) {
+    gameRef.playerBloc.state.player.hasJumped = true;
+    super.onTapDown(event);
+  }
 
-  // @override
-  // void onTapUp(TapUpEvent event) {
-  //   game.player.hasJumped = false;
-  //   super.onTapUp(event);
-  // }
+  @override
+  void onTapUp(TapUpEvent event) {
+    gameRef.playerBloc.state.player.hasJumped = false;
+    super.onTapUp(event);
+  }
 }
