@@ -1,3 +1,3 @@
 # lode_runner
 
-A new Flutter project.
+A mobile platformer on the Flutter Flame engine.
